@@ -1,0 +1,43 @@
+.JobHolder{
+    padding: 0px 20px;
+}
+.JobHolder h1{
+    color: #8D28DD;
+    font-size: 22px;
+    font-weight: 500;
+
+}
+.NameWithTasks{
+    display: flex;
+    justify-content: space-between;
+}
+.Completed{
+    background-color: #6F00C5;
+    color: #fff;
+    padding: 5px 10px;
+}
+.PicTaken{
+    background-color: #FFBF00;
+    color: #fff;
+    padding: 5px 10px;
+    text-align: end;
+    width: fit-content;
+    float: right;
+}
+.InnerInfo h2{
+    font-size: 20px;
+    font-weight: 600;
+}
+.IconPlusCleaning{
+    
+    display: flex;
+    gap: 15px;
+    align-items: center;
+   
+}
+.RegularCleaning{
+    display: flex;
+    justify-content: space-between;   
+
+
+}

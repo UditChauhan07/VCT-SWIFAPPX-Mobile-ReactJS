@@ -1,0 +1,25 @@
+
+
+.p20{
+    padding: 0px 20px !important ;
+}
+a {
+    color: unset;
+    text-decoration: unset;
+}
+@media(min-width: 769.00px){
+    .dd-none{
+        display: none;
+    }
+
+}
+
+@media (max-width: 767.98px) { 
+    .dd-block{
+        display: block;
+        
+    }
+    
+ }
+
+@media (max-width: 575.98px) {  }

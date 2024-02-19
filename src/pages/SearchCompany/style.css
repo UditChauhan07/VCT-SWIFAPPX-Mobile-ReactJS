@@ -1,0 +1,56 @@
+.vCenter {
+    text-align: center;
+    text-align: center;
+    display: flex;
+    margin: auto;
+    align-items: center;
+    height: 100vh;
+}
+    
+
+.logo {
+    text-align: center;
+    margin-bottom:  70px;
+    
+}
+.SearchCompanyText{
+    color: #828282;
+    font-size: 22px;
+    font-weight: 400;
+}
+.rounded {
+    border-radius: 100px !important;
+    background-color: #F0F0F0;
+    height: 50px;
+    border: unset !important;
+}
+.input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #656565;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #F0F0F0 !important;
+    border: unset !important;
+    border-radius: 100px;
+}
+.SubmitBtnStyle{
+    width: 100%;
+    background-color: #8D28DD;
+    color: #fff;
+    height: 50px;
+    border-radius: 100px;
+    font-size: 20px;
+    font-weight: 500;
+    display: grid;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+}
+.mt-20{
+    margin-top: 25px;
+}
