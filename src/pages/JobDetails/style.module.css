@@ -1,0 +1,201 @@
+.JobHolder {
+  padding: 0px 20px;
+}
+.JobHolder h1 {
+  color: #8d28dd;
+  font-size: 22px;
+  font-weight: 500;
+}
+.backArrow path {
+  fill: #fff;
+}
+.backArrow {
+  height: 35px;
+  width: 35px;
+  background-color: #8d28dd;
+  border-radius: 100px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.TopSection {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5%;
+  margin-bottom: 8%;
+  padding: 0 20px;
+}
+.GrayBg {
+  background-color: #f0f0f0;
+  border-radius: 30px 30px 0px 0px;
+  padding: 20px;
+  padding-bottom: 100px;
+}
+.NameWithTasks {
+  display: flex;
+  justify-content: space-between;
+}
+.Completed {
+  background-color: #6f00c5;
+  color: #fff;
+  padding: 5px 10px;
+}
+.PicTaken {
+  background-color: #ffbf00;
+  color: #fff;
+  padding: 5px 10px;
+  text-align: end;
+  width: fit-content;
+  float: right;
+}
+.InnerInfo h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.IconPlusCleaning {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.RegularCleaning {
+  display: flex;
+  justify-content: space-between;
+}
+.formCheckInput {
+  width: 30px;
+  height: 30px;
+}
+.InnerInfo {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+.formCheckInput:checked {
+  background-color: #303030;
+  border-color: #303030;
+  accent-color: #303030;
+  
+}
+
+.formCheck {
+  gap: 15px;
+  display: flex;
+  align-items: center;
+}
+.InnerInfo img {
+  width: 30px;
+  height: 30px;
+}
+.AdHocText {
+  color: #8d28dd;
+  font-style: italic;
+}
+.IconPlusCleaning a {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.PictureShow {
+  border-radius: 10px;
+  overflow: auto;
+  display: -webkit-box;
+  align-items: center;
+  background-size: cover;
+  gap: 20px;
+}
+
+.PictureShow img {
+  border-radius: 10px;
+}
+.PictureStyleInner img {
+  height: 160px;
+  width: 280px;
+}
+
+.PictureStyleInner {
+  padding: 0;
+}
+.picturText {
+  color: #fff;
+  position: relative;
+  bottom: 38px;
+  left: 0px;
+  padding: 5px;
+  background-color: #000000a8;
+  display: flex;
+  justify-content: space-around;
+  border-radius: 0px 0px 10px 10px;
+  align-items: center;
+  font-size: 14px;
+}
+.bottomFixedSection{
+    position: fixed;
+    bottom: 60px;
+    width: 100%;
+    padding: 0 20px;
+
+}
+::after {
+  margin: auto;
+}
+.ExpendSectionTop{
+  display: flex;
+    justify-content: space-between;    
+}
+.ExpendSectionTop img{
+  width: 30%;
+  height: fit-content;
+}
+.Totalpay P{
+  font-size: 14px;
+  text-align: end;
+}
+.StartExAC{
+  font-size: 14px;
+
+}
+.StartExAC .Ex{
+  color: #2F2F2F;
+
+}
+.StartExAC .Ac{
+  color: #FF0000;
+
+}
+.ButtonTimeClock button{
+  background: #7700D4;
+    color: #fff;
+    font-weight: 500;
+    font-size: 18px;
+}
+.ButtonInnerIconText{  
+  gap: 2px;
+  display: flex;
+  align-items: center;
+}
+.TakePicturebutton button{
+  background: #FFBE00;
+    color: #fff;
+    font-weight: 500;
+    font-size: 18px;
+    width: 100%;
+    margin: 10px 0px; 
+
+}
+
+hr {
+  margin: 0.5rem 0;
+}
+
+@media (min-width: 769px) {
+  .ddnone {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .ddblock {
+    display: block;
+  }
+}

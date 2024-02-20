@@ -11,11 +11,18 @@ a {
     .dd-none{
         display: none;
     }
+    .ddnone{
+        display: none;
+    }
 
 }
 
 @media (max-width: 767.98px) { 
     .dd-block{
+        display: block;
+        
+    }
+    .ddblock{
         display: block;
         
     }
