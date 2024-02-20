@@ -9,13 +9,13 @@ const FooterNav = () => {
           <a class="navbar-b" href="/dashboard">
           <img class="img-fluid" src="/assets/Home_icon.png"/>
           </a>
-          <a class="navbar-b" href="#">
+          <a class="navbar-b" href="/history">
           <img class="img-fluid" src="/assets/List-nav.png"/>
           </a>          
-          <a class="navbar-b" href="#">
+          <a class="navbar-b" href="/notification">
           <img class="img-fluid" src="/assets/Notification-bell.png"/> 
           </a>
-          <a class="navbar-b" href="#">
+          <a class="navbar-b" href="/profile">
           <img class="img-fluid" src="/assets/User-pro.png"/> 
           </a>          
         </nav>
