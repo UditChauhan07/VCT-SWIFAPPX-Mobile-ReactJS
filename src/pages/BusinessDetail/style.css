@@ -11,9 +11,9 @@
 .backArrow path {
     fill: #fff;
 }
-svg{
+/* svg{
     transform: rotate(90deg);
-}
+} */
 .CompanyLogo{
     width: 75px;
     height: 35px;
