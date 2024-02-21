@@ -20,8 +20,7 @@
 }
 .rounded {
     border-radius: 100px !important;
-    background-color: #F0F0F0;
-    height: 50px;
+    background-color: #F0F0F0;    
     border: unset !important;
 }
 .input-group-text {
@@ -50,6 +49,7 @@
     margin: auto;
     text-align: center;
     align-items: center;
+    border: 1px solid #8D28DD;
 }
 .mt-20{
     margin-top: 25px;
