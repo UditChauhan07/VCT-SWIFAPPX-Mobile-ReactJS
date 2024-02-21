@@ -183,7 +183,24 @@
     margin: 10px 0px; 
 
 }
-
+.SearchBorder{
+  /* border: 1px solid #6E01C6; */
+  border-radius: 50px;
+}
+.modal-body svg {
+  transform: rotate(0deg);
+}
+.TopSection svg{
+  transform: rotate(90deg);
+}
+.AddCommnet div{
+  background-color: #fff;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 500;
+  margin:20px auto;
+}
 hr {
   margin: 0.5rem 0;
 }

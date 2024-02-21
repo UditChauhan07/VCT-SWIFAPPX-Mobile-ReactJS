@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Select from "react-select";
 
 const JobDetails = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div>
       <div className={` ${Styles.ddnone} ${Styles.ddblock}`}>
@@ -153,7 +161,7 @@ const JobDetails = () => {
           <hr></hr>
           <div className={` ${Styles.RegularCleaning} `}>
             <div className={` ${Styles.IconPlusCleaning} `}>
-              <a href="#">
+              <a variant="primary" onClick={handleShow}>
                 <img className="img-fluid" src="/assets/plus-circle-fill.png" />
                 <p className={`m-0 ${Styles.AdHocText} `}>
                   Add an Ad-hoc items for Above Service
@@ -198,7 +206,7 @@ const JobDetails = () => {
             </div>
           </div>
 
-          <div className={` mb-5 ${Styles.RegularCleaning} `}>
+          <div className={`  ${Styles.RegularCleaning} `}>
             <div className={` ${Styles.IconPlusCleaning} `}>
               <a href="#">
                 <img className="img-fluid" src="/assets/plus-circle-fill.png" />
@@ -208,6 +216,12 @@ const JobDetails = () => {
               </a>
             </div>
           </div>
+          <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
+                    <a href="/remark">
+                      <div >Add Comment</div>
+
+                    </a>
+                  </div>
         </section>
         <section className={` ${Styles.bottomFixedSection} `}>
           <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -249,30 +263,50 @@ const JobDetails = () => {
                   <hr></hr>
                   <div className={` ${Styles.ExpendSectionTop} `}>
                     <div className={` ${Styles.StartExAC} `}>
-                      <p className={`mb-0  ${Styles.Ex} `} >Expected Start: <strong> 02:30pm</strong></p>
-                      <p className={`mb-0  ${Styles.Ac} `}>Actual Start: <strong> 02:30pm</strong></p>
+                      <p className={`mb-0  ${Styles.Ex} `}>
+                        Expected Start: <strong> 02:30pm</strong>
+                      </p>
+                      <p className={`mb-0  ${Styles.Ac} `}>
+                        Actual Start: <strong> 02:30pm</strong>
+                      </p>
                     </div>
                     <div className={` ${Styles.ButtonTimeClock} `}>
                       <button className="btn btn-btn">
                         <div className={` ${Styles.ButtonInnerIconText} `}>
-                        <img className="img-fluid " src="/assets/Stop-icon.png" />
-                        01:37:45
-                        </div> 
+                          <img
+                            className="img-fluid "
+                            src="/assets/Stop-icon.png"
+                          />
+                          01:37:45
+                        </div>
                       </button>
                     </div>
                   </div>
                   <div className={` ${Styles.TakePicturebutton} `}>
-                      <button className="btn btn-btn">
-                        Take Pictures for Work Order
-                      </button>
-
-                    </div>
+                    <button className="btn btn-btn">
+                      Take Pictures for Work Order
+                    </button>
+                  </div>
+                 
                 </div>
               </div>
             </div>
           </div>
         </section>
         <FooterNav></FooterNav>
+        {/* modal */}
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Ad-hoc items to work Order</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Select
+              className={` ${Styles.SearchBorder} `}
+              placeholder="Search items"
+              options={[]}
+            />
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );

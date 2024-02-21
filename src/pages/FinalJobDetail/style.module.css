@@ -15,14 +15,14 @@
 .backArrow path {
     fill: #fff;
 }
-svg{
+.TopSection svg{
     transform: rotate(90deg);
 }
 
 .TopSection {
     display: flex;
     padding: 0 20px;
-    gap: 20px;
+    gap: 15px;
       margin-top: 5%;
     margin-bottom: 8%;
     

@@ -11,7 +11,7 @@
 .backArrow path {
     fill: #fff;
 }
-svg{
+.TopSection svg{
     transform: rotate(90deg);
 }
 .CompanyLogo{
