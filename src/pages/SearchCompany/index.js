@@ -1,24 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { getCompaniesList } from "../../api/company";
+import { getCompanyId } from "../../redux/company/company.actions";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const globalState = useSelector((state) => state.companyModule);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [companiesList, setCompaniesList] = useState([]);
+
+  const companiesListApiCall = async () => {
+    const result = await getCompaniesList();
+    if (result.error) alert("You are offline. Reconnecting...");
+    else setCompaniesList(result.details);
+  };
+
+  useEffect(() => {
+    companiesListApiCall();
+  }, []);
+
+  console.log("globalState", globalState);
+
+  const handleCompanySubmit = () => {
+    if (globalState.company_id) {
+      navigate("/BusinessDetail");
+    } else alert("Pick one company to proceed.");
+  };
+
   return (
     <div className="dd-none dd-block p20">
       <div className="vCenter">
         <div className="w-100">
           <div className="logo ">
-            <img className="img-fluid" src="/assets/Swif-logo.png" />
+            <img className="img-fluid" src="/assets/Swif-logo.png" alt="img" />
           </div>
           <p className="SearchCompanyText">Search Company Name</p>
-          <div class="input-group rounded">
-            <input
-              type="search"
-              class="form-control rounded"
+          <div className="input-group rounded">
+            <Select
+              className="form-control p-0 rounded"
               placeholder="Company Name"
-              aria-label="Search"
-              aria-describedby="search-addon"
+              options={companiesList.map((ele) => ({
+                value: ele.id,
+                label: ele.name,
+              }))}
+              onChange={(option) => {
+                dispatch(getCompanyId(option.value));
+                localStorage.setItem("company_id", option.value);
+              }}
             />
-            <span class="input-group-text border-0" id="search-addon">
+
+            <span className="input-group-text border-0" id="search-addon">
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -34,8 +68,12 @@ const Index = () => {
             </span>
           </div>
           <div className="SubmitButton mt-20">
-            <a href="/BusinessDetail" className="btn btn-btn SubmitBtnStyle">Submit</a>
-            
+            <button
+              className="btn btn-btn SubmitBtnStyle"
+              onClick={handleCompanySubmit}
+            >
+              Submit
+            </button>
           </div>
         </div>
       </div>

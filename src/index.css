@@ -131,3 +131,73 @@ body {
   border-width: 1px;
   box-sizing: border-box;
 }
+.vCenter .css-13cymwt-control{
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: default;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  min-height: 50px;
+  outline: 0!important;
+  position: relative;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
+  background-color: #f0f0f0;
+  border:unset;
+  border-radius: 50px;
+  border-style: unset;
+  border-width: 1px;
+  box-sizing: border-box;
+}
+.vCenter .css-t3ipsp-control {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: default;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  min-height: 50px;
+  outline: 0!important;
+  position: relative;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
+  background-color: #f0f0f0;
+  border:unset;
+  border-radius: 50px;
+  border-style: unset;
+  border-width: 1px;
+  box-sizing: border-box;
+  box-shadow: unset;
+}
+.vCenter .css-1xc3v61-indicatorContainer {    
+  display: none;
+}
+.vCenter .css-1xc3v61-indicatorContainer {
+  display: none;
+}
+.btn:hover {
+  color: unset;
+  backgroundr-color: unset;
+  border-color: unset;
+}
