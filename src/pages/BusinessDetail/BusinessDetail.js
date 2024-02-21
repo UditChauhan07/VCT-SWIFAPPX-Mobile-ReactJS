@@ -96,7 +96,7 @@ const BusinessDetail = () => {
                 <div className="WorkDays">Company Email</div>
               </div>
               <div className="col-6">
-                <div className="weeks">{companyDetails?.email ?? ""}</div>
+                <div className="weeks underline">{companyDetails?.email ?? ""}</div>
               </div>
             </div>
 
@@ -177,11 +177,11 @@ const BusinessDetail = () => {
           <div className="ContactUsText">If you need a services before or after the time availabe please contact us.</div>
         </div>
         <div>
-          {/* <a href="/LoginDetail" className="ConfirmedButton btn btn-btn"> */}
+         
           <button className="ConfirmedButton btn btn-btn" onClick={() => navigate("/LoginDetail")}>
             Confirmed
           </button>
-          {/* </a> */}
+         
         </div>
       </div>
     </div>
