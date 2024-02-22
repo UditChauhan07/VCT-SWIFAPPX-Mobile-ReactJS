@@ -100,3 +100,12 @@
     width: 100%;
     margin: 20px 0px;
 }
+.CompanylogoSection div{
+    width: 50%;
+    align-items: center;
+    display: flex;
+
+}
+.weeks.underline {
+    text-decoration: underline;
+}
