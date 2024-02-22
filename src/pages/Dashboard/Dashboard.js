@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css";
 import FooterNav from "../footer/footerNav";
+import Modal from "react-bootstrap/Modal";
 const Dashboard = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <div className="DashboardBg">
       <div className="dd-none dd-block">
@@ -58,7 +63,7 @@ const Dashboard = () => {
               <div className="FourTaskShow">
                 <div className="Pending">
                   <a className="#">
-                    <div className="YellowBg">3</div>
+                    <div className="YellowBg active">3</div>
                     <p>Pending</p>
                   </a>
                 </div>
@@ -87,10 +92,11 @@ const Dashboard = () => {
           <div className="OrderCreate">
             <a href="/final-job-detail">
               <h2>Celeste Gomez</h2>
+               </a>
               <div className="OrderDetailsInfo">
                 <div className="InnerInfo">
                   <img className="img-fluid" src="/assets/call-mess.png" />
-                  <span>327</span>
+                  <span>9876543210</span>
                 </div>
                 <div className="InnerInfo">
                   <img className="img-fluid" src="/assets/Home_icon.png" />
@@ -115,39 +121,32 @@ const Dashboard = () => {
                 </div>
                 <div className="Bottom-button">
                   <div className="w-40">
-                    <a href="#">
-                      <div className="PurpulBtnClock">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"
-                        />
-                        Start
-                      </div>
-                    </a>
+                    <button variant="primary" onClick={handleShow} className="PurpulBtnClock btn btn-btn">
+                      <img
+                        className="img-fluid"
+                        src="/assets/Clock-white.png"
+                      />
+                      Start
+                    </button>
                   </div>
                   <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"
-                        />
-                      </div>
-                    </a>
+                    <button className="YellowBtn btn btn-btn">
+                      <img className="img-fluid" src="/assets/Clock-Time.png" />
+                    </button>
                   </div>
                   <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
+                    
+                      <div className="YellowBtn btn btn-btn">
                         <img
                           className="img-fluid"
                           src="/assets/Anti-clock.png"
                         />
                       </div>
-                    </a>
+                   
                   </div>
                 </div>
               </div>
-            </a>
+           
           </div>
           <div className="OrderCreate mt-3">
             <a href="/job-details">
@@ -155,7 +154,7 @@ const Dashboard = () => {
               <div className="OrderDetailsInfo">
                 <div className="InnerInfo">
                   <img className="img-fluid" src="/assets/call-mess.png" />
-                  <span>327</span>
+                  <span>978521457</span>
                 </div>
                 <div className="InnerInfo">
                   <img className="img-fluid" src="/assets/Home_icon.png" />
@@ -180,35 +179,35 @@ const Dashboard = () => {
                 </div>
                 <div className="Bottom-button">
                   <div className="w-40">
-                    <a href="#">
-                      <div className="PurpulBtnClock">
+                    
+                      <button className="PurpulBtnClock  btn btn-btn">
                         <img
                           className="img-fluid"
-                          src="/assets/Clock-Time.png"
+                          src="/assets/Clock-white.png"
                         />
                         Start
-                      </div>
-                    </a>
+                      </button>
+                    
                   </div>
                   <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
+                   
+                      <button className="YellowBtn btn btn-btn">
                         <img
                           className="img-fluid"
                           src="/assets/Clock-Time.png"
                         />
-                      </div>
-                    </a>
+                      </button>
+                    
                   </div>
                   <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
+                    
+                      <div className="YellowBtn btn btn-btn">
                         <img
                           className="img-fluid"
                           src="/assets/Anti-clock.png"
                         />
                       </div>
-                    </a>
+                   
                   </div>
                 </div>
               </div>
@@ -216,6 +215,15 @@ const Dashboard = () => {
           </div>
         </div>
         <FooterNav></FooterNav>
+        {/* modal */}
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title> Work Order</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you want to start work order
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );
