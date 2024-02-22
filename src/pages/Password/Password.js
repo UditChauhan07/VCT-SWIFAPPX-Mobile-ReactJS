@@ -1,29 +1,37 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getUserDetails, getUserPassword } from "../../redux/user/user.actions";
+import { getUserDetails, getUserId, getUserPassword } from "../../redux/user/user.actions";
 import { workerLogin } from "../../api/worker";
 
 const Password = () => {
-  const globalState = useSelector((state) => state.userModule);
+  // const globalUserState = useSelector((state) => state.userModule);
+  const globalCompanyState = useSelector((state) => state.companyModule);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [password, setPassword] = useState();
+  const [userName, setUserName] = useState();
 
-  const login = async (userName, password) => {
-    const result = await workerLogin(userName, password);
-    if (result.error) alert("You are offline. Reconnecting...");
-    else {
-      dispatch(getUserDetails(result.details));
-      navigate("/dashboard");
-    }
+  const login = async (userName, password,company_id) => {
+    const result = await workerLogin(userName, password,company_id);
+    console.log("result",result);
+    // if (result.error) alert("You are offline. Reconnecting...");
+    // else {
+
+    //   dispatch(getUserDetails(result.details));
+    //   navigate("/dashboard");
+    // }
   };
   const handleSubmit = () => {
+    dispatch(getUserId(userName));
     dispatch(getUserPassword(password));
-    login(globalState.user_id,password);
+    login(userName,password, globalCompanyState.company_id);
   };
-  const handleChange = (e) => {
+  const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+  };
+  const handleUserChange = (e) => {
+    setUserName(e.target.value);
   };
   return (
     <div>
@@ -35,7 +43,10 @@ const Password = () => {
             </div>
             <p className="SearchCompanyText">Enter Your Login Detail to Access Your Account</p>
             <div className="input-group rounded">
-              <input type="password" className="form-control rounded" placeholder="Password" aria-label="Search" aria-describedby="search-addon" onChange={handleChange} />
+              <input type="search" className="form-control rounded" placeholder="Enter User ID" aria-label="Search" aria-describedby="search-addon" onChange={handleUserChange} />
+            </div>
+            <div className="input-group rounded mt-4">
+              <input type="password" className="form-control rounded" placeholder="Password" aria-label="Search" aria-describedby="search-addon" onChange={handlePasswordChange} />
             </div>
             <div className="SubmitButton mt-20">
               {/* <a href="/dashboard" className="btn btn-btn SubmitBtnStyle">

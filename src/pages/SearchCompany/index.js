@@ -67,14 +67,14 @@ const Index = () => {
               </svg>
             </span>
           </div>
-          <div className="SubmitButton mt-20">
+          {globalState.company_id?<div className="SubmitButton mt-20">
             <button
               className="btn btn-btn SubmitBtnStyle"
               onClick={handleCompanySubmit}
             >
               Submit
             </button>
-          </div>
+          </div>:null}
         </div>
       </div>
     </div>
