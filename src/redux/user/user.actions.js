@@ -5,3 +5,9 @@ export const getUserId=(id)=>{
         payload:id,
     }
 }
+export const getUserPassword=(password)=>{
+    return{
+        type: actionTypes.getUserPassword,
+        payload:password,
+    }
+}

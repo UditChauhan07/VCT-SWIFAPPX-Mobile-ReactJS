@@ -23,9 +23,7 @@ const BusinessDetail = () => {
   useEffect(() => {
     companiesListApiCall();
   }, []);
-  console.log((companyDetails));
-  console.log((companyDetails?.certificationString
-    ));
+  // console.log((companyDetails));
   return (
     <div className="dd-none dd-block">
       <div className="TopSection">

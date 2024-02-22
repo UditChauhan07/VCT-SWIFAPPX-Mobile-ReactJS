@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getUserPassword } from '../../redux/user/user.actions';
 
 const Password = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [userName, setUserName] = useState();
+  const handleNext = () => {
+    dispatch(getUserPassword(userName));
+    navigate("/password");
+  };
+  const handleChange = (e) => {
+    setUserName(e.target.value);
+  };
     return (
         <div>
              <div className="dd-none dd-block p20">
