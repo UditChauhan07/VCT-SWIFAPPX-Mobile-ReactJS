@@ -11,3 +11,9 @@ export const getUserPassword=(password)=>{
         payload:password,
     }
 }
+export const getUserDetails=(details)=>{
+    return{
+        type: actionTypes.getUserDetails,
+        payload:details,
+    }
+}
