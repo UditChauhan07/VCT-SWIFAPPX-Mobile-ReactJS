@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getUserId } from "../../redux/user/user.actions";
 
 const LoginDetail = () => {
   const navigate = useNavigate();
-  const dispatch=useDispatch();
-  
+  const dispatch = useDispatch();
+  const [userName, setUserName] = useState();
   const handleNext = () => {
+    dispatch(getUserId(userName));
     navigate("/password");
+  };
+  const handleChange = (e) => {
+    setUserName(e.target.value);
   };
   return (
     <div>
@@ -18,8 +23,8 @@ const LoginDetail = () => {
               <img className="img-fluid" src="/assets/dx-Icon.png" alt="" />
             </div>
             <p className="SearchCompanyText">Enter Your Login Detail to Access Your Account</p>
-            <div class="input-group rounded">
-              <input type="search" class="form-control rounded" placeholder="Enter User ID" aria-label="Search" aria-describedby="search-addon" />
+            <div className="input-group rounded">
+              <input type="search" className="form-control rounded" placeholder="Enter User ID" aria-label="Search" aria-describedby="search-addon" onChange={handleChange} />
             </div>
             <div className="SubmitButton mt-20">
               {/* <a href="/password" className="btn btn-btn SubmitBtnStyle">

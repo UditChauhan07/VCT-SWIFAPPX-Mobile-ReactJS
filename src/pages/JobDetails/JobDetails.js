@@ -23,7 +23,7 @@ const JobDetails = () => {
                 viewBox="0 0 20 20"
                 aria-hidden="true"
                 focusable="false"
-                class="css-8mmkcg"
+                className="css-8mmkcg"
               >
                 <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
               </svg>
@@ -49,13 +49,13 @@ const JobDetails = () => {
             </div>
           </div>
           <div className={` ${Styles.InnerInfo} `}>
-            <img class="img-fluid" src="/assets/Home_icon.png" />
+            <img className="img-fluid" src="/assets/Home_icon.png" />
             <span>24, smomen road,inner circle, Montana street singapore</span>
           </div>
         </section>
         <section className={` ${Styles.GrayBg} `}>
           <div className={` ${Styles.InnerInfo} `}>
-            <img class="img-fluid" src="/assets/Read-icon.png" />
+            <img className="img-fluid" src="/assets/Read-icon.png" />
             <h2>Penthouse Cleaning</h2>
           </div>
           <hr></hr>
@@ -65,8 +65,8 @@ const JobDetails = () => {
               <p className="m-0">Regular Cleaning</p>
             </div>
             <div className={` ${Styles.IconPlusCleaning} `}>
-              <div class="form-group">
-                <select class="form-control" id="sel1">
+              <div className="form-group">
+                <select className="form-control" id="sel1">
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -87,14 +87,14 @@ const JobDetails = () => {
                   value=""
                   id="flexCheckDefault"
                 />
-                <label class="form-check-label" for="flexCheckDefault">
+                <label className="form-check-label" for="flexCheckDefault">
                   Fan Cleaning
                 </label>
               </div>
             </div>
             <div className={` ${Styles.IconPlusCleaning} `}>
-              <div class="form-group">
-                <select class="form-control" id="sel1">
+              <div className="form-group">
+                <select className="form-control" id="sel1">
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -115,14 +115,14 @@ const JobDetails = () => {
                   value=""
                   id="flexCheckDefault"
                 />
-                <label class="form-check-label" for="flexCheckDefault">
+                <label className="form-check-label" for="flexCheckDefault">
                   Window Cleaning
                 </label>
               </div>
             </div>
             <div className={` ${Styles.IconPlusCleaning} `}>
-              <div class="form-group">
-                <select class="form-control" id="sel1">
+              <div className="form-group">
+                <select className="form-control" id="sel1">
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -136,7 +136,7 @@ const JobDetails = () => {
           <br></br>
 
           <div className={` ${Styles.InnerInfo} `}>
-            <img class="img-fluid" src="/assets/Three-list.png" />
+            <img className="img-fluid" src="/assets/Three-list.png" />
             <h2>Ad-Hoc Service Items as Requested</h2>
           </div>
           <hr></hr>
@@ -146,8 +146,8 @@ const JobDetails = () => {
               <p className="m-0">Utensil Cleaning</p>
             </div>
             <div className={` ${Styles.IconPlusCleaning} `}>
-              <div class="form-group">
-                <select class="form-control" id="sel1">
+              <div className="form-group">
+                <select className="form-control" id="sel1">
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -172,18 +172,18 @@ const JobDetails = () => {
           <br></br>
           <hr></hr>
           <div className={` ${Styles.InnerInfo} `}>
-            <img class="img-fluid" src="/assets/picture.png" />
+            <img className="img-fluid" src="/assets/picture.png" />
             <h2>Pictures for the Work Order</h2>
           </div>
           <div className={` ${Styles.PictureShow} `}>
             <div className={` ${Styles.PictureStyleInner} `}>
-              <img class="img-fluid" src="/assets/click01.png" />
+              <img className="img-fluid" src="/assets/click01.png" />
               <div className={` ${Styles.picturText} `}>
                 03:35pm on 26 may 2024
                 <span>
                   <button className="btn btn-btn p-0">
                     <img
-                      class="img-fluid w-100 h-100"
+                      className="img-fluid w-100 h-100"
                       src="/assets/Close-pic.png"
                     />
                   </button>
@@ -191,13 +191,13 @@ const JobDetails = () => {
               </div>
             </div>
             <div className={` ${Styles.PictureStyleInner} `}>
-              <img class="img-fluid" src="/assets/click01.png" />
+              <img className="img-fluid" src="/assets/click01.png" />
               <div className={` ${Styles.picturText} `}>
                 03:35pm on 26 may 2024
                 <span>
                   <button className="btn btn-btn p-0">
                     <img
-                      class="img-fluid w-100 h-100"
+                      className="img-fluid w-100 h-100"
                       src="/assets/Close-pic.png"
                     />
                   </button>
@@ -224,11 +224,11 @@ const JobDetails = () => {
                   </div>
         </section>
         <section className={` ${Styles.bottomFixedSection} `}>
-          <div class="accordion accordion-flush" id="accordionFlushExample">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="flush-headingOne">
+          <div className="accordion accordion-flush" id="accordionFlushExample">
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="flush-headingOne">
                 <button
-                  class="accordion-button collapsed"
+                  className="accordion-button collapsed"
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#flush-collapseOne"
@@ -238,11 +238,11 @@ const JobDetails = () => {
               </h2>
               <div
                 id="flush-collapseOne"
-                class="accordion-collapse collapse"
+                className="accordion-collapse collapse"
                 aria-labelledby="flush-headingOne"
                 data-bs-parent="#accordionFlushExample"
               >
-                <div class="accordion-body">
+                <div className="accordion-body">
                   <div className={` ${Styles.ExpendSectionTop} `}>
                     <img className="img-fluid " src="/assets/hand-cru.png" />
                     <div className={` ${Styles.Totalpay} `}>
