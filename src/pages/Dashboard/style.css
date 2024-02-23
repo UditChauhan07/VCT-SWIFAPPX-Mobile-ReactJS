@@ -50,7 +50,7 @@ font-weight: 200;
     border: 2px solid #E9BC25;
     color: #E9BC25;
     font-size: 70px;
-    font-weight: 600;
+    font-weight: 400;
     line-height: normal;
     justify-content: center;
     height: 80px;
@@ -224,6 +224,29 @@ font-weight: 200;
 .Active{
     background-color: #DEDEDE;
     border-radius: 100px;
+}
+.Pending {
+   list-style: none;
+}
+.active .YellowBg{
+    background-color:  #E9BC25;
+    color: #fff;
+    font-weight: 600;
+}
+.active .RedBg{
+    background-color:  #F83E2F;
+    color: #fff;
+    font-weight: 600;
+}
+.active .GreenBg{
+    background-color:  #3BC30B;
+    color: #fff;
+    font-weight: 600;
+}
+.active .BlueBg{
+    background-color:  #1B63B5;
+    color: #fff;
+    font-weight: 600;
 }
 @media (max-width: 400px) { 
     .YellowBg ,.BlueBg, .GreenBg, .RedBg{       
