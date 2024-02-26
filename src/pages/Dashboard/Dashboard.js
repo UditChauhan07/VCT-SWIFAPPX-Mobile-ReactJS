@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import "./style.css";
 import FooterNav from "../footer/footerNav";
-<<<<<<< HEAD
-import { useSelector } from "react-redux";
-const Dashboard = () => {
-  const globalState=useSelector((state)=>state.userModule)
-=======
 import Modal from "react-bootstrap/Modal";
 
 const Dashboard = () => {
@@ -20,7 +15,6 @@ const Dashboard = () => {
   const handleClick = (index) => {
     setActiveIndex(index);
   };
->>>>>>> swif/staging
   return (
     <div className="DashboardBg">
       <div className="dd-none dd-block">
@@ -119,67 +113,6 @@ const Dashboard = () => {
           <div className="OrderCreate">
             <a href="/final-job-detail">
               <h2>Celeste Gomez</h2>
-<<<<<<< HEAD
-              <div className="OrderDetailsInfo">
-                <div className="InnerInfo">
-                  <img className="img-fluid" alt="img" src="/assets/call-mess.png" />
-                  <span>327</span>
-                </div>
-                <div className="InnerInfo">
-                  <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
-                  <span>
-                    Quia Ispum Voluptat, Officiis accusantium Veniam sit dolor,
-                    Ispum autem dicta fu,Vanuatu, 69833
-                  </span>
-                </div>
-                <div className="InnerInfo">
-                  <img className="img-fluid" alt="img" src="/assets/Read-icon.png" />
-                  <span>Debra Melton</span>
-                </div>
-                <div className="ClockOrRead">
-                  <div className="InnerInfo w-50">
-                    <img className="img-fluid" alt="img" src="/assets/Clock.png" />
-                    <span>09:00 am</span>
-                  </div>
-                  <div className="InnerInfo w-50">
-                    <img className="img-fluid" alt="img" src="/assets/Reading.png" />
-                    <span>PRHU20202290027</span>
-                  </div>
-                </div>
-                <div className="Bottom-button">
-                  <div className="w-40">
-                    <a href="#">
-                      <div className="PurpulBtnClock">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"
-                          alt=""
-                        />
-                        Start
-                      </div>
-                    </a>
-                  </div>
-                  <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"
-                          alt=""
-                        />
-                      </div>
-                    </a>
-                  </div>
-                  <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Anti-clock.png"  alt=""
-                        />
-                      </div>
-                    </a>
-=======
             </a>
             <div className="OrderDetailsInfo">
               <div className="InnerInfo">
@@ -226,7 +159,6 @@ const Dashboard = () => {
                 <div className="w-30">
                   <div className="YellowBtn btn btn-btn">
                     <img className="img-fluid" src="/assets/Anti-clock.png" />
->>>>>>> swif/staging
                   </div>
                 </div>
               </div>
@@ -237,13 +169,8 @@ const Dashboard = () => {
               <h2>Xavier Smith</h2>
               <div className="OrderDetailsInfo">
                 <div className="InnerInfo">
-<<<<<<< HEAD
-                  <img className="img-fluid" alt="img" src="/assets/call-mess.png" />
-                  <span>327</span>
-=======
                   <img className="img-fluid" src="/assets/call-mess.png" />
                   <span>978521457</span>
->>>>>>> swif/staging
                 </div>
                 <div className="InnerInfo">
                   <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
@@ -268,55 +195,23 @@ const Dashboard = () => {
                 </div>
                 <div className="Bottom-button">
                   <div className="w-40">
-<<<<<<< HEAD
-                    <a href="#">
-                      <div className="PurpulBtnClock">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"  alt=""
-                        />
-                        Start
-                      </div>
-                    </a>
-                  </div>
-                  <div className="w-30">
-                    <a href="#">
-                      <div className="YellowBtn">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Clock-Time.png"  alt=""
-                        />
-                      </div>
-                    </a>
-                  </div>
-                  <div className="w-30">
-                    <a href="#" >
-                      <div className="YellowBtn">
-                        <img
-                          className="img-fluid"
-                          src="/assets/Anti-clock.png"  alt=""
-                        />
-                      </div>
-                    </a>
-=======
                     <button className="PurpulBtnClock  btn btn-btn">
                       <img
                         className="img-fluid"
-                        src="/assets/Clock-white.png"
+                        src="/assets/Clock-white.png" alt=""
                       />
                       Start
                     </button>
                   </div>
                   <div className="w-30">
                     <button className="YellowBtn btn btn-btn">
-                      <img className="img-fluid" src="/assets/Clock-Time.png" />
+                      <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
                     </button>
                   </div>
                   <div className="w-30">
                     <div className="YellowBtn btn btn-btn">
-                      <img className="img-fluid" src="/assets/Anti-clock.png" />
+                      <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
                     </div>
->>>>>>> swif/staging
                   </div>
                 </div>
               </div>

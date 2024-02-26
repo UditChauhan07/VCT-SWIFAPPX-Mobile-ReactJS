@@ -15,12 +15,12 @@ const Password = () => {
   const login = async (userName, password,company_id) => {
     const result = await workerLogin(userName, password,company_id);
     console.log("result",result);
-    // if (result.error) alert("You are offline. Reconnecting...");
-    // else {
+    if (result.error) alert("You are offline. Reconnecting...");
+    else {
 
-    //   dispatch(getUserDetails(result.details));
-    //   navigate("/dashboard");
-    // }
+      dispatch(getUserDetails(result.details));
+      navigate("/dashboard");
+    }
   };
   const handleSubmit = () => {
     dispatch(getUserId(userName));
