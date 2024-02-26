@@ -12,8 +12,7 @@ export const workerLogin = async (userName, password, company_id) => {
     .catch((error) => {
       // Handle error
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
+        // The request was made and the server responded with a status code that falls out of the range of 2xx
         console.log("Error response status:", error.response.status);
         console.log("Error response data:", error.response.data);
       } else if (error.request) {
