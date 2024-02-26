@@ -30,6 +30,7 @@ function App() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/notification' element={<Notification />}/>
           <Route path='/remark' element={<Remarks />}/>
+          {/* <Route path='/loading' element={<Loading />}/> */}
         </Routes>      
     </BrowserRouter>
   );

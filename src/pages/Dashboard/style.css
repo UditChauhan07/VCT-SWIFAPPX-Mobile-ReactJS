@@ -124,12 +124,16 @@ font-weight: 200;
     width: 80px;
 
 }
+.WorkOrderSectionTop{
+    margin-bottom: 88px;
+}
 .OrderCreate{
     background-color: #fff;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 10px;
-    margin-top: 88px;
+    margin-top: 20px;
     padding: 20px;
+    cursor: pointer;
 }
 .OrderCreate h2{
     color: #000;
@@ -203,6 +207,7 @@ font-weight: 200;
     padding: 12px;
     height: 65px;
     width: 65px;
+    cursor: pointer;
 
 }
 .DayDate p{
@@ -223,7 +228,7 @@ font-weight: 200;
 }
 .Active{
     background-color: #DEDEDE;
-    border-radius: 100px;
+    border-radius: 50%;
 }
 .Pending {
    list-style: none;
