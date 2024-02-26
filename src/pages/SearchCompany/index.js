@@ -46,6 +46,10 @@ const Index = () => {
                 value: ele.id,
                 label: ele.name,
               }))}
+              value={{
+                value: globalState.company_id,
+                label: companiesList.filter((ele)=>ele.id===globalState.company_id)[0].name,
+              }}
               onChange={(option) => {
                 // console.log(option);
                 dispatch(getCompanyId(option.value));

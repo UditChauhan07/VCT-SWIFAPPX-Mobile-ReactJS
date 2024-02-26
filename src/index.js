@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import { store, persistor } from "./redux/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import Loading from "./components/Loading";
 
 store.subscribe(() => console.log("state", store.getState()));
 
@@ -14,7 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<Loading/>} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>
