@@ -12,12 +12,10 @@ const Password = () => {
   const [password, setPassword] = useState();
   const [userName, setUserName] = useState();
 
-  const login = async (userName, password,company_id) => {
-    const result = await workerLogin(userName, password,company_id);
-    console.log("result",result);
-    if (result.error) alert("You are offline. Reconnecting...");
+  const login = async (userName, password, company_id) => {
+    const result = await workerLogin(userName, password, company_id);
+    if (result.error) alert(result.message);
     else {
-
       dispatch(getUserDetails(result.details));
       navigate("/dashboard");
     }
@@ -25,8 +23,9 @@ const Password = () => {
   const handleSubmit = () => {
     dispatch(getUserId(userName));
     dispatch(getUserPassword(password));
-    login(userName,password, globalCompanyState.company_id);
+    login(userName, password, globalCompanyState.company_id);
   };
+  
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
