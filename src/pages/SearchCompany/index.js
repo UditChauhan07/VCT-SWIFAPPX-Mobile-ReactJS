@@ -3,7 +3,7 @@ import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getCompaniesList } from "../../api/company";
-import { getCompanyId } from "../../redux/company/company.actions";
+import { getCompanyId, topBarPermission } from "../../redux/company/company.actions";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -46,9 +46,15 @@ const Index = () => {
                 value: ele.id,
                 label: ele.name,
               }))}
+              value={{
+                value: globalState.company_id,
+                label: companiesList.filter((ele)=>ele.id===globalState.company_id)[0].name,
+              }}
               onChange={(option) => {
+                // console.log(option);
                 dispatch(getCompanyId(option.value));
-                localStorage.setItem("company_id", option.value);
+                dispatch(topBarPermission(companiesList.filter((ele)=>ele.id===option.value)[0].topBarPermission))
+                // localStorage.setItem("company_id", option.value);
               }}
             />
 
@@ -67,14 +73,14 @@ const Index = () => {
               </svg>
             </span>
           </div>
-          <div className="SubmitButton mt-20">
+          {globalState.company_id?<div className="SubmitButton mt-20">
             <button
               className="btn btn-btn SubmitBtnStyle"
               onClick={handleCompanySubmit}
             >
               Submit
             </button>
-          </div>
+          </div>:null}
         </div>
       </div>
     </div>

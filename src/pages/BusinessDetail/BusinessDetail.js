@@ -21,7 +21,10 @@ const BusinessDetail = () => {
   };
 
   useEffect(() => {
+    if(globalState.company_id)
     companiesListApiCall();
+  else
+  navigate("/");
   }, []);
   // console.log((companyDetails));
   return (
@@ -72,12 +75,12 @@ const BusinessDetail = () => {
               <div className="col-6">
                 <div className="weeks">
                   {companyDetails?.workingDay?.monday ? "MON" : ""}
-                  {companyDetails?.workingDay?.tuesday ?companyDetails?.workingDay?.monday ? ", TUE" : "TUE" : "" }
-                  {companyDetails?.workingDay?.wednesday ? ", WED" : ""}
-                  {companyDetails?.workingDay?.thursday ? ", THR" : ""}
-                  {companyDetails?.workingDay?.friday ? ", FRI" : ""}
-                  {companyDetails?.workingDay?.saturday ? ", SAT" : ""}
-                  {companyDetails?.workingDay?.sunday ? ", SUN" : ""}
+                  {companyDetails?.workingDay?.tuesday ? " TUE" : "" }
+                  {companyDetails?.workingDay?.wednesday ? " WED" : ""}
+                  {companyDetails?.workingDay?.thursday ? " THR" : ""}
+                  {companyDetails?.workingDay?.friday ? " FRI" : ""}
+                  {companyDetails?.workingDay?.saturday ? " SAT" : ""}
+                  {companyDetails?.workingDay?.sunday ? " SUN" : ""}
                 </div>
               </div>
             </div>
@@ -176,7 +179,7 @@ const BusinessDetail = () => {
         </div>
         <div>
          
-          <button className="ConfirmedButton btn btn-btn" onClick={() => navigate("/LoginDetail")}>
+          <button className="ConfirmedButton btn btn-btn" onClick={() => navigate("/password")}>
             Confirmed
           </button>
          
