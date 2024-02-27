@@ -173,76 +173,78 @@ const Dashboard = () => {
                   <h1>Your Work Orders for</h1>
                 </div>
                 {/* calender dates */}
-                {companyGlobalState.topBarPermission ? (
-                  <div className="calenderWeek">
-                    <div className="WeeklyCal">
-                      <div
-                        className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
-                        id={getDateAfterNoOfDays(0).substring(8)}
-                        onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
-                      >
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
-                      </div>
-                      <div
-                        className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
-                        id={getDateAfterNoOfDays(1).substring(8)}
-                        onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
-                      >
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
-                      </div>
+
+                <div className="calenderWeek">
+                  <div className="WeeklyCal">
+                    <div
+                      className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
+                      id={getDateAfterNoOfDays(0).substring(8)}
+                      onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
+                    >
+                      <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
+                      <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
+                    </div>
+                    {companyGlobalState.topBarPermission ? (
+                      <>
+                        <div
+                          className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
+                          id={getDateAfterNoOfDays(1).substring(8)}
+                          onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
+                        >
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                  <div className="FourTaskShow">
+                    <div className="Pending">
+                      <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
+                        <div className="YellowBg">{pendingWO}</div>
+                        <p>Pending</p>
+                      </li>
                     </div>
 
-                    <div className="FourTaskShow">
-                      <div className="Pending">
-                        <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
-                          <div className="YellowBg">{pendingWO}</div>
-                          <p>Pending</p>
-                        </li>
-                      </div>
-
-                      <div className="Pending">
-                        <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
-                          <div className="RedBg">{cancelWO}</div>
-                          <p>Cancel</p>
-                        </li>
-                      </div>
-                      <div className="Pending">
-                        <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
-                          <div className="GreenBg">{completeWO}</div>
-                          <p>Completed</p>
-                        </li>
-                      </div>
-                      <div className="Pending">
-                        <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
-                          <div className="BlueBg">{totalWO}</div>
-                          <p>Total</p>
-                        </li>
-                      </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
+                        <div className="RedBg">{cancelWO}</div>
+                        <p>Cancel</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
+                        <div className="GreenBg">{completeWO}</div>
+                        <p>Completed</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
+                        <div className="BlueBg">{totalWO}</div>
+                        <p>Total</p>
+                      </li>
                     </div>
                   </div>
-                ) : null}
+                </div>
               </div>
               {/* cards of WO */}
               {listOfWO.length ? (
