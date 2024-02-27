@@ -184,6 +184,9 @@ font-weight: 200;
 .w-30{
     width: 30%;
 }
+.h-50{
+    height: 50%;
+}
 .YellowBtn{
     background-color: #FFBE00;
     color: #fff;
@@ -232,6 +235,7 @@ font-weight: 200;
 }
 .Pending {
    list-style: none;
+   cursor: pointer;
 }
 .active .YellowBg{
     background-color:  #E9BC25;
