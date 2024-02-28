@@ -3,7 +3,7 @@ import "./style.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import { useSelector } from "react-redux";
-import { workOrderList } from "../../api/worker";
+import { workOrderList, workOrderWorkersStart } from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 const Dashboard = () => {
@@ -14,8 +14,7 @@ const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [originalApiWOs, setOriginalApiWOs] = useState([]);
   const [listOfWO, setListOfWO] = useState([]);
-  const [startWOId, setStartWOId] = useState(null);
-  const [startWO, setStartWO] = useState(false);
+  const [startWOId, setStartWOId] = useState([]);
   const [loading, setLoading] = useState(false);
   const today = new Date();
   const navigate = useNavigate();
@@ -37,19 +36,36 @@ const Dashboard = () => {
 
   const handleClose = () => {
     setShow(false);
-    setStartWOId(null);
+    startWOId.pop();
+    setStartWOId([...startWOId]);
   };
   const handleShow = (id) => {
-    setStartWOId(id);
+    startWOId.push(id);
+    setStartWOId([...startWOId]);
     setShow(true);
     // navigate("/dashboard");
   };
+  const getCurrentTime = () => {
+    const hours = String(today.getHours()).padStart(2, "0");
+    const minutes = String(today.getMinutes()).padStart(2, "0");
+    const seconds = String(today.getSeconds()).padStart(2, "0");
+
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   const handleModalYes = () => {
-    setStartWO(startWOId);
+    console.log("yes");
+    if (userGlobalState.details.token) {
+      workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState.details.token);
+    } else {
+      alert("Token expired. Login Again");
+    }
+    startWOId.pop();
+    setStartWOId([...startWOId]);
     setShow(false);
   };
 
-  // Tabbing
+  // Tabbing of counting of status of tasks
   const handleClick = (index) => {
     setActiveIndex(index);
     // setActiveTab(index);
@@ -69,8 +85,18 @@ const Dashboard = () => {
       setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
     }
   };
+  const workOrderWorkersStartAPICall = async (wo_id, time, token) => {
+    setLoading(true);
+    const result = await workOrderWorkersStart(wo_id, time, token);
+    setLoading(false);
+    if (result.error) alert(result.message);
+    else {
+      console.log(result);
+      setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      // window.location.reload();
+    }
+  };
   useEffect(() => {
-    console.log(activeIndex);
     switch (activeIndex) {
       case 0:
         setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
@@ -124,7 +150,6 @@ const Dashboard = () => {
   const pendingWO = useMemo(() => {
     return originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2).length;
   }, [originalApiWOs]);
-
   const cancelWO = useMemo(() => {
     return originalApiWOs?.filter((ele) => ele.workstatus === 5).length;
   }, [originalApiWOs]);
@@ -172,77 +197,80 @@ const Dashboard = () => {
                 <div className="OrderFor text-center">
                   <h1>Your Work Orders for</h1>
                 </div>
-                {/* calender dates */}
-                {companyGlobalState.topBarPermission ? (
-                  <div className="calenderWeek">
-                    <div className="WeeklyCal">
-                      <div
-                        className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
-                        id={getDateAfterNoOfDays(0).substring(8)}
-                        onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
-                      >
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
-                      </div>
-                      <div
-                        className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
-                        id={getDateAfterNoOfDays(1).substring(8)}
-                        onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
-                      >
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
-                      </div>
+
+                <div className="calenderWeek">
+                  {/* calender dates */}
+                  <div className="WeeklyCal">
+                    <div
+                      className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
+                      id={getDateAfterNoOfDays(0).substring(8)}
+                      onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
+                    >
+                      <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
+                      <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
+                    </div>
+                    {companyGlobalState.topBarPermission ? (
+                      <>
+                        <div
+                          className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
+                          id={getDateAfterNoOfDays(1).substring(8)}
+                          onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
+                        >
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                  {/* counting of status of tasks */}
+                  <div className="FourTaskShow">
+                    <div className="Pending">
+                      <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
+                        <div className="YellowBg">{pendingWO}</div>
+                        <p>Pending</p>
+                      </li>
                     </div>
 
-                    <div className="FourTaskShow">
-                      <div className="Pending">
-                        <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
-                          <div className="YellowBg">{pendingWO}</div>
-                          <p>Pending</p>
-                        </li>
-                      </div>
-
-                      <div className="Pending">
-                        <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
-                          <div className="RedBg">{cancelWO}</div>
-                          <p>Cancel</p>
-                        </li>
-                      </div>
-                      <div className="Pending">
-                        <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
-                          <div className="GreenBg">{completeWO}</div>
-                          <p>Completed</p>
-                        </li>
-                      </div>
-                      <div className="Pending">
-                        <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
-                          <div className="BlueBg">{totalWO}</div>
-                          <p>Total</p>
-                        </li>
-                      </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
+                        <div className="RedBg">{cancelWO}</div>
+                        <p>Cancel</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
+                        <div className="GreenBg">{completeWO}</div>
+                        <p>Completed</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
+                        <div className="BlueBg">{totalWO}</div>
+                        <p>Total</p>
+                      </li>
                     </div>
                   </div>
-                ) : null}
+                </div>
               </div>
               {/* cards of WO */}
               {listOfWO.length ? (
@@ -277,33 +305,34 @@ const Dashboard = () => {
                                 <span>{ele?.contractNumber ?? "N/A"}</span>
                               </div>
                             </div>
-                            {ele?.workstatus === 1 && ele?.start_date === getDateAfterNoOfDays(0) ? (
+                            {ele?.start_date === getDateAfterNoOfDays(0) ? (
                               <>
                                 <div className="Bottom-button">
                                   <div className="w-40">
                                     <button variant="primary" onClick={() => handleShow(ele?.id)} className="PurpulBtnClock btn btn-btn">
                                       <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                                      {startWO && ele?.id === startWOId ? (ele?.is_leader ? "Stop" : "Check Out") : ele?.is_leader ? "Start" : "Check In"}
+                                      {ele?.workstatus === 1 ? (ele?.is_leader ? "Start" : "Check In") : null}
+                                      {ele?.workstatus === 2 ? (ele?.is_leader ? "Stop" : "Check Out") : null}
                                     </button>
                                   </div>
-                                  {startWO ? null : (
-                                    <>
-                                      {ele?.is_leader ? (
-                                        <div className="w-30">
-                                          <button className="YellowBtn btn btn-btn">
-                                            <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
-                                          </button>
+                                  {/* {startWO ? null : ( */}
+                                  <>
+                                    {ele?.is_leader && ele?.workstatus === 1 ? (
+                                      <div className="w-30">
+                                        <button className="YellowBtn btn btn-btn">
+                                          <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                                        </button>
+                                      </div>
+                                    ) : null}
+                                    {ele?.is_leader && ele?.workstatus === 1 ? (
+                                      <div className="w-30">
+                                        <div className="YellowBtn btn btn-btn">
+                                          <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
                                         </div>
-                                      ) : null}
-                                      {ele?.is_leader ? (
-                                        <div className="w-30">
-                                          <div className="YellowBtn btn btn-btn">
-                                            <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
-                                          </div>
-                                        </div>
-                                      ) : null}
-                                    </>
-                                  )}
+                                      </div>
+                                    ) : null}
+                                  </>
+                                  {/* )} */}
                                 </div>
                               </>
                             ) : null}
@@ -323,7 +352,6 @@ const Dashboard = () => {
             </div>
             <FooterNav></FooterNav>
             {/* modal */}
-            {/* {console.log(show)} */}
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title> Work Order</Modal.Title>
