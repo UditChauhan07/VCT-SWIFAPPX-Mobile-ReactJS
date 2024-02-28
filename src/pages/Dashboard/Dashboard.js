@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { workOrderList, workOrderWorkersStart } from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
+import { getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -18,15 +19,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const today = new Date();
   const navigate = useNavigate();
-  const getDateAfterNoOfDays = (noOfDays) => {
-    const dateAfterSevenDays = new Date(today);
-    dateAfterSevenDays.setDate(today.getDate() + noOfDays);
-    const year = dateAfterSevenDays.getFullYear();
-    const month = String(dateAfterSevenDays.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const day = String(dateAfterSevenDays.getDate()).padStart(2, "0");
-    // Return the date in "YYYY-MM-DD" format
-    return `${year}-${month}-${day}`;
-  };
   const getDayOfWeek = (dateString) => {
     const date = new Date(dateString);
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -45,14 +37,6 @@ const Dashboard = () => {
     setShow(true);
     // navigate("/dashboard");
   };
-  const getCurrentTime = () => {
-    const hours = String(today.getHours()).padStart(2, "0");
-    const minutes = String(today.getMinutes()).padStart(2, "0");
-    const seconds = String(today.getSeconds()).padStart(2, "0");
-
-    return `${hours}:${minutes}:${seconds}`;
-  };
-
   const handleModalYes = () => {
     console.log("yes");
     if (userGlobalState.details.token) {
@@ -91,7 +75,8 @@ const Dashboard = () => {
     setLoading(false);
     if (result.error) alert(result.message);
     else {
-      console.log(result);
+      // console.log(result);
+      setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
       // window.location.reload();
     }
@@ -278,7 +263,7 @@ const Dashboard = () => {
                   return (
                     <>
                       <div className="OrderCreate">
-                        {/* <div onClick={() => navigate("/final-job-detail")}> */}
+                        {/* <div onClick={() => navigate("/job-details")}> */}
                         <div>
                           <h2>{ele?.customer_name ?? "N/A"}</h2>
 
