@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import "./style.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { workOrderList, workOrderWorkersStart } from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
+import { getWorkerOrderDetail } from "../../redux/user/user.actions";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const today = new Date();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getDayOfWeek = (dateString) => {
     const date = new Date(dateString);
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -172,7 +174,6 @@ const Dashboard = () => {
   return (
     <>
       {loading ? (
-
         <Loading />
       ) : (
         <div className="DashboardBg">
@@ -278,8 +279,12 @@ const Dashboard = () => {
                   return (
                     <>
                       <div className="OrderCreate">
-                        {/* <div onClick={() => navigate("/job-details")}> */}
-                        <div>
+                        <div
+                          onClick={() => {
+                            dispatch(getWorkerOrderDetail(ele.id));
+                            navigate("/job-details");
+                          }}
+                        >
                           <h2>{ele?.customer_name ?? "N/A"}</h2>
 
                           <div className="OrderDetailsInfo">
@@ -305,13 +310,14 @@ const Dashboard = () => {
                                 <span>{ele?.contractNumber ?? "N/A"}</span>
                               </div>
                             </div>
-                            {ele?.start_date === getDateAfterNoOfDays(0) && (ele?.workstatus === 1 ||ele?.workstatus === 2) ? (
+                            {ele?.start_date === getDateAfterNoOfDays(0) && (ele?.workstatus === 1 || ele?.workstatus === 2) ? (
                               <>
                                 <div className="Bottom-button">
                                   <div className="w-40">
                                     <button
                                       variant="primary"
-                                      onClick={() => {
+                                      onClick={(e) => {
+                                        e.stopPropagation();
                                         if (ele?.is_leader) {
                                           handleLeaderShow(ele?.id);
                                         } else {
@@ -366,24 +372,24 @@ const Dashboard = () => {
                 <>
                   {leaders.length ? (
                     <>
-                      {leaders.map((ele) => 
-                      ele.workers.map((item, index)=>{
-                        return (
-                          <div class=" formCheck d-flex gap-2" key={index}>
-                            <input
-                              class=" formCheckInput "
-                              type="checkbox"
-                              id="flexCheckDefault01"
-                              value=""
-                              onChange={(e)=>console.log(e.target.checked)}
-                              // onClick={(e)=>console.log(e.target.checked)}
-                            />
-                            <label class="form-check-label" for="flexCheckDefault01">
-                              {item?.name}
-                            </label>
-                          </div>
-                        );
-                      })
+                      {leaders.map((ele) =>
+                        ele.workers.map((item, index) => {
+                          return (
+                            <div class=" formCheck d-flex gap-2" key={index}>
+                              <input
+                                class=" formCheckInput "
+                                type="checkbox"
+                                id="flexCheckDefault01"
+                                value=""
+                                onChange={(e) => console.log(e.target.checked)}
+                                // onClick={(e)=>console.log(e.target.checked)}
+                              />
+                              <label class="form-check-label" for="flexCheckDefault01">
+                                {item?.name}
+                              </label>
+                            </div>
+                          );
+                        })
                       )}
                     </>
                   ) : null}
