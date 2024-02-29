@@ -17,3 +17,9 @@ export const getUserDetails=(details)=>{
         payload:details,
     }
 }
+export const getWorkerOrderDetail=(id)=>{
+    return{
+        type: actionTypes.getWorkerOrderDetail,
+        payload:id,
+    }
+}
