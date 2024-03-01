@@ -3,11 +3,12 @@ import "./style.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { workOrderList, workOrderWorkersStart } from "../../api/worker";
+import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
 import { getWorkerOrderDetail } from "../../redux/user/user.actions";
+import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -28,7 +29,9 @@ const Dashboard = () => {
     return days[date.getDay()];
   };
   const [activeDate, setActiveDate] = useState(getDateAfterNoOfDays(0));
-
+  const initialValues = {
+    workers: [],
+  };
   const handleClose = () => {
     setShow(false);
     startWOId.pop();
@@ -39,7 +42,9 @@ const Dashboard = () => {
     setStartWOId([...startWOId]);
     setShow(true);
   };
-  const handleLeaderClose = () => {
+  const handleLeaderClose = (e) => {
+    console.log("staopped");
+    e.stopPropagation();
     setLeaderModalShow(false);
     startWOId.pop();
     setStartWOId([...startWOId]);
@@ -60,10 +65,14 @@ const Dashboard = () => {
     setStartWOId([...startWOId]);
     setShow(false);
   };
-  const handleLeaderModalYes = () => {
+  const handleLeaderModalYes = async (values) => {
     console.log("Leader yes");
     if (userGlobalState.details.token) {
-      // workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState.details.token);
+      console.log(values.workers);
+      const result=await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState.details.token, values.workers);
+      setOriginalApiWOs(result?.data);
+      setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      
     } else {
       alert("Token expired. Login Again");
     }
@@ -370,38 +379,38 @@ const Dashboard = () => {
               </Modal.Header>
               <Modal.Body>
                 <>
+                    <Formik initialValues={initialValues} onSubmit={handleLeaderModalYes}>
+                    {({ isSubmitting }) => (
+
+                      <Form>
                   {leaders.length ? (
-                    <>
-                      {leaders.map((ele) =>
-                        ele.workers.map((item, index) => {
-                          return (
-                            <div class=" formCheck d-flex gap-2" key={index}>
-                              <input
-                                class=" formCheckInput "
-                                type="checkbox"
-                                id="flexCheckDefault01"
-                                value=""
-                                onChange={(e) => console.log(e.target.checked)}
-                                // onClick={(e)=>console.log(e.target.checked)}
-                              />
-                              <label class="form-check-label" for="flexCheckDefault01">
-                                {item?.name}
-                              </label>
-                            </div>
-                          );
-                        })
-                      )}
-                    </>
+                        <>
+                          {leaders.map((ele) =>
+                            ele.workers.map((item, index) => {
+                              return (
+                                <div className="formCheck d-flex gap-2" key={index}>
+                                  <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
+                                  <label className="form-check-label" htmlFor={`${item.name}`}>
+                                    {item?.name}
+                                  </label>
+                                </div>
+                              );
+                            })
+                          )}
+                        </>
                   ) : null}
 
                   <div className="d-flex gap-5 mt-3">
-                    <button variant="primary" onClick={handleLeaderModalYes} className="PurpulBtnClock w-30 btn btn-btn">
+                    <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
                       Submit
                     </button>
-                    <button variant="primary" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
+                    <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
                       Cancel
                     </button>
                   </div>
+                  </Form>
+                  )}
+                </Formik>
                 </>
               </Modal.Body>
             </Modal>
