@@ -7,20 +7,23 @@ import Select from "react-select";
 import Loading from "../../components/Loading";
 import { workerOrderDetail } from "../../api/worker";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const JobDetails = () => {
+  const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
   console.log(userGlobalState, companyGlobalState);
-  const navigate = useNavigate();
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
+  const [show, setShow] = useState(false);
+  
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setShow(true);
+  }
 
-  // API Call
+  // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     setLoading(true);
     const result = await workerOrderDetail(id, token);
@@ -63,7 +66,7 @@ const JobDetails = () => {
               <h1>{originalApiWODetail?.customer_name ?? "N/A"}</h1>
               <div className={` ${Styles.TaskCompleted} `}>
                 <div className={` ${Styles.Completed} `}>0 Tasks Completed</div>
-                <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length??"0"} Picture Taken</div>
+                <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
               </div>
             </div>
             {/* customer_contact_number */}
@@ -229,15 +232,18 @@ const JobDetails = () => {
                 })}
               </>
             ) : null}
-            <div className={` ${Styles.RegularCleaning} `}>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <a variant="primary" onClick={handleShow}>
-                  <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                  <p className={`m-0 ${Styles.AdHocText} `}>Add an Ad-hoc items for Above Service</p>
-                </a>
+            {originalApiWODetail?.is_leader ? (
+              <div className={` ${Styles.RegularCleaning} `}>
+                <div className={` ${Styles.IconPlusCleaning} `}>
+                  <div variant="primary" onClick={handleShow}>
+                    <p className={`m-0 ${Styles.AdHocText} `}>
+                    <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />    
+                      Add an Ad-hoc items for Above Service</p>
+                  </div>
+                </div>
+                <br></br>
               </div>
-            </div>
-            <br></br>
+            ) : null}
             <hr></hr>
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/picture.png" />
@@ -277,9 +283,9 @@ const JobDetails = () => {
               </div>
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
-              <a href="/remark">
+              <Link to="/remark">
                 <div>Add Comment</div>
-              </a>
+              </Link>
             </div>
           </section>
           <section className={` ${Styles.bottomFixedSection} `}>
