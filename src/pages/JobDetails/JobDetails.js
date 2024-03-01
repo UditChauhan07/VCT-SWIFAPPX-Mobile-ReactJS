@@ -215,7 +215,6 @@ const JobDetails = () => {
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
                             <select className="form-control" id="sel1" value={ele?.quantity}>
-                              {/* {Array.from()} */}
                               {arrayOf20numbers.map((number) => (
                                 <option value={number}>{number}</option>
                               ))}
