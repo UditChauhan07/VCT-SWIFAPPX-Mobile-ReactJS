@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Styles from "./style.module.css";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getCommentList } from "../../api/worker";
+import { addComment, getCommentList } from "../../api/worker";
 import Loading from "../../components/Loading";
 import { formatDateString } from "../../utils/format";
-import { Field, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 
 function Remarks() {
   const navigate = useNavigate();
@@ -14,15 +14,18 @@ function Remarks() {
   console.log(userGlobalState, companyGlobalState);
   const [loading, setLoading] = useState(false);
   const [originalApiCommentDetails, setOriginalApiCommentDetails] = useState([]);
-  
+  const initialValues = {
+    comment: "",
+  };
   // API Call for details
   const getCommentListAPICall = async (id, token) => {
     setLoading(true);
     const result = await getCommentList(id, token);
     console.log("result", result);
     setLoading(false);
-    if (result.error) alert(result.message);
-    else {
+    if (result.error) {
+      navigate("/");
+    } else {
       setOriginalApiCommentDetails(result.Commentlist);
     }
   };
@@ -34,12 +37,13 @@ function Remarks() {
     }
   }, []);
   console.log(originalApiCommentDetails);
-
-  // Example usage:
-  // const inputDateString = "2024-03-01 13:02:40";
-  // const formattedDateString = formatDateString(inputDateString);
-  // console.log(formattedDateString); // Output: 1 Mar 2024 at 1:02 pm
-
+  const handleAddComment = async (values) => {
+    setLoading(true);
+    const result = await addComment(userGlobalState.workerOrderId, values.comment, userGlobalState.details.token);
+    if (!result.error) {
+      getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
+    }
+  };
   return (
     <>
       {loading ? (
@@ -66,50 +70,51 @@ function Remarks() {
               </div>
               <h3>
                 {userGlobalState.workerOrderId}
-                <span>: 24, smomen road, Inner circle, Montana, Singapopore smomen road,</span>
+                <span>: {userGlobalState.address}</span>
               </h3>
             </div>
           </div>
 
           <div className={Styles.ControlMain}>
-            {originalApiCommentDetails.length
-              ? originalApiCommentDetails.map((ele) => {
-                  return (
-                    <>
-                      {ele?.commenter_type === "Admin" ? (
-                        <div className={`${Styles.RemarksBoxPink} ${Styles.RemarksBoxGray}`}>
-                          <h2>
-                            {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
-                          </h2>
-                          <p>{ele?.description}</p>
-                        </div>
-                      ) : (
-                        <div className={Styles.RemarksBoxPink}>
-                          <h2>
-                            {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
-                          </h2>
-                          <p>{ele?.description}</p>
-                        </div>
-                      )}
-                    </>
-                  );
-                })
-              : null}
+            {originalApiCommentDetails.length ? (
+              originalApiCommentDetails.map((ele) => {
+                return (
+                  <>
+                    {ele?.commenter_type === "Admin" ? (
+                      <div className={`${Styles.RemarksBoxPink} ${Styles.RemarksBoxGray}`}>
+                        <h2>
+                          {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
+                        </h2>
+                        <p>{ele?.description}</p>
+                      </div>
+                    ) : (
+                      <div className={Styles.RemarksBoxPink}>
+                        <h2>
+                          {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
+                        </h2>
+                        <p>{ele?.description}</p>
+                      </div>
+                    )}
+                  </>
+                );
+              })
+            ) : (
+              <div className={Styles.NoData}>No Comments.</div>
+            )}
 
-            <div className={Styles.BottomChatFixed}>
-              <div className={Styles.Chatsend}>
-                {/* <Formik>
-                  <Form>
-                <Field type="text" placeholder="Message" />
-                    
-                  </Form>
-                </Formik> */}
-                <input type="text" placeholder="Message" />
-                <button onClick={() => {}}>
-                  <img src="/assets/SendIcon.png" alt="img" />
-                </button>
-              </div>
-            </div>
+            <Formik initialValues={initialValues} onSubmit={handleAddComment}>
+              <Form>
+                <div className={Styles.BottomChatFixed}>
+                  <div className={Styles.Chatsend}>
+                    <Field type="text" placeholder="Message" name="comment" />
+                    <button type="submit">
+                      <img src="/assets/SendIcon.png" alt="img" />
+                    </button>
+                    {/* <input type="text" placeholder="Message" /> */}
+                  </div>
+                </div>
+              </Form>
+            </Formik>
           </div>
         </div>
       )}

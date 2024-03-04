@@ -49,6 +49,11 @@ const Dashboard = () => {
     startWOId.pop();
     setStartWOId([...startWOId]);
   };
+  const handleLeaderCloseCross = (e) => {
+    setLeaderModalShow(false);
+    startWOId.pop();
+    setStartWOId([...startWOId]);
+  };
   // function getCurrentTime() {
   //   const currentDate = new Date();
   //   const currentTime = currentDate.toLocaleTimeString();
@@ -100,7 +105,9 @@ const Dashboard = () => {
     setLoading(true);
     const result = await workOrderList(day, month, year, token);
     setLoading(false);
-    if (result.error) alert(result.message);
+    if (result.error) {
+      navigate("/")
+    }
     else {
       setOriginalApiWOs(result.list);
       setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
@@ -377,7 +384,7 @@ const Dashboard = () => {
             </div>
             <FooterNav></FooterNav>
             {/* modal for leader */}
-            <Modal show={leaderModalShow} onHide={handleLeaderClose}>
+            <Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
               <Modal.Header closeButton>
                 <Modal.Title> Worker List</Modal.Title>
               </Modal.Header>
