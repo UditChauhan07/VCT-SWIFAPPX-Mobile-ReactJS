@@ -5,6 +5,7 @@ export const userInitialState = {
   password: null,
   details: null,
   workerOrderId: null,
+  address:null,
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -29,6 +30,11 @@ export const userModule = (state = userInitialState, action) => {
         ...state,
         workerOrderId: action.payload,
       };
+      case actionTypes.getAddress:
+        return {
+          ...state,
+          address: action.payload,
+        };
     default:
       return state;
   }

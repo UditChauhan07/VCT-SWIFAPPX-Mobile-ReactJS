@@ -49,13 +49,26 @@ const Dashboard = () => {
     startWOId.pop();
     setStartWOId([...startWOId]);
   };
+  const handleLeaderCloseCross = (e) => {
+    setLeaderModalShow(false);
+    startWOId.pop();
+    setStartWOId([...startWOId]);
+  };
+  // function getCurrentTime() {
+  //   const currentDate = new Date();
+  //   const currentTime = currentDate.toLocaleTimeString();
+  //   return currentTime;
+  // }
+  
+  // // Example usage:
+  // const currentTime = getCurrentTime();
+  // console.log("kk",currentTime); 
   const handleLeaderShow = (id) => {
     startWOId.push(id);
     setStartWOId([...startWOId]);
     setLeaderModalShow(true);
   };
   const handleModalYes = () => {
-    console.log("yes");
     if (userGlobalState.details.token) {
       workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState.details.token);
     } else {
@@ -66,13 +79,10 @@ const Dashboard = () => {
     setShow(false);
   };
   const handleLeaderModalYes = async (values) => {
-    console.log("Leader yes");
     if (userGlobalState.details.token) {
-      console.log(values.workers);
       const result=await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState.details.token, values.workers);
       setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
-      
     } else {
       alert("Token expired. Login Again");
     }
@@ -95,7 +105,9 @@ const Dashboard = () => {
     setLoading(true);
     const result = await workOrderList(day, month, year, token);
     setLoading(false);
-    if (result.error) alert(result.message);
+    if (result.error) {
+      navigate("/")
+    }
     else {
       setOriginalApiWOs(result.list);
       setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
@@ -107,10 +119,8 @@ const Dashboard = () => {
     setLoading(false);
     if (result.error) alert(result.message);
     else {
-      // console.log(result);
       setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
-      // window.location.reload();
     }
   };
   useEffect(() => {
@@ -202,6 +212,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+            {/* cards with counting  of  WO's and their details*/}
             <div className="GrayBg">
               <div className="WorkOrderSectionTop">
                 <div className="OrderFor text-center">
@@ -373,7 +384,7 @@ const Dashboard = () => {
             </div>
             <FooterNav></FooterNav>
             {/* modal for leader */}
-            <Modal show={leaderModalShow} onHide={handleLeaderClose}>
+            <Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
               <Modal.Header closeButton>
                 <Modal.Title> Worker List</Modal.Title>
               </Modal.Header>

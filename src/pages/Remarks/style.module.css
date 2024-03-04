@@ -43,7 +43,7 @@
     background-color: #F0F0F0;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    height: 80vh;
+    min-height: 80vh;
 }
 .TopSection svg{
     transform: rotate(90deg);
@@ -80,7 +80,12 @@
     gap: 10px ;
     margin: 20px 0;
 }
-
+.NoData{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
 .Chatsend input{
     width: 80%;
     border: 0.5px solid  #ECECEC;
