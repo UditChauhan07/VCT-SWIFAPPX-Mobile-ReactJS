@@ -90,6 +90,10 @@
 .AdHocText {
   color: #8d28dd;
   font-style: italic;
+  cursor: pointer;
+  display: flex;
+  gap:  15px;
+  align-items: center;
 }
 .IconPlusCleaning a {
   display: flex;

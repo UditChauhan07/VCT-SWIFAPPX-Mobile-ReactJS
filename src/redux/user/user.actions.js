@@ -23,3 +23,9 @@ export const getWorkerOrderDetail=(id)=>{
         payload:id,
     }
 }
+export const getAddress=(address)=>{
+    return{
+        type: actionTypes.getAddress,
+        payload:address,
+    }
+}
