@@ -54,7 +54,6 @@ const Index = () => {
                 // console.log(option);
                 dispatch(getCompanyId(option.value));
                 dispatch(topBarPermission(companiesList.filter((ele)=>ele.id===option.value)[0].topBarPermission))
-                // localStorage.setItem("company_id", option.value);
               }}
             />
 

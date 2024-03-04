@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { getCommentList, workerOrderDetail } from "../../api/worker";
+import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAddress } from "../../redux/user/user.actions";
@@ -13,7 +12,6 @@ import { formatDateString } from "../../utils/format";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -21,21 +19,17 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [show, setShow] = useState(false);
-  const [originalApiCommentDetails, setOriginalApiCommentDetails] = useState([]);
-
+  const [taskCounting, setTaskCounting] = useState(0);
+  const [serviceNames, setServiceNames] = useState([]);
+  const [adhocItemsList, setAdhocItemsList] = useState([]);
+  const [selectedAdhocItemList, setSelectedAdhocItemList] = useState([]);
+  const [adhocModalShow, setAdhocModalShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
   };
-  const getCommentListAPICall = async (id, token) => {
-    setLoading(true);
-    const result = await getCommentList(id, token);
-    setLoading(false);
-    if (result.error) {
-      navigate("/");
-    } else {
-      setOriginalApiCommentDetails(result.Commentlist);
-    }
+  const handleAdhocModalClose = () => {
+    setAdhocModalShow(false);
   };
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -45,25 +39,60 @@ const JobDetails = () => {
     if (result.error) alert(result.message);
     else {
       setOriginalApiWODetail(result.detail);
+      getAdhocItemsListApiCall(result.detail.ad_hoc_catid, userGlobalState.details.token);
       const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
         result.detail?.country ? `, ${result.detail?.country}` : ""
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
-
+      if (result.detail?.workstatusname === "In Progress") {
+        setTaskCounting(taskCounting + 1);
+      }
       dispatch(getAddress(address));
     }
   };
+  // API Call for getting Adhoc Items List
+  const getAdhocItemsListApiCall = async (id, token) => {
+    setLoading(true);
+    const result = await getAdhocItemsList(id, token);
+    setLoading(false);
+    if (result.error) alert(result.message);
+    else {
+      setAdhocItemsList(result.content);
+    }
+  };
+
   useEffect(() => {
     if (userGlobalState.details.token) {
       getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
-      getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
     } else {
       navigate("/");
     }
   }, []);
-  console.log("originalApiWODetail", originalApiWODetail, originalApiCommentDetails);
+
+  console.log("originalApiWODetail", originalApiWODetail, adhocItemsList);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
-  const lastComment = originalApiCommentDetails[originalApiCommentDetails.length - 1];
-  console.log(lastComment);
+
+  const handleServiceQuantityChange = (e) => {
+    setServiceNames((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleAdhocItemChange = (option) => {
+    console.log(option);
+    setSelectedAdhocItemList((prev) => {
+      if (selectedAdhocItemList.includes(option.value)) {
+
+      } else {
+        return [...prev, option.value];
+      }
+    });
+    setTimeout(() => {
+      setShow(false);
+      setAdhocModalShow(true);
+      setTaskCounting(taskCounting + 1);
+    }, 400);
+  };
+  console.log(serviceNames, selectedAdhocItemList);
   return (
     <>
       {loading ? (
@@ -86,7 +115,7 @@ const JobDetails = () => {
             <div className={` ${Styles.NameWithTasks} `}>
               <h1>{originalApiWODetail?.customer_name ?? "N/A"}</h1>
               <div className={` ${Styles.TaskCompleted} `}>
-                <div className={` ${Styles.Completed} `}>0 Tasks Completed</div>
+                <div className={` ${Styles.Completed} `}>{taskCounting} Tasks Completed</div>
                 <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
               </div>
             </div>
@@ -154,7 +183,7 @@ const JobDetails = () => {
                   </div>
                   <div className={` ${Styles.IconPlusCleaning} `}>
                     <p className="m-0">
-                      {originalApiWODetail?.adjustment_type === "addition" ? "+" : "-"}
+                      {originalApiWODetail?.adjustment_type === "addition" ? "+ " : "- "}
                       {Number(originalApiWODetail?.adjustment_value).toFixed(2) ?? "0"}
                     </p>
                   </div>
@@ -164,28 +193,34 @@ const JobDetails = () => {
             {/* tasklist */}
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
-              ? originalApiWODetail?.task_list?.task?.map((ele) => {
+              ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
                   return (
                     <>
-                      <div className={` ${Styles.RegularCleaning} `}>
+                      <div className={` ${Styles.RegularCleaning} `} key={index}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
+                          {/* service names with checkboxes */}
                           <div className={` ${Styles.formCheck} `}>
-                            {/* <input className={` ${Styles.formCheckInput} `} type="checkbox" value="" id="flexCheckDefault" /> */}
-                            <label className="form-check-label" for="flexCheckDefault">
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
+                              <input className={`${Styles.formCheckInput}`} type="checkbox" value={`${ele?.name}`} id={index} />
+                            ) : null}
+                            <label className="form-check-label" htmlFor={index}>
                               {ele?.name ?? "NA"}
                             </label>
                           </div>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {/* <select className="form-control" id="sel1">
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select> */}
-                            <p className="m-0">{ele?.quantity}</p>
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
+                              <select className="form-control" value={ele?.quantity} onChange={handleServiceQuantityChange} name={ele?.id}>
+                                {arrayOf20numbers.map((number) => (
+                                  <option value={number} name={ele?.id}>
+                                    {number}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <p className="m-0">{ele?.quantity}</p>
+                            )}
                           </div>
                           <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
                         </div>
@@ -223,27 +258,25 @@ const JobDetails = () => {
               <img className="img-fluid" alt="img" src="/assets/Three-list.png" />
               <h2>Ad-Hoc Service Items as Requested</h2>
             </div>
-            {originalApiWODetail?.ad_hoc_items?.sub_items?.length ? (
+            {selectedAdhocItemList?.length ? (
               <>
-                {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {
+                {selectedAdhocItemList?.map((ele) => {
                   return (
                     <>
-                      <hr></hr>
-
                       <div className={` ${Styles.RegularCleaning} `}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <img className="img-fluid" alt="img" src="/assets/x-circle.png" />
-                          <p className="m-0">{ele?.name ?? ""}</p>
+                          {/* <p className="m-0">{ele?.name ?? ""}</p> */}
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            <select className="form-control" id="sel1" value={ele?.quantity}>
+                            {/* <select className="form-control" id="sel1" value={ele?.quantity}>
                               {arrayOf20numbers.map((number) => (
                                 <option value={number}>{number}</option>
                               ))}
-                            </select>
+                            </select> */}
                           </div>
-                          <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+                          {/* <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p> */}
                         </div>
                       </div>
                       <hr></hr>
@@ -252,7 +285,7 @@ const JobDetails = () => {
                 })}
               </>
             ) : null}
-            {originalApiWODetail?.is_leader ? (
+            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
               <div className={` ${Styles.RegularCleaning} `}>
                 <div className={` ${Styles.IconPlusCleaning} `}>
                   <div variant="primary" onClick={handleShow}>
@@ -305,24 +338,17 @@ const JobDetails = () => {
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
               <Link to="/remark">
-                {originalApiCommentDetails.length ? (
-                  <>
-                    {lastComment?.commenter_type === "Admin" ? (
-                      <div className={`${Styles.RemarksBoxPink} ${Styles.RemarksBoxGray}`}>
-                        <h6>
-                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
-                        </h6>
-                        <p>{lastComment?.description}</p>
-                      </div>
-                    ) : (
+                {originalApiWODetail?.workordercommentlist?.length ? (
+                  originalApiWODetail?.workordercommentlist?.map((ele) => {
+                    return (
                       <div className={Styles.RemarksBoxPink}>
                         <h6>
-                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
+                          {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
                         </h6>
-                        <p>{lastComment?.description}</p>
+                        <p>{ele?.description}</p>
                       </div>
-                    )}
-                  </>
+                    );
+                  })
                 ) : (
                   <div>Add Comment</div>
                 )}
@@ -395,11 +421,34 @@ const JobDetails = () => {
               <Modal.Title>Add Ad-hoc items to work Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Select className={` ${Styles.SearchBorder} `} placeholder="Search items" options={[]} />
+              <Select
+                className={` ${Styles.SearchBorder} `}
+                placeholder="Search items"
+                options={adhocItemsList.map((ele) => ({
+                  value: ele?.id,
+                  label: ele?.name,
+                }))}
+                onChange={handleAdhocItemChange}
+              />
             </Modal.Body>
           </Modal>
         </div>
       )}
+      {adhocModalShow ? (
+        <Modal show={adhocModalShow} onHide={handleAdhocModalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title> Alert</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Task added Successfully.
+            <div className="d-flex gap-5 mt-3">
+              <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
+                OK
+              </button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      ) : null}
     </>
   );
 };
