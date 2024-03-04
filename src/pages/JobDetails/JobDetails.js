@@ -5,41 +5,65 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { workerOrderDetail } from "../../api/worker";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { getCommentList, workerOrderDetail } from "../../api/worker";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { getAddress } from "../../redux/user/user.actions";
+import { formatDateString } from "../../utils/format";
 
 const JobDetails = () => {
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
   console.log(userGlobalState, companyGlobalState);
-  const navigate = useNavigate();
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
+  const [show, setShow] = useState(false);
+  const [originalApiCommentDetails, setOriginalApiCommentDetails] = useState([]);
 
-  // API Call
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setShow(true);
+  };
+  const getCommentListAPICall = async (id, token) => {
+    setLoading(true);
+    const result = await getCommentList(id, token);
+    setLoading(false);
+    if (result.error) {
+      navigate("/");
+    } else {
+      setOriginalApiCommentDetails(result.Commentlist);
+    }
+  };
+  // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     setLoading(true);
     const result = await workerOrderDetail(id, token);
-
     setLoading(false);
     if (result.error) alert(result.message);
     else {
       setOriginalApiWODetail(result.detail);
+      const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
+        result.detail?.country ? `, ${result.detail?.country}` : ""
+      }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
+
+      dispatch(getAddress(address));
     }
   };
   useEffect(() => {
     if (userGlobalState.details.token) {
       getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
+      getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
     } else {
       navigate("/");
     }
   }, []);
-  console.log("originalApiWODetail", originalApiWODetail);
+  console.log("originalApiWODetail", originalApiWODetail, originalApiCommentDetails);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
+  const lastComment = originalApiCommentDetails[originalApiCommentDetails.length - 1];
+  console.log(lastComment);
   return (
     <>
       {loading ? (
@@ -63,7 +87,7 @@ const JobDetails = () => {
               <h1>{originalApiWODetail?.customer_name ?? "N/A"}</h1>
               <div className={` ${Styles.TaskCompleted} `}>
                 <div className={` ${Styles.Completed} `}>0 Tasks Completed</div>
-                <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length??"0"} Picture Taken</div>
+                <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
               </div>
             </div>
             {/* customer_contact_number */}
@@ -80,7 +104,6 @@ const JobDetails = () => {
                 {originalApiWODetail?.block}
                 {originalApiWODetail?.street ? `, ${originalApiWODetail?.street}` : null}
                 {originalApiWODetail?.unit ? `, ${originalApiWODetail?.unit}` : null}
-                {originalApiWODetail?.country ? `, ${originalApiWODetail?.country}` : null}
                 {originalApiWODetail?.country ? `, ${originalApiWODetail?.country}` : null}
                 {originalApiWODetail?.zip ? `, ${originalApiWODetail?.zip}` : null}
               </span>
@@ -229,15 +252,19 @@ const JobDetails = () => {
                 })}
               </>
             ) : null}
-            <div className={` ${Styles.RegularCleaning} `}>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <a variant="primary" onClick={handleShow}>
-                  <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                  <p className={`m-0 ${Styles.AdHocText} `}>Add an Ad-hoc items for Above Service</p>
-                </a>
+            {originalApiWODetail?.is_leader ? (
+              <div className={` ${Styles.RegularCleaning} `}>
+                <div className={` ${Styles.IconPlusCleaning} `}>
+                  <div variant="primary" onClick={handleShow}>
+                    <p className={`m-0 ${Styles.AdHocText} `}>
+                      <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
+                      Add an Ad-hoc items for Above Service
+                    </p>
+                  </div>
+                </div>
+                <br></br>
               </div>
-            </div>
-            <br></br>
+            ) : null}
             <hr></hr>
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/picture.png" />
@@ -277,9 +304,29 @@ const JobDetails = () => {
               </div>
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
-              <a href="/remark">
-                <div>Add Comment</div>
-              </a>
+              <Link to="/remark">
+                {originalApiCommentDetails.length ? (
+                  <>
+                    {lastComment?.commenter_type === "Admin" ? (
+                      <div className={`${Styles.RemarksBoxPink} ${Styles.RemarksBoxGray}`}>
+                        <h6>
+                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
+                        </h6>
+                        <p>{lastComment?.description}</p>
+                      </div>
+                    ) : (
+                      <div className={Styles.RemarksBoxPink}>
+                        <h6>
+                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
+                        </h6>
+                        <p>{lastComment?.description}</p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div>Add Comment</div>
+                )}
+              </Link>
             </div>
           </section>
           <section className={` ${Styles.bottomFixedSection} `}>
