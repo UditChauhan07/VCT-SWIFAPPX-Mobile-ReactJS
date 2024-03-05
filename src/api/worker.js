@@ -158,7 +158,7 @@ export const addComment= async (id, comment, accessToken) => {
 export const getAdhocItemsList= async (id, accessToken) => {
   try {
     const response = await axios.post(`${live}/wxAdHocItems`, { ad_hoc_catid: `${id}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {

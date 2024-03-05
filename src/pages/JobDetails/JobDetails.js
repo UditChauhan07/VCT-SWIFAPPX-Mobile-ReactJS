@@ -7,7 +7,7 @@ import Loading from "../../components/Loading";
 import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getAddress } from "../../redux/user/user.actions";
+import { getAddress, removalOfAdhocItems, selectedAdhocItems, updationOfAdhocItems } from "../../redux/user/user.actions";
 import { formatDateString } from "../../utils/format";
 
 const JobDetails = () => {
@@ -15,7 +15,7 @@ const JobDetails = () => {
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState, companyGlobalState);
+  console.log(userGlobalState.adhocItems);
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [show, setShow] = useState(false);
@@ -24,12 +24,25 @@ const JobDetails = () => {
   const [adhocItemsList, setAdhocItemsList] = useState([]);
   const [selectedAdhocItemList, setSelectedAdhocItemList] = useState([]);
   const [adhocModalShow, setAdhocModalShow] = useState(false);
+  const [quantityModalShow, setQuantityModalShow] = useState(false);
+  const [quantitySelector, setQuantitySelector] = useState(false);
+  const [alertForSameItem, setAlertForSameItem] = useState(false);
+  const [activeAdhocItem, setActiveAdhocItem]=useState();
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
   };
   const handleAdhocModalClose = () => {
     setAdhocModalShow(false);
+  };
+  const handleAlertForSameItem = () => {
+    setAlertForSameItem(false);
+  };
+  const handleQuantityModalShow = () => {
+    setQuantityModalShow(false);
+  };
+  const handleQuantitySelectorClose = () => {
+    setQuantitySelector(false);
   };
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -68,7 +81,7 @@ const JobDetails = () => {
     }
   }, []);
 
-  console.log("originalApiWODetail", originalApiWODetail, adhocItemsList);
+  // console.log("originalApiWODetail", originalApiWODetail, adhocItemsList);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
 
   const handleServiceQuantityChange = (e) => {
@@ -78,21 +91,36 @@ const JobDetails = () => {
     }));
   };
   const handleAdhocItemChange = (option) => {
-    console.log(option);
+    // console.log(option);
     setSelectedAdhocItemList((prev) => {
       if (selectedAdhocItemList.includes(option.value)) {
-
+        setAlertForSameItem(true);
+        setShow(false);
+        return [...prev];
       } else {
+        dispatch(selectedAdhocItems(option.value, 1));
+        setTimeout(() => {
+          setShow(false);
+          setAdhocModalShow(true);
+          setTaskCounting(taskCounting + 1);
+        }, 200);
         return [...prev, option.value];
       }
     });
-    setTimeout(() => {
-      setShow(false);
-      setAdhocModalShow(true);
-      setTaskCounting(taskCounting + 1);
-    }, 400);
   };
-  console.log(serviceNames, selectedAdhocItemList);
+
+  const handleRemoveSelectedAdhocItem = (id) => {
+    setSelectedAdhocItemList(selectedAdhocItemList.filter((item) => item !== id));
+    dispatch(removalOfAdhocItems(id))
+  };
+  const handleQuantitySelectorChange = (option) => {
+    console.log(option);
+    console.log(activeAdhocItem);
+    setQuantitySelector(false);
+    dispatch(updationOfAdhocItems(activeAdhocItem, option.value));
+
+  };
+  // console.log(serviceNames, selectedAdhocItemList);
   return (
     <>
       {loading ? (
@@ -141,7 +169,7 @@ const JobDetails = () => {
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
               <span>
-                {originalApiWODetail?.leader?.name ? `${originalApiWODetail?.leader?.name} (TL)` : null}
+                {originalApiWODetail?.leader?.name ? <strong>{`${originalApiWODetail?.leader?.name} (TL)`}</strong> : null}
                 {originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null}
               </span>
             </div>
@@ -258,25 +286,31 @@ const JobDetails = () => {
               <img className="img-fluid" alt="img" src="/assets/Three-list.png" />
               <h2>Ad-Hoc Service Items as Requested</h2>
             </div>
+            {/* selected adhoc items */}
             {selectedAdhocItemList?.length ? (
               <>
                 {selectedAdhocItemList?.map((ele) => {
+                  const filteredData = adhocItemsList.filter((item) => item.id === ele)[0];
                   return (
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
-                          <img className="img-fluid" alt="img" src="/assets/x-circle.png" />
-                          {/* <p className="m-0">{ele?.name ?? ""}</p> */}
+                          <img className="img-fluid" style={{ cursor: "pointer" }} alt="img" src="/assets/x-circle.png" onClick={() => handleRemoveSelectedAdhocItem(ele)} />
+                          <p className="m-0">{filteredData?.name}</p>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {/* <select className="form-control" id="sel1" value={ele?.quantity}>
-                              {arrayOf20numbers.map((number) => (
-                                <option value={number}>{number}</option>
-                              ))}
-                            </select> */}
+                            <button
+                              className="btn btn-light bg-white"
+                              onClick={() => {
+                                setActiveAdhocItem(ele)
+                                setQuantitySelector(true);
+                              }}
+                            >
+                              {userGlobalState.adhocItems.filter((item) => item.id === ele)?.[0]?.["quantity"]}
+                            </button>
                           </div>
-                          {/* <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p> */}
+                          <p className="m-0">${Number(filteredData?.price * 1).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -345,7 +379,7 @@ const JobDetails = () => {
                         <h6>
                           {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
                         </h6>
-                        <p>{ele?.description}</p>
+                        <p style={{ fontWeight: "400" }}>{ele?.description}</p>
                       </div>
                     );
                   })
@@ -415,10 +449,10 @@ const JobDetails = () => {
             </div>
           </section>
           <FooterNav></FooterNav>
-          {/* modal */}
+          {/* modal for Add Ad-hoc items to work Order */}
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Add Ad-hoc items to work Order</Modal.Title>
+              <Modal.Title>Add Ad-hoc items to Work Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Select
@@ -429,26 +463,78 @@ const JobDetails = () => {
                   label: ele?.name,
                 }))}
                 onChange={handleAdhocItemChange}
+                // menuIsOpen={true}
               />
             </Modal.Body>
           </Modal>
         </div>
       )}
-      {adhocModalShow ? (
-        <Modal show={adhocModalShow} onHide={handleAdhocModalClose}>
-          <Modal.Header closeButton>
-            <Modal.Title> Alert</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Task added Successfully.
-            <div className="d-flex gap-5 mt-3">
-              <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
-                OK
-              </button>
-            </div>
-          </Modal.Body>
-        </Modal>
-      ) : null}
+      {/* Modal Items Added Successfully */}
+      <Modal show={adhocModalShow} onHide={handleAdhocModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Items Added Successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Quantity updation */}
+      <Modal show={quantityModalShow} onHide={handleQuantityModalShow}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Quantity updated successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleQuantityModalShow} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* alert for already added item */}
+      <Modal show={alertForSameItem} onHide={handleAlertForSameItem}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Already Selected Item. Please Update Quantity if you want to add again.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleAlertForSameItem} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* alert for quantity selection */}
+      <Modal show={quantitySelector} onHide={handleQuantitySelectorClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Select Quantity</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Select
+            className={` ${Styles.SearchBorder} `}
+            placeholder="Search Quantity"
+            options={arrayOf20numbers.map((number) => ({
+              value: number,
+              label: number,
+            }))}
+            onChange={handleQuantitySelectorChange}
+            // menuIsOpen={true}
+          />
+          {/* <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleQuantitySelectorClose} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div> */}
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
