@@ -431,7 +431,7 @@ const Dashboard = () => {
                 <Modal.Title> Work Order</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                Are you sure you want to start work order?
+                <p className="text-center">Are you sure you want to start work order?</p>
                 <div className="d-flex gap-5 mt-3">
                   <button variant="primary" onClick={handleModalYes} className="PurpulBtnClock w-30 btn btn-btn">
                     Yes
