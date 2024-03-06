@@ -2,68 +2,120 @@ import React, { useEffect, useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { getCommentList, workerOrderDetail } from "../../api/worker";
+import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getAddress } from "../../redux/user/user.actions";
-import { formatDateString } from "../../utils/format";
+import { additionOfServiceItems, getAddress, removalOfAdhocItems, selectedAdhocItems, updationOfAdhocItems } from "../../redux/user/user.actions";
+import { capitalizeEachWord, formatDateString } from "../../utils/format";
+import { WhiteBackArrow } from "../../utils/svg";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState, companyGlobalState);
+  console.log(userGlobalState);
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [show, setShow] = useState(false);
-  const [originalApiCommentDetails, setOriginalApiCommentDetails] = useState([]);
-
+  const [taskCounting, setTaskCounting] = useState(0);
+  // const [serviceNames, setServiceNames] = useState([]);
+  const [adhocItemsList, setAdhocItemsList] = useState([]);
+  const [selectedAdhocItemList, setSelectedAdhocItemList] = useState([]);
+  const [adhocModalShow, setAdhocModalShow] = useState(false);
+  const [quantityModalShow, setQuantityModalShow] = useState(false);
+  const [quantitySelector, setQuantitySelector] = useState(false);
+  const [alertForSameItem, setAlertForSameItem] = useState(false);
+  const [activeAdhocItem, setActiveAdhocItem] = useState();
+  // const [activeServiceItem, setActiveServiceItem] = useState();
+  const [itemRemoveModal, setItemRemoveModal] = useState(false);
+  // modals show/hide
   const handleClose = () => setShow(false);
-  const handleShow = () => {
-    setShow(true);
-  };
-  const getCommentListAPICall = async (id, token) => {
-    setLoading(true);
-    const result = await getCommentList(id, token);
-    setLoading(false);
-    if (result.error) {
-      navigate("/");
-    } else {
-      setOriginalApiCommentDetails(result.Commentlist);
-    }
-  };
+  const handleShow = () => setShow(true);
+  const handleItemRemoveModal = () => setItemRemoveModal(false);
+  const handleAdhocModalClose = () => setAdhocModalShow(false);
+  const handleAlertForSameItem = () => setAlertForSameItem(false);
+  const handleQuantityModalShow = () => setQuantityModalShow(false);
+  const handleQuantitySelectorClose = () => setQuantitySelector(false);
+
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     setLoading(true);
     const result = await workerOrderDetail(id, token);
+    console.log("result", result);
     setLoading(false);
-    if (result.error) alert(result.message);
+    if (result === 401) navigate("/");
     else {
       setOriginalApiWODetail(result.detail);
+      getAdhocItemsListApiCall(result.detail.ad_hoc_catid, userGlobalState.details.token);
       const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
         result.detail?.country ? `, ${result.detail?.country}` : ""
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
-
+      if (result.detail?.workstatusname === "In Progress") {
+        setTaskCounting(taskCounting + 1 + userGlobalState.adhocItems.length + userGlobalState.serviceItems.length);
+      }
       dispatch(getAddress(address));
+      setSelectedAdhocItemList(userGlobalState.adhocItems.map((ele) => ele.id));
     }
   };
+  // API Call for geuserGlobalStatetting Adhoc Items List
+  const getAdhocItemsListApiCall = async (id, token) => {
+    setLoading(true);
+    const result = await getAdhocItemsList(id, token);
+    setLoading(false);
+    if (result.error) navigate("/");
+    else setAdhocItemsList(result.content);
+  };
+
   useEffect(() => {
-    if (userGlobalState.details.token) {
+    if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
-      getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
     } else {
       navigate("/");
     }
   }, []);
-  console.log("originalApiWODetail", originalApiWODetail, originalApiCommentDetails);
+
+  console.log("originalApiWODetail", originalApiWODetail);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
-  const lastComment = originalApiCommentDetails[originalApiCommentDetails.length - 1];
-  console.log(lastComment);
+  // const handleServiceQuantityChange = (e) => {
+  //   setServiceNames((prev) => [...prev, { [e.target.name]: e.target.value }]);
+  // };
+  // const handleServiceFix = () => {
+  //   console.log(activeServiceItem);
+  // };
+  const handleAdhocItemChange = (option) => {
+    // console.log(option);
+    setSelectedAdhocItemList((prev) => {
+      if (selectedAdhocItemList.includes(option.value)) {
+        setAlertForSameItem(true);
+        setShow(false);
+        return [...prev];
+      } else {
+        dispatch(selectedAdhocItems(option.value, 1));
+        setTimeout(() => {
+          setShow(false);
+          setAdhocModalShow(true);
+          setTaskCounting(taskCounting + 1);
+        }, 200);
+        return [...prev, option.value];
+      }
+    });
+  };
+  const handleRemoveSelectedAdhocItem = () => {
+    setTaskCounting(taskCounting - 1);
+    setSelectedAdhocItemList(selectedAdhocItemList.filter((item) => item !== activeAdhocItem));
+    dispatch(removalOfAdhocItems(activeAdhocItem));
+    setItemRemoveModal(false);
+  };
+  const handleQuantitySelectorChange = (option) => {
+    setTimeout(() => {
+      setQuantitySelector(false);
+      setQuantityModalShow(true);
+    }, 200);
+    dispatch(updationOfAdhocItems(activeAdhocItem, option.value));
+  };
   return (
     <>
       {loading ? (
@@ -72,21 +124,20 @@ const JobDetails = () => {
         <div className={` ${Styles.ddnone} ${Styles.ddblock}`}>
           <div className={` ${Styles.TopSection} `}>
             <div className={` ${Styles.backArrow} `}>
-              <a href="/dashboard">
-                <svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" className="css-8mmkcg">
-                  <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
-                </svg>
-              </a>
+              <Link to="/dashboard">
+                <WhiteBackArrow />
+              </Link>
             </div>
             {/* <div className="CompanyLogo">
           <img className="img-fluid" alt="img" src="/assets/Swif-logo.png" alt="logo" />
         </div> */}
           </div>
+          {/* name and tASk counting */}
           <section className={` ${Styles.JobHolder} `}>
             <div className={` ${Styles.NameWithTasks} `}>
-              <h1>{originalApiWODetail?.customer_name ?? "N/A"}</h1>
+              <h1>{originalApiWODetail?.customer_name ? capitalizeEachWord(originalApiWODetail?.customer_name) : "N/A"}</h1>
               <div className={` ${Styles.TaskCompleted} `}>
-                <div className={` ${Styles.Completed} `}>0 Tasks Completed</div>
+                <div className={` ${Styles.Completed} `}>{taskCounting} Tasks Completed</div>
                 <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
               </div>
             </div>
@@ -110,9 +161,9 @@ const JobDetails = () => {
             </div>
             {/* leader and worker */}
             <div className={` ${Styles.InnerInfo} `}>
-              <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
+              <img class="img-fluid" alt="img" src="/assets/User-pro.png" />
               <span>
-                {originalApiWODetail?.leader?.name ? `${originalApiWODetail?.leader?.name} (TL)` : null}
+                {originalApiWODetail?.leader?.name ? <strong>{`${originalApiWODetail?.leader?.name} (TL)`}</strong> : null}
                 {originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null}
               </span>
             </div>
@@ -124,21 +175,13 @@ const JobDetails = () => {
               <h2>{originalApiWODetail?.service_name ?? ""}</h2>
             </div>
             <hr></hr>
+            {/* option_name (lawn care) */}
             <div className={` ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
                 <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
                 <p className="m-0">{originalApiWODetail?.option_name ?? ""}</p>
               </div>
               <div className={` ${Styles.IconPlusCleaning} `}>
-                {/* <div className="form-group">
-                  <select className="form-control" id="sel1">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </select>
-                </div> */}
                 <p className="m-0">${Number(originalApiWODetail?.option_price).toFixed(2)}</p>
               </div>
             </div>
@@ -154,7 +197,7 @@ const JobDetails = () => {
                   </div>
                   <div className={` ${Styles.IconPlusCleaning} `}>
                     <p className="m-0">
-                      {originalApiWODetail?.adjustment_type === "addition" ? "+" : "-"}
+                      {originalApiWODetail?.adjustment_type === "addition" ? "+ " : "- "}
                       {Number(originalApiWODetail?.adjustment_value).toFixed(2) ?? "0"}
                     </p>
                   </div>
@@ -164,30 +207,63 @@ const JobDetails = () => {
             {/* tasklist */}
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
-              ? originalApiWODetail?.task_list?.task?.map((ele) => {
+              ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
+                  const selectedFilteredServiceItem = userGlobalState.serviceItems.filter((element) => element?.id === ele?.id);
                   return (
                     <>
-                      <div className={` ${Styles.RegularCleaning} `}>
+                      <div className={` ${Styles.RegularCleaning} `} key={index}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
+                          {/* service names with checkboxes */}
                           <div className={` ${Styles.formCheck} `}>
-                            {/* <input className={` ${Styles.formCheckInput} `} type="checkbox" value="" id="flexCheckDefault" /> */}
-                            <label className="form-check-label" for="flexCheckDefault">
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
+                              <>
+                                <input
+                                  className={`${Styles.formCheckInput}`}
+                                  type="checkbox"
+                                  value={`${ele?.name}`}
+                                  style={selectedFilteredServiceItem.length ? { cursor: "auto" } : null}
+                                  id={index}
+                                  checked={selectedFilteredServiceItem.length ? true : false}
+                                  onChange={() => {
+                                    if (selectedFilteredServiceItem.length) {
+                                    } else {
+                                      setAdhocModalShow(true);
+                                      setTaskCounting(taskCounting + 1);
+                                      dispatch(additionOfServiceItems(ele?.id, ele?.quantity));
+                                    }
+                                  }}
+                                />
+                              </>
+                            ) : null}
+                            <label className="form-check-label" htmlFor={index}>
                               {ele?.name ?? "NA"}
                             </label>
                           </div>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {/* <select className="form-control" id="sel1">
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select> */}
-                            <p className="m-0">{ele?.quantity}</p>
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" && !selectedFilteredServiceItem.length ? (
+                              <select
+                                className="form-control"
+                                value={selectedFilteredServiceItem.length ? selectedFilteredServiceItem.length?.[0]?.quantity : ele?.quantity}
+                                onChange={(e) => {
+                                  setAdhocModalShow(true);
+                                  setTaskCounting(taskCounting + 1);
+                                  dispatch(additionOfServiceItems(ele?.id, Number(e.target.value)));
+                                }}
+                                name={ele?.id}
+                              >
+                                {arrayOf20numbers.map((number) => (
+                                  <option value={number} name={ele?.id}>
+                                    {number}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <p className="m-0 me-4">{selectedFilteredServiceItem?.[0]?.quantity ?? ele?.quantity}</p>
+                            )}
                           </div>
-                          <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+                          <p className="m-0">${Number(Number(ele?.amount) * Number(selectedFilteredServiceItem?.[0]?.quantity ?? ele?.quantity)).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -195,55 +271,49 @@ const JobDetails = () => {
                   );
                 })
               : null}
-            {/* <div className={` ${Styles.RegularCleaning} `}>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <div className={` ${Styles.formCheck} `}>
-                  <input className={` ${Styles.formCheckInput} `} type="checkbox" value="" id="flexCheckDefault" />
-                  <label className="form-check-label" for="flexCheckDefault">
-                    Window Cleaning
-                  </label>
-                </div>
-              </div>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <div className="form-group">
-                  <select className="form-control" id="sel1">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </select>
-                </div>
-                <p className="m-0">$33.50</p>
-              </div>
-            </div> */}
             <br></br>
-
+            {/* Ad-Hoc Service Items as Requested */}
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/Three-list.png" />
               <h2>Ad-Hoc Service Items as Requested</h2>
             </div>
-            {originalApiWODetail?.ad_hoc_items?.sub_items?.length ? (
+            {/* selected adhoc items */}
+            {selectedAdhocItemList?.length ? (
               <>
-                {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {
+                {selectedAdhocItemList?.map((ele) => {
+                  const filteredData = adhocItemsList.filter((item) => item.id === ele)[0];
                   return (
                     <>
-                      <hr></hr>
-
                       <div className={` ${Styles.RegularCleaning} `}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
-                          <img className="img-fluid" alt="img" src="/assets/x-circle.png" />
-                          <p className="m-0">{ele?.name ?? ""}</p>
+                          <img
+                            className="img-fluid"
+                            style={{ cursor: "pointer" }}
+                            alt="img"
+                            src="/assets/x-circle.png"
+                            onClick={
+                              () => {
+                                setActiveAdhocItem(ele);
+                                setItemRemoveModal(true);
+                              }
+                              // handleRemoveSelectedAdhocItem(ele)
+                            }
+                          />
+                          <p className="m-0">{filteredData?.name}</p>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            <select className="form-control" id="sel1" value={ele?.quantity}>
-                              {arrayOf20numbers.map((number) => (
-                                <option value={number}>{number}</option>
-                              ))}
-                            </select>
+                            <button
+                              className="btn btn-light bg-white"
+                              onClick={() => {
+                                setActiveAdhocItem(ele);
+                                setQuantitySelector(true);
+                              }}
+                            >
+                              {userGlobalState.adhocItems.filter((item) => item.id === ele)?.[0]?.["quantity"]}
+                            </button>
                           </div>
-                          <p className="m-0">${Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+                          <p className="m-0">${Number(filteredData?.price * 1).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -252,7 +322,7 @@ const JobDetails = () => {
                 })}
               </>
             ) : null}
-            {originalApiWODetail?.is_leader ? (
+            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
               <div className={` ${Styles.RegularCleaning} `}>
                 <div className={` ${Styles.IconPlusCleaning} `}>
                   <div variant="primary" onClick={handleShow}>
@@ -305,24 +375,17 @@ const JobDetails = () => {
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
               <Link to="/remark">
-                {originalApiCommentDetails.length ? (
-                  <>
-                    {lastComment?.commenter_type === "Admin" ? (
-                      <div className={`${Styles.RemarksBoxPink} ${Styles.RemarksBoxGray}`}>
-                        <h6>
-                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
-                        </h6>
-                        <p>{lastComment?.description}</p>
-                      </div>
-                    ) : (
+                {originalApiWODetail?.workordercommentlist?.length ? (
+                  originalApiWODetail?.workordercommentlist?.map((ele) => {
+                    return (
                       <div className={Styles.RemarksBoxPink}>
                         <h6>
-                          {lastComment?.commenter}: <span>{formatDateString(lastComment?.created)}</span>
+                          {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
                         </h6>
-                        <p>{lastComment?.description}</p>
+                        <p style={{ fontWeight: "400" }}>{ele?.description}</p>
                       </div>
-                    )}
-                  </>
+                    );
+                  })
                 ) : (
                   <div>Add Comment</div>
                 )}
@@ -351,7 +414,7 @@ const JobDetails = () => {
                           Sub-Total: <strong>SGD $520.25</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          TAX @ 7%: <strong>SGD $34.25</strong>{" "}
+                          TAX @ 20%: <strong>SGD $34.25</strong>{" "}
                         </p>
                         <p className="mb-1">
                           Discount: <strong>SGD $150.00</strong>{" "}
@@ -374,7 +437,7 @@ const JobDetails = () => {
                       <div className={` ${Styles.ButtonTimeClock} `}>
                         <button className="btn btn-btn">
                           <div className={` ${Styles.ButtonInnerIconText} `}>
-                            <img className="img-fluid " src="/assets/Stop-icon.png" />
+                            <img className="img-fluid " alt="img" src="/assets/Stop-icon.png" />
                             01:37:45
                           </div>
                         </button>
@@ -389,17 +452,110 @@ const JobDetails = () => {
             </div>
           </section>
           <FooterNav></FooterNav>
-          {/* modal */}
+          {/* modal for Add Ad-hoc items to work Order */}
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Add Ad-hoc items to work Order</Modal.Title>
+              <Modal.Title>Add Ad-hoc items to Work Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Select className={` ${Styles.SearchBorder} `} placeholder="Search items" options={[]} />
+              <Select
+                className={` ${Styles.SearchBorder} `}
+                placeholder="Search items"
+                options={adhocItemsList.map((ele) => ({
+                  value: ele?.id,
+                  label: ele?.name,
+                }))}
+                onChange={handleAdhocItemChange}
+                // menuIsOpen={true}
+              />
             </Modal.Body>
           </Modal>
         </div>
       )}
+      {/* Modal Items Added Successfully */}
+      <Modal show={adhocModalShow} onHide={handleAdhocModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Items Added Successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal Items Removed Successfully */}
+      <Modal show={itemRemoveModal} onHide={handleItemRemoveModal}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure, You want to remove Adhoc Item?
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleRemoveSelectedAdhocItem} className="PurpulBtnClock w-30 btn btn-btn">
+              Yes
+            </button>
+            <button variant="primary" onClick={handleItemRemoveModal} className="PurpulBtnClock w-30 btn btn-btn">
+              Cancel
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Quantity updated successfully. */}
+      <Modal show={quantityModalShow} onHide={handleQuantityModalShow}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Quantity updated successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleQuantityModalShow} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* alert for already added item */}
+      <Modal show={alertForSameItem} onHide={handleAlertForSameItem}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Already Selected Item. Please Update Quantity if you want to add again.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleAlertForSameItem} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* alert for quantity selection */}
+      <Modal show={quantitySelector} onHide={handleQuantitySelectorClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Select Quantity</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Select
+            className={` ${Styles.SearchBorder} `}
+            placeholder="Search Quantity"
+            options={arrayOf20numbers.map((number) => ({
+              value: number,
+              label: number,
+            }))}
+            onChange={handleQuantitySelectorChange}
+            // menuIsOpen={true}
+          />
+          {/* <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleQuantitySelectorClose} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div> */}
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

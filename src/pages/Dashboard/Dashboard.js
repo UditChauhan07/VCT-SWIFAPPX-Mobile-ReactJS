@@ -384,7 +384,7 @@ const Dashboard = () => {
             </div>
             <FooterNav></FooterNav>
             {/* modal for leader */}
-            <Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
+            {leaderModalShow?<Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
               <Modal.Header closeButton>
                 <Modal.Title> Worker List</Modal.Title>
               </Modal.Header>
@@ -392,7 +392,6 @@ const Dashboard = () => {
                 <>
                     <Formik initialValues={initialValues} onSubmit={handleLeaderModalYes}>
                     {({ isSubmitting }) => (
-
                       <Form>
                   {leaders.length ? (
                         <>
@@ -424,9 +423,10 @@ const Dashboard = () => {
                 </Formik>
                 </>
               </Modal.Body>
-            </Modal>
+            </Modal>:null}
+            
             {/*  Modal for worker */}
-            <Modal show={show} onHide={handleClose}>
+            {show?<Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title> Work Order</Modal.Title>
               </Modal.Header>
@@ -441,7 +441,8 @@ const Dashboard = () => {
                   </button>
                 </div>
               </Modal.Body>
-            </Modal>
+            </Modal>:null}
+            
           </div>
         </div>
       )}
