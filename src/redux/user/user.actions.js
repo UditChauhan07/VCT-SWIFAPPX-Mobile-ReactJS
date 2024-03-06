@@ -47,4 +47,9 @@ export const updationOfAdhocItems = (id, quantity) => {
     payload: { id: id, quantity: quantity },
   };
 };
-
+export const additionOfServiceItems = (id, quantity) => {
+  return {
+    type: actionTypes.addedServiceItems,
+    payload: { id: id, quantity: quantity },
+  };
+};

@@ -8,6 +8,7 @@ export const userInitialState = {
   workerOrderId: null,
   address: null,
   adhocItems: [],
+  serviceItems: [],
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -39,12 +40,8 @@ export const userModule = (state = userInitialState, action) => {
       };
     case actionTypes.selectedAdhocItems:
       if (Array.isArray(state.adhocItems)) {
-        // // console.log("jiji");
-        // let arrayOfObjects = updateObject(state.adhocItems, action.payload);
-        // console.log("hi", arrayOfObjects);
         return {
           ...state,
-          // adhocItems: [...arrayOfObjects],
           adhocItems: [...state.adhocItems, action.payload],
         };
       } else {
@@ -74,6 +71,20 @@ export const userModule = (state = userInitialState, action) => {
         ...state,
         adhocItems: state.adhocItems.filter((ele) => ele.id !== action.payload),
       };
+    case actionTypes.addedServiceItems:
+      console.log(action.payload);
+      console.log(Array.isArray(state.serviceItems));
+      if (Array.isArray(state.serviceItems)) {
+        return {
+          ...state,
+          serviceItems: [...state.serviceItems, action.payload],
+        };
+      } else {
+        return {
+          ...state,
+          serviceItems: [action.payload],
+        };
+      }
     default:
       return state;
   }
