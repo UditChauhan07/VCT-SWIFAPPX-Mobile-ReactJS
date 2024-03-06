@@ -54,10 +54,10 @@ const JobDetails = () => {
         result.detail?.country ? `, ${result.detail?.country}` : ""
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
       if (result.detail?.workstatusname === "In Progress") {
-        setTaskCounting(taskCounting + 1 + userGlobalState.adhocItems.length + userGlobalState.serviceItems.length);
+        setTaskCounting(taskCounting + 1 + userGlobalState?.adhocItems?.length + userGlobalState?.serviceItems?.length);
       }
       dispatch(getAddress(address));
-      setSelectedAdhocItemList(userGlobalState.adhocItems.map((ele) => ele.id));
+      setSelectedAdhocItemList(userGlobalState?.adhocItems?.map((ele) => ele.id));
     }
   };
   // API Call for geuserGlobalStatetting Adhoc Items List
@@ -208,7 +208,7 @@ const JobDetails = () => {
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
               ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
-                  const selectedFilteredServiceItem = userGlobalState.serviceItems.filter((element) => element?.id === ele?.id);
+                  const selectedFilteredServiceItem = userGlobalState?.serviceItems?.filter((element) => element?.id === ele?.id);
                   return (
                     <>
                       <div className={` ${Styles.RegularCleaning} `} key={index}>
@@ -221,11 +221,11 @@ const JobDetails = () => {
                                   className={`${Styles.formCheckInput}`}
                                   type="checkbox"
                                   value={`${ele?.name}`}
-                                  style={selectedFilteredServiceItem.length ? { cursor: "auto" } : null}
+                                  style={selectedFilteredServiceItem?.length ? { cursor: "auto" } : null}
                                   id={index}
-                                  checked={selectedFilteredServiceItem.length ? true : false}
+                                  checked={selectedFilteredServiceItem?.length ? true : false}
                                   onChange={() => {
-                                    if (selectedFilteredServiceItem.length) {
+                                    if (selectedFilteredServiceItem?.length) {
                                     } else {
                                       setAdhocModalShow(true);
                                       setTaskCounting(taskCounting + 1);
@@ -242,10 +242,10 @@ const JobDetails = () => {
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" && !selectedFilteredServiceItem.length ? (
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" && !selectedFilteredServiceItem?.length ? (
                               <select
                                 className="form-control"
-                                value={selectedFilteredServiceItem.length ? selectedFilteredServiceItem.length?.[0]?.quantity : ele?.quantity}
+                                value={selectedFilteredServiceItem?.length ? selectedFilteredServiceItem?.length?.[0]?.quantity : ele?.quantity}
                                 onChange={(e) => {
                                   setAdhocModalShow(true);
                                   setTaskCounting(taskCounting + 1);
@@ -253,7 +253,7 @@ const JobDetails = () => {
                                 }}
                                 name={ele?.id}
                               >
-                                {arrayOf20numbers.map((number) => (
+                                {arrayOf20numbers?.map((number) => (
                                   <option value={number} name={ele?.id}>
                                     {number}
                                   </option>
