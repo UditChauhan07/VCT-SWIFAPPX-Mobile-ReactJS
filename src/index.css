@@ -101,6 +101,9 @@ body {
   line-height: var(--bs-modal-title-line-height);
   color: #6E01C6;
   text-align: center;
+  left: 2%;
+  position: relative;
+  width: 100%;
 }
 .modal-body .css-13cymwt-control {
   -webkit-align-items: center;
@@ -200,4 +203,10 @@ body {
   color: unset;
   backgroundr-color: unset;
   border-color: unset;
+}
+
+.modal-dialog{
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - var(--bs-modal-margin)* 2);
 }
