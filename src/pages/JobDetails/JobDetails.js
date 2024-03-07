@@ -55,9 +55,10 @@ const JobDetails = () => {
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
       if (result.detail?.workstatusname === "In Progress") {
         setTaskCounting(taskCounting + 1 + userGlobalState?.adhocItems?.length + userGlobalState?.serviceItems?.length);
+       if(result.detail?.id===userGlobalState?.workerOrderId) setSelectedAdhocItemList(userGlobalState?.adhocItems?.map((ele) => ele.id));
+      //  else
       }
       dispatch(getAddress(address));
-      setSelectedAdhocItemList(userGlobalState?.adhocItems?.map((ele) => ele.id));
     }
   };
   // API Call for geuserGlobalStatetting Adhoc Items List
@@ -79,12 +80,6 @@ const JobDetails = () => {
 
   console.log("originalApiWODetail", originalApiWODetail);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
-  // const handleServiceQuantityChange = (e) => {
-  //   setServiceNames((prev) => [...prev, { [e.target.name]: e.target.value }]);
-  // };
-  // const handleServiceFix = () => {
-  //   console.log(activeServiceItem);
-  // };
   const handleAdhocItemChange = (option) => {
     // console.log(option);
     setSelectedAdhocItemList((prev) => {
@@ -103,6 +98,7 @@ const JobDetails = () => {
       }
     });
   };
+  console.log("adhocItemsList",adhocItemsList);
   const handleRemoveSelectedAdhocItem = () => {
     setTaskCounting(taskCounting - 1);
     setSelectedAdhocItemList(selectedAdhocItemList.filter((item) => item !== activeAdhocItem));

@@ -81,7 +81,7 @@
 .Chatsend{
     /* padding: 0 20px; */
     display: flex;
-    gap: 10px ;
+    /* gap: 10px ; */
     margin: 20px 0;
 }
 .NoData{
@@ -91,6 +91,11 @@
     height: 50vh;
 }
 .Chatsend input{
+    width: 100%;
+    border: 0.5px solid  #ECECEC;
+    height: 55px;
+}
+.chatInput{
     width: 80%;
     border: 0.5px solid  #ECECEC;
     height: 55px;
@@ -105,7 +110,7 @@
 }
 .BottomChatFixed{
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
 }
 
