@@ -145,7 +145,7 @@ export const addComment= async (id, comment, accessToken) => {
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
-      return error.response.data;
+      return error.response.comment;
     } else if (error.request) {
       // The request was made but no response was received
       console.log(error.request);
