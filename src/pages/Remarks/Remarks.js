@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Styles from "./style.module.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { addComment, getCommentList } from "../../api/worker";
 import Loading from "../../components/Loading";
 import { formatDateString } from "../../utils/format";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { CommentSchema } from "../../ValidationSchema/Comments";
+import TextError from "../../utils/TextError";
 
 function Remarks() {
   const navigate = useNavigate();
@@ -43,6 +45,17 @@ function Remarks() {
     if (!result.error) {
       getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
     }
+  };
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    if (endRef.current) {
+      scrollToBottom();
+    }
+  }, [originalApiCommentDetails]);
+
+  const scrollToBottom = () => {
+    endRef.current.scrollIntoView();
   };
   return (
     <>
@@ -101,12 +114,18 @@ function Remarks() {
             ) : (
               <div className={Styles.NoData}>No Comments.</div>
             )}
+            {/* add comment section */}
+            <div style={{marginTop:"100px"}} ref={endRef}></div>
 
-            <Formik initialValues={initialValues} onSubmit={handleAddComment}>
+            <Formik initialValues={initialValues} onSubmit={handleAddComment} validationSchema={CommentSchema}>
               <Form>
                 <div className={Styles.BottomChatFixed}>
                   <div className={Styles.Chatsend}>
-                    <Field type="text" placeholder="Message" name="comment" />
+                    <div className={Styles.chatInput}>
+                      <Field type="text" placeholder="Message" name="comment" />
+                      <ErrorMessage component={TextError} name="comment" />
+                    </div>
+
                     <button type="submit">
                       <img src="/assets/SendIcon.png" alt="img" />
                     </button>

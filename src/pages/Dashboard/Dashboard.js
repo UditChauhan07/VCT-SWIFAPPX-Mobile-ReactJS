@@ -43,7 +43,6 @@ const Dashboard = () => {
     setShow(true);
   };
   const handleLeaderClose = (e) => {
-    console.log("staopped");
     e.stopPropagation();
     setLeaderModalShow(false);
     startWOId.pop();
@@ -54,15 +53,6 @@ const Dashboard = () => {
     startWOId.pop();
     setStartWOId([...startWOId]);
   };
-  // function getCurrentTime() {
-  //   const currentDate = new Date();
-  //   const currentTime = currentDate.toLocaleTimeString();
-  //   return currentTime;
-  // }
-  
-  // // Example usage:
-  // const currentTime = getCurrentTime();
-  // console.log("kk",currentTime); 
   const handleLeaderShow = (id) => {
     startWOId.push(id);
     setStartWOId([...startWOId]);

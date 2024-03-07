@@ -13,6 +13,9 @@ import HistoryDetail from './pages/HistoryDetail/HistoryDetail'
 import Notification from './pages/Notification/Notification'
 import Profile from './pages/Profile/Profile'
 import Remarks from './pages/Remarks/Remarks';
+import ImageCapture from './pages/PictureUploading/ImageCapture';
+import SignaturePad from './components/SignaturePad';
+import NotFound from './pages/NotFound/NotFound';
 
 function App() {
   return (
@@ -30,7 +33,9 @@ function App() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/notification' element={<Notification />}/>
           <Route path='/remark' element={<Remarks />}/>
-          {/* <Route path='/loading' element={<Loading />}/> */}
+          <Route path='*' element={<NotFound />}/>
+           {/* <Route path='/i' element={<ImageCapture />}/> */}
+          {/* <Route path='/sign' element={<SignaturePad />}/>  */}
         </Routes>      
     </BrowserRouter>
   );
