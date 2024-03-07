@@ -87,7 +87,6 @@ function Remarks() {
               </h3>
             </div>
           </div>
-          <button onClick={scrollToBottom}>Scroll to End</button>
 
           <div className={Styles.ControlMain}>
             {originalApiCommentDetails.length ? (
