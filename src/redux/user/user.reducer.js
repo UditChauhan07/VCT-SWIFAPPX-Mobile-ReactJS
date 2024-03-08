@@ -38,53 +38,53 @@ export const userModule = (state = userInitialState, action) => {
         ...state,
         address: action.payload,
       };
-    case actionTypes.selectedAdhocItems:
-      if (Array.isArray(state.adhocItems)) {
-        return {
-          ...state,
-          adhocItems: [...state.adhocItems, action.payload],
-        };
-      } else {
-        return {
-          ...state,
-          adhocItems: [action.payload],
-        };
-      }
-    case actionTypes.updateAdhocItem:
-      if (Array.isArray(state.adhocItems)) {
-        // // console.log("jiji");
-        let arrayOfObjects = updateObject(state.adhocItems, action.payload);
-        // console.log("hi", arrayOfObjects);
-        return {
-          ...state,
-          adhocItems: [...arrayOfObjects],
-          // adhocItems:[...state.adhocItems,action.payload]
-        };
-      } else {
-        return {
-          ...state,
-          adhocItems: [action.payload],
-        };
-      }
-    case actionTypes.removeAdhocItem:
-      return {
-        ...state,
-        adhocItems: state.adhocItems.filter((ele) => ele.id !== action.payload),
-      };
-    case actionTypes.addedServiceItems:
-      console.log(action.payload);
-      console.log(Array.isArray(state.serviceItems));
-      if (Array.isArray(state.serviceItems)) {
-        return {
-          ...state,
-          serviceItems: [...state.serviceItems, action.payload],
-        };
-      } else {
-        return {
-          ...state,
-          serviceItems: [action.payload],
-        };
-      }
+    // case actionTypes.selectedAdhocItems:
+    //   if (Array.isArray(state.adhocItems)) {
+    //     return {
+    //       ...state,
+    //       adhocItems: [...state.adhocItems, action.payload],
+    //     };
+    //   } else {
+    //     return {
+    //       ...state,
+    //       adhocItems: [action.payload],
+    //     };
+    //   }
+    // case actionTypes.updateAdhocItem:
+    //   if (Array.isArray(state.adhocItems)) {
+    //     // // console.log("jiji");
+    //     let arrayOfObjects = updateObject(state.adhocItems, action.payload);
+    //     // console.log("hi", arrayOfObjects);
+    //     return {
+    //       ...state,
+    //       adhocItems: [...arrayOfObjects],
+    //       // adhocItems:[...state.adhocItems,action.payload]
+    //     };
+    //   } else {
+    //     return {
+    //       ...state,
+    //       adhocItems: [action.payload],
+    //     };
+    //   }
+    // case actionTypes.removeAdhocItem:
+    //   return {
+    //     ...state,
+    //     adhocItems: state.adhocItems.filter((ele) => ele.id !== action.payload),
+    //   };
+    // case actionTypes.addedServiceItems:
+    //   console.log(action.payload);
+    //   console.log(Array.isArray(state.serviceItems));
+    //   if (Array.isArray(state.serviceItems)) {
+    //     return {
+    //       ...state,
+    //       serviceItems: [...state.serviceItems, action.payload],
+    //     };
+    //   } else {
+    //     return {
+    //       ...state,
+    //       serviceItems: [action.payload],
+    //     };
+    //   }
     default:
       return state;
   }
