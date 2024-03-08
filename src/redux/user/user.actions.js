@@ -29,27 +29,27 @@ export const getAddress = (address) => {
     payload: address,
   };
 };
-export const selectedAdhocItems = (id, quantity) => {
-  return {
-    type: actionTypes.selectedAdhocItems,
-    payload: { id: id, quantity: quantity },
-  };
-};
-export const removalOfAdhocItems = (id) => {
-  return {
-    type: actionTypes.removeAdhocItem,
-    payload: id,
-  };
-};
-export const updationOfAdhocItems = (id, quantity) => {
-  return {
-    type: actionTypes.updateAdhocItem,
-    payload: { id: id, quantity: quantity },
-  };
-};
-export const additionOfServiceItems = (id, quantity) => {
-  return {
-    type: actionTypes.addedServiceItems,
-    payload: { id: id, quantity: quantity },
-  };
-};
+// export const selectedAdhocItems = (id, quantity) => {
+//   return {
+//     type: actionTypes.selectedAdhocItems,
+//     payload: { id: id, quantity: quantity },
+//   };
+// };
+// export const removalOfAdhocItems = (id) => {
+//   return {
+//     type: actionTypes.removeAdhocItem,
+//     payload: id,
+//   };
+// };
+// export const updationOfAdhocItems = (id, quantity) => {
+//   return {
+//     type: actionTypes.updateAdhocItem,
+//     payload: { id: id, quantity: quantity },
+//   };
+// };
+// export const additionOfServiceItems = (id, quantity) => {
+//   return {
+//     type: actionTypes.addedServiceItems,
+//     payload: { id: id, quantity: quantity },
+//   };
+// };

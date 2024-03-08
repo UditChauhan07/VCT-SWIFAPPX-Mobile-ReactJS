@@ -7,29 +7,28 @@ import Loading from "../../components/Loading";
 import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { additionOfServiceItems, getAddress, removalOfAdhocItems, selectedAdhocItems, updationOfAdhocItems } from "../../redux/user/user.actions";
+import { getAddress } from "../../redux/user/user.actions";
 import { capitalizeEachWord, formatDateString } from "../../utils/format";
 import { WhiteBackArrow } from "../../utils/svg";
+import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
-  const companyGlobalState = useSelector((state) => state.companyModule);
   console.log(userGlobalState);
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [show, setShow] = useState(false);
   const [taskCounting, setTaskCounting] = useState(0);
-  // const [serviceNames, setServiceNames] = useState([]);
+  const [activeService, setActiveService] = useState();
   const [adhocItemsList, setAdhocItemsList] = useState([]);
-  const [selectedAdhocItemList, setSelectedAdhocItemList] = useState([]);
   const [adhocModalShow, setAdhocModalShow] = useState(false);
   const [quantityModalShow, setQuantityModalShow] = useState(false);
   const [quantitySelector, setQuantitySelector] = useState(false);
   const [alertForSameItem, setAlertForSameItem] = useState(false);
   const [activeAdhocItem, setActiveAdhocItem] = useState();
-  // const [activeServiceItem, setActiveServiceItem] = useState();
+  const [confirmServiceItem, setConfirmServiceItem] = useState(false);
   const [itemRemoveModal, setItemRemoveModal] = useState(false);
   // modals show/hide
   const handleClose = () => setShow(false);
@@ -39,6 +38,7 @@ const JobDetails = () => {
   const handleAlertForSameItem = () => setAlertForSameItem(false);
   const handleQuantityModalShow = () => setQuantityModalShow(false);
   const handleQuantitySelectorClose = () => setQuantitySelector(false);
+  const handleConfirmServiceModalShow = () => setConfirmServiceItem(false);
 
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -48,20 +48,23 @@ const JobDetails = () => {
     setLoading(false);
     if (result === 401) navigate("/");
     else {
-      setOriginalApiWODetail(result.detail);
       getAdhocItemsListApiCall(result.detail.ad_hoc_catid, userGlobalState.details.token);
       const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
         result.detail?.country ? `, ${result.detail?.country}` : ""
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
       if (result.detail?.workstatusname === "In Progress") {
-        setTaskCounting(taskCounting + 1 + userGlobalState?.adhocItems?.length + userGlobalState?.serviceItems?.length);
-       if(result.detail?.id===userGlobalState?.workerOrderId) setSelectedAdhocItemList(userGlobalState?.adhocItems?.map((ele) => ele.id));
-      //  else
+        setTaskCounting(taskCounting + 1);
       }
+      setOriginalApiWODetail(result.detail);
       dispatch(getAddress(address));
     }
   };
-  // API Call for geuserGlobalStatetting Adhoc Items List
+  // // to update added adhoc items list
+  // useEffect(() => {
+  //   setSelectedAdhocItemList(originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => ele));
+  // }, [originalApiWODetail]);
+
+  // API Call for getting Adhoc Items List
   const getAdhocItemsListApiCall = async (id, token) => {
     setLoading(true);
     const result = await getAdhocItemsList(id, token);
@@ -69,7 +72,42 @@ const JobDetails = () => {
     if (result.error) navigate("/");
     else setAdhocItemsList(result.content);
   };
-
+  // API Call for update quantity of service sub Item
+  const updateQuantityOfServiceSubItemAPICall = async (id, quantity, token) => {
+    setLoading(true);
+    const result = await updateQuantityOfServiceSubItem(id, quantity, token);
+    if (result.error) navigate("/");
+    else setOriginalApiWODetail(result.data);
+    setLoading(false);
+  };
+  // API Call to check/ finalize service sub Item
+  const toCheckServiceSubItemAPICall = async (id, quantity, type, token) => {
+    setLoading(true);
+    const result = await toCheckServiceSubItem(id, quantity, type, token);
+    setLoading(false);
+    if (result.error) navigate("/");
+    else setOriginalApiWODetail(result.data);
+  };
+  // API Call to add adhoc Item
+  const toAddAdhocItemAPICall = async (workorder_id, category_id, item_id, quantity, accessToken) => {
+    console.log("apai");
+    setLoading(true);
+    const result = await toAddAdhocItem(workorder_id, category_id, item_id, quantity, accessToken);
+    console.log("qq", result);
+    setLoading(false);
+    if (result.error) navigate("/");
+    else setOriginalApiWODetail(result.data);
+  };
+  // API Call to remove adhoc Item
+  const toRemoveAdhocItemAPICall = async (item_id, accessToken) => {
+    console.log("apai");
+    setLoading(true);
+    const result = await removeServiceSubItem(item_id, accessToken);
+    console.log("qq", result);
+    setLoading(false);
+    if (result.error) navigate("/");
+    else setOriginalApiWODetail(result.data);
+  };
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
@@ -80,38 +118,43 @@ const JobDetails = () => {
 
   console.log("originalApiWODetail", originalApiWODetail);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
+
   const handleAdhocItemChange = (option) => {
-    // console.log(option);
-    setSelectedAdhocItemList((prev) => {
-      if (selectedAdhocItemList.includes(option.value)) {
-        setAlertForSameItem(true);
+    const filteredData = originalApiWODetail?.ad_hoc_items?.sub_items?.filter((ele) => ele?.name === option.label);
+    console.log(filteredData);
+    if (filteredData.length) {
+      setAlertForSameItem(true);
+      setShow(false);
+    } else {
+      toAddAdhocItemAPICall(userGlobalState?.workerOrderId, adhocItemsList.filter((ele) => ele.id === option.value)?.[0]?.category_id, option.value, 1, userGlobalState.details.token);
+      setTimeout(() => {
         setShow(false);
-        return [...prev];
-      } else {
-        dispatch(selectedAdhocItems(option.value, 1));
-        setTimeout(() => {
-          setShow(false);
-          setAdhocModalShow(true);
-          setTaskCounting(taskCounting + 1);
-        }, 200);
-        return [...prev, option.value];
-      }
-    });
+        setAdhocModalShow(true);
+        setTaskCounting(taskCounting + 1);
+      }, 200);
+    }
   };
-  console.log("adhocItemsList",adhocItemsList);
   const handleRemoveSelectedAdhocItem = () => {
     setTaskCounting(taskCounting - 1);
-    setSelectedAdhocItemList(selectedAdhocItemList.filter((item) => item !== activeAdhocItem));
-    dispatch(removalOfAdhocItems(activeAdhocItem));
+    console.log(activeAdhocItem);
+    toRemoveAdhocItemAPICall(activeAdhocItem?.id, userGlobalState.details.token);
     setItemRemoveModal(false);
   };
-  const handleQuantitySelectorChange = (option) => {
+  const handleQuantitySelectorChangeForAdhocItems = (option) => {
+    console.log("option", option);
+    console.log("activeAdhocItem", activeAdhocItem);
+    updateQuantityOfServiceSubItemAPICall(activeAdhocItem?.id, option.value, userGlobalState.details.token);
     setTimeout(() => {
       setQuantitySelector(false);
       setQuantityModalShow(true);
     }, 200);
-    dispatch(updationOfAdhocItems(activeAdhocItem, option.value));
   };
+  const handleConfirmedServiceItem = () => {
+    toCheckServiceSubItemAPICall(activeService?.id, activeService?.quantity, activeService?.type, activeService?.token);
+    setTaskCounting(taskCounting + 1);
+    setConfirmServiceItem(false);
+  };
+
   return (
     <>
       {loading ? (
@@ -200,7 +243,7 @@ const JobDetails = () => {
                 </div>
               </>
             ) : null}
-            {/* tasklist */}
+            {/* tasklist- service sub items */}
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
               ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
@@ -217,15 +260,15 @@ const JobDetails = () => {
                                   className={`${Styles.formCheckInput}`}
                                   type="checkbox"
                                   value={`${ele?.name}`}
-                                  style={selectedFilteredServiceItem?.length ? { cursor: "auto" } : null}
+                                  style={ele?.checked?.length ? { cursor: "auto" } : null}
                                   id={index}
-                                  checked={selectedFilteredServiceItem?.length ? true : false}
+                                  checked={ele?.checked ? true : false}
                                   onChange={() => {
-                                    if (selectedFilteredServiceItem?.length) {
+                                    if (ele?.checked) {
                                     } else {
-                                      setAdhocModalShow(true);
-                                      setTaskCounting(taskCounting + 1);
-                                      dispatch(additionOfServiceItems(ele?.id, ele?.quantity));
+                                      setActiveService({ id: ele?.id, name: ele?.name, quantity: ele?.quantity, type: ele?.type, token: userGlobalState.details.token });
+
+                                      setConfirmServiceItem(true);
                                     }
                                   }}
                                 />
@@ -236,16 +279,17 @@ const JobDetails = () => {
                             </label>
                           </div>
                         </div>
+                        {/* quantity selection */}
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" && !selectedFilteredServiceItem?.length ? (
+                            {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" && !ele?.checked ? (
                               <select
                                 className="form-control"
-                                value={selectedFilteredServiceItem?.length ? selectedFilteredServiceItem?.length?.[0]?.quantity : ele?.quantity}
+                                value={ele?.quantity}
                                 onChange={(e) => {
-                                  setAdhocModalShow(true);
+                                  updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState.details.token);
                                   setTaskCounting(taskCounting + 1);
-                                  dispatch(additionOfServiceItems(ele?.id, Number(e.target.value)));
+                                  setQuantityModalShow(true);
                                 }}
                                 name={ele?.id}
                               >
@@ -268,16 +312,16 @@ const JobDetails = () => {
                 })
               : null}
             <br></br>
-            {/* Ad-Hoc Service Items as Requested */}
+            {/* Ad-Hoc Service Items as Requested Heading */}
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/Three-list.png" />
               <h2>Ad-Hoc Service Items as Requested</h2>
             </div>
             {/* selected adhoc items */}
-            {selectedAdhocItemList?.length ? (
+            {originalApiWODetail?.ad_hoc_items?.sub_items?.length ? (
               <>
-                {selectedAdhocItemList?.map((ele) => {
-                  const filteredData = adhocItemsList.filter((item) => item.id === ele)[0];
+                {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {
+                  // console.log(originalApiWODetail?.ad_hoc_items?.sub_items?.map(ele=>ele));
                   return (
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
@@ -292,10 +336,9 @@ const JobDetails = () => {
                                 setActiveAdhocItem(ele);
                                 setItemRemoveModal(true);
                               }
-                              // handleRemoveSelectedAdhocItem(ele)
                             }
                           />
-                          <p className="m-0">{filteredData?.name}</p>
+                          <p className="m-0">{ele?.name}</p>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
@@ -306,10 +349,10 @@ const JobDetails = () => {
                                 setQuantitySelector(true);
                               }}
                             >
-                              {userGlobalState.adhocItems.filter((item) => item.id === ele)?.[0]?.["quantity"]}
+                              {ele?.["quantity"]}
                             </button>
                           </div>
-                          <p className="m-0">${Number(filteredData?.price * 1).toFixed(2)}</p>
+                          <p className="m-0">${Number(ele?.amount * 1).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -483,13 +526,30 @@ const JobDetails = () => {
         </Modal.Body>
       </Modal>
 
+      {/* Modal for confirmation to add service sub item Successfully */}
+      <Modal show={confirmServiceItem} onHide={handleConfirmServiceModalShow}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <strong> {capitalizeEachWord(activeService?.name)}</strong> service will be <strong>locked</strong> and cannot be changed. Do you want to continue?
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleConfirmedServiceItem} className="PurpulBtnClock w-30 btn btn-btn">
+              Yes
+            </button>
+            <button variant="primary" onClick={handleConfirmServiceModalShow} className="PurpulBtnClock w-30 btn btn-btn">
+              Cancel
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
       {/* Modal Items Removed Successfully */}
       <Modal show={itemRemoveModal} onHide={handleItemRemoveModal}>
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure, You want to remove Adhoc Item?
+          Do you want to remove Adhoc Item?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleRemoveSelectedAdhocItem} className="PurpulBtnClock w-30 btn btn-btn">
               Yes
@@ -542,7 +602,7 @@ const JobDetails = () => {
               value: number,
               label: number,
             }))}
-            onChange={handleQuantitySelectorChange}
+            onChange={handleQuantitySelectorChangeForAdhocItems}
             // menuIsOpen={true}
           />
           {/* <div className="d-flex gap-5 mt-3">
