@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const live = "https://dev.swif.in/api";
+import { live } from "./liveLink";
 
 export const workerLogin = async (userName, password, company_id) => {
   try {
