@@ -11,3 +11,9 @@ export const topBarPermission=(value)=>{
         payload:value,
     }
 }
+export const taxValueOfCompany=(value)=>{
+    return{
+        type: actionTypes.getTaxValue,
+        payload:value,
+    }
+}

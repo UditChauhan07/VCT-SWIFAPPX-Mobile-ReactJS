@@ -26,7 +26,7 @@ const BusinessDetail = () => {
   else
   navigate("/");
   }, []);
-  // console.log((companyDetails));
+  console.log((companyDetails));
   return (
     <div className="dd-none dd-block">
       <div className="TopSection">
@@ -102,9 +102,9 @@ const BusinessDetail = () => {
             </div>
 
             {(companyDetails?.certificationString)
-              ? JSON.parse(companyDetails?.certificationString).map((ele) => {
+              ? JSON.parse(companyDetails?.certificationString).map((ele, index) => {
                   return (
-                    <div className="row">
+                    <div className="row" key={index}>
                       <div className="col-6">
                         <div className="WorkDays">{ele.name??""}</div>
                       </div>

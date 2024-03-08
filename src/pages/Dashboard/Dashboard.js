@@ -12,7 +12,7 @@ import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState.details, companyGlobalState);
+  console.log(userGlobalState?.details, companyGlobalState);
   const [show, setShow] = useState(false);
   const [leaderModalShow, setLeaderModalShow] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -59,8 +59,8 @@ const Dashboard = () => {
     setLeaderModalShow(true);
   };
   const handleModalYes = () => {
-    if (userGlobalState.details.token) {
-      workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState.details.token);
+    if (userGlobalState?.details?.token) {
+      workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState?.details?.token);
     } else {
       alert("Token expired. Login Again");
     }
@@ -69,8 +69,8 @@ const Dashboard = () => {
     setShow(false);
   };
   const handleLeaderModalYes = async (values) => {
-    if (userGlobalState.details.token) {
-      const result=await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState.details.token, values.workers);
+    if (userGlobalState?.details?.token) {
+      const result=await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
       setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
     } else {
@@ -89,7 +89,7 @@ const Dashboard = () => {
   const handleDateClick = (date) => {
     console.log("date", date);
     setActiveDate(date);
-    workOrderListAPICall(date.substring(8), date.substring(5, 7), date.substring(0, 4), userGlobalState.details.token);
+    workOrderListAPICall(date.substring(8), date.substring(5, 7), date.substring(0, 4), userGlobalState?.details?.token);
   };
   const workOrderListAPICall = async (day, month, year, token) => {
     setLoading(true);
@@ -147,8 +147,8 @@ const Dashboard = () => {
   console.log("list", listOfWO);
   // worker list api call
   useEffect(() => {
-    if (userGlobalState.details.token) {
-      workOrderListAPICall(today.getDate(), today.getMonth() + 1, today.getFullYear(), userGlobalState.details.token);
+    if (userGlobalState?.details?.token) {
+      workOrderListAPICall(today.getDate(), today.getMonth() + 1, today.getFullYear(), userGlobalState?.details?.token);
     } else {
       navigate("/");
     }
@@ -194,7 +194,7 @@ const Dashboard = () => {
                   <div className="UserIcon">
                     <img className="img-fluid" alt="img" src="/assets/UserIcon.png" />
                   </div>
-                  <span>Hi, {capitalizeEachWord(userGlobalState.details.name)}</span>
+                  <span>Hi, {capitalizeEachWord(userGlobalState?.details?.name)}</span>
                 </div>
 
                 <div className="CompanyIcon">
