@@ -22,6 +22,7 @@ function Remarks() {
   // API Call for details
   const getCommentListAPICall = async (id, token) => {
     setLoading(true);
+
     const result = await getCommentList(id, token);
     console.log("result", result);
     setLoading(false);
@@ -40,7 +41,7 @@ function Remarks() {
   }, []);
   console.log(originalApiCommentDetails);
   const handleAddComment = async (values) => {
-    setLoading(true);
+    // setLoading(true);
     const result = await addComment(userGlobalState.workerOrderId, values.comment, userGlobalState.details.token);
     if (!result.error) {
       getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
@@ -56,6 +57,8 @@ function Remarks() {
 
   const scrollToBottom = () => {
     endRef.current.scrollIntoView();
+    // endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
   };
   return (
     <>

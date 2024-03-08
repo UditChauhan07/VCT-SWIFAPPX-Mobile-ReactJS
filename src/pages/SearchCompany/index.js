@@ -3,7 +3,7 @@ import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getCompaniesList } from "../../api/company";
-import { getCompanyId, topBarPermission } from "../../redux/company/company.actions";
+import { getCompanyId, taxValueOfCompany, topBarPermission } from "../../redux/company/company.actions";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -54,6 +54,7 @@ const Index = () => {
                 // console.log(option);
                 dispatch(getCompanyId(option.value));
                 dispatch(topBarPermission(companiesList.filter((ele)=>ele.id===option.value)[0].topBarPermission))
+                dispatch(taxValueOfCompany(companiesList.filter((ele)=>ele.id===option.value)[0].tax))
               }}
             />
 

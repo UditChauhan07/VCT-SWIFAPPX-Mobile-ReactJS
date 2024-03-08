@@ -157,7 +157,7 @@ const JobDetails = () => {
             </div>
             {/* leader and worker */}
             <div className={` ${Styles.InnerInfo} `}>
-              <img class="img-fluid" alt="img" src="/assets/User-pro.png" />
+              <img className="img-fluid" alt="img" src="/assets/User-pro.png" />
               <span>
                 {originalApiWODetail?.leader?.name ? <strong>{`${originalApiWODetail?.leader?.name} (TL)`}</strong> : null}
                 {originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null}
