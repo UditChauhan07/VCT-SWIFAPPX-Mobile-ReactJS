@@ -45,3 +45,23 @@ export const formatDateString = (inputDateString) => {
   }
   return formattedDate;
 };
+
+// const timestamp = "2024-03-07T23:43:05.000000Z";
+// convert (timestamp))in 11:43pm on Mar 7, 2024
+export const formatTimestamp=(timestamp)=> {
+  const dateObj = new Date(timestamp);
+
+  const formattedTime = dateObj.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+
+  const formattedDate = dateObj.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  return `${formattedTime.toLowerCase()} on ${formattedDate}`;
+}

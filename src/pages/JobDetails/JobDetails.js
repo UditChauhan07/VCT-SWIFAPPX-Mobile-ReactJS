@@ -8,7 +8,7 @@ import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAddress } from "../../redux/user/user.actions";
-import { capitalizeEachWord, formatDateString } from "../../utils/format";
+import { capitalizeEachWord, formatDateString, formatTimestamp } from "../../utils/format";
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 
@@ -331,12 +331,10 @@ const JobDetails = () => {
                             style={{ cursor: "pointer" }}
                             alt="img"
                             src="/assets/x-circle.png"
-                            onClick={
-                              () => {
-                                setActiveAdhocItem(ele);
-                                setItemRemoveModal(true);
-                              }
-                            }
+                            onClick={() => {
+                              setActiveAdhocItem(ele);
+                              setItemRemoveModal(true);
+                            }}
                           />
                           <p className="m-0">{ele?.name}</p>
                         </div>
@@ -361,6 +359,7 @@ const JobDetails = () => {
                 })}
               </>
             ) : null}
+            {/*  Add an Ad-hoc items for Above Service */}
             {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
               <div className={` ${Styles.RegularCleaning} `}>
                 <div className={` ${Styles.IconPlusCleaning} `}>
@@ -375,12 +374,27 @@ const JobDetails = () => {
               </div>
             ) : null}
             <hr></hr>
+            {/* picture heading */}
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/picture.png" />
               <h2>Pictures for the Work Order</h2>
             </div>
-            <div className={` ${Styles.PictureShow} `}>
-              <div className={` ${Styles.PictureStyleInner} `}>
+            {/* pictures */}
+            {originalApiWODetail?.gallery?.map((ele) => {
+              return (
+                <div className={` ${Styles.PictureShow} `}>
+                  <div className={` ${Styles.PictureStyleInner} `}>
+                    <img className="img-fluid" alt="img" src={ele?.name} />
+                    <div className={` ${Styles.picturText} `}>
+                     { formatTimestamp(ele?.timestamp)}
+                      <span>
+                        <button className="btn btn-btn p-0">
+                          <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                  {/* <div className={` ${Styles.PictureStyleInner} `}>
                 <img className="img-fluid" alt="img" src="/assets/click01.png" />
                 <div className={` ${Styles.picturText} `}>
                   03:35pm on 26 may 2024
@@ -390,26 +404,15 @@ const JobDetails = () => {
                     </button>
                   </span>
                 </div>
-              </div>
-              <div className={` ${Styles.PictureStyleInner} `}>
-                <img className="img-fluid" alt="img" src="/assets/click01.png" />
-                <div className={` ${Styles.picturText} `}>
-                  03:35pm on 26 may 2024
-                  <span>
-                    <button className="btn btn-btn p-0">
-                      <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" />
-                    </button>
-                  </span>
+              </div> */}
                 </div>
-              </div>
-            </div>
+              );
+            })}
 
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
-                <a href="#">
                   <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                  <p className={`m-0 ${Styles.AdHocText} `}>Add picture for work Order</p>
-                </a>
+                  <div className={`m-0 ${Styles.AdHocText} `}>Add picture for work Order</div>
               </div>
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
