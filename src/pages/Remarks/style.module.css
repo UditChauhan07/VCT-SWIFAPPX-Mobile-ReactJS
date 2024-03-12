@@ -43,7 +43,7 @@
     background-color: #F0F0F0;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    min-height: 80vh;
+    min-height: 85vh;
 }
 .ControlMain{
     height: 100px;
@@ -82,7 +82,7 @@
     /* padding: 0 20px; */
     display: flex;
     /* gap: 10px ; */
-    margin: 20px 0;
+    margin: 20px 0px 0px 0px;
 }
 .NoData{
     display: flex;
@@ -94,6 +94,7 @@
     width: 100%;
     border: 0.5px solid  #ECECEC;
     height: 55px;
+    padding: 10px;
 }
 .chatInput{
     width: 80%;
@@ -110,7 +111,7 @@
 }
 .BottomChatFixed{
     position: fixed;
-    bottom: 10px;
+    bottom: 0px;
     width: 100%;
 }
 
@@ -121,7 +122,12 @@
 }
 @media(max-width:375px){
     .Chatsend input{
-        width: 74%;
+        width: 100%;
+        border: 0.5px solid  #ECECEC;
+        height: 55px;
+    }
+    .chatInput{
+        width: 76%;
         border: 0.5px solid  #ECECEC;
         height: 55px;
     }
