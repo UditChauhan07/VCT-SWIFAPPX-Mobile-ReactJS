@@ -65,12 +65,14 @@
 
 }
 
-.PersonalInfo a {
+.PersonalInfo button {
     font-size: 18px;
     font-weight: 500;
     color: #212121;   
     margin: 0;
     padding: 12px 0 12px 0;
+    background-color: transparent;
+    border: none;
 }
 .TopControler{
     display:none;

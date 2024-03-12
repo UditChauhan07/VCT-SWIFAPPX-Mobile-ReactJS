@@ -4,13 +4,14 @@ import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
+import { getAdhocItemsList, removePicture, uploadPicture, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAddress } from "../../redux/user/user.actions";
-import { capitalizeEachWord, formatDateString, formatTimestamp } from "../../utils/format";
+import { capitalizeEachWord, convertTimeInAMPM, formatDateString, formatTimestamp } from "../../utils/format";
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
+import ModalForAuthentication from "../../components/ModalForAuthentication";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,11 @@ const JobDetails = () => {
   const [activeAdhocItem, setActiveAdhocItem] = useState();
   const [confirmServiceItem, setConfirmServiceItem] = useState(false);
   const [itemRemoveModal, setItemRemoveModal] = useState(false);
+  const [pictureUpload, setPictureUpload] = useState(false);
+  const [pictureDelete, setPictureDelete] = useState(false);
+  const [successfully, setSuccessfully] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   // modals show/hide
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -39,6 +45,9 @@ const JobDetails = () => {
   const handleQuantityModalShow = () => setQuantityModalShow(false);
   const handleQuantitySelectorClose = () => setQuantitySelector(false);
   const handleConfirmServiceModalShow = () => setConfirmServiceItem(false);
+  const handlePictureUpload = () => setPictureUpload(false);
+  const handlePictureDelete = () => setPictureDelete(false);
+  const handleSuccessfully = () => setSuccessfully(false);
 
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -46,8 +55,10 @@ const JobDetails = () => {
     const result = await workerOrderDetail(id, token);
     console.log("result", result);
     setLoading(false);
-    if (result === 401) navigate("/");
-    else {
+    if (result === 401) {
+      console.log("4777");
+      setIsAuthModalOpen(true);
+    } else {
       getAdhocItemsListApiCall(result.detail.ad_hoc_catid, userGlobalState.details.token);
       const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
         result.detail?.country ? `, ${result.detail?.country}` : ""
@@ -100,19 +111,47 @@ const JobDetails = () => {
   };
   // API Call to remove adhoc Item
   const toRemoveAdhocItemAPICall = async (item_id, accessToken) => {
-    console.log("apai");
     setLoading(true);
     const result = await removeServiceSubItem(item_id, accessToken);
-    console.log("qq", result);
     setLoading(false);
     if (result.error) navigate("/");
     else setOriginalApiWODetail(result.data);
   };
+  // API Call to Upload Picture
+  const toUploadPictureAPICall = async (item_id, file, accessToken) => {
+    setLoading(true);
+    const result = await uploadPicture(item_id, file, accessToken);
+    setLoading(false);
+    if (result.error) navigate("/");
+    else if (result.status === 400) {
+      setSuccessfully(true);
+    } else {
+      getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
+      setPictureUpload(true);
+    }
+  };
+  // API Call to remove Picture
+  const toRemovePictureAPICall = async (image_id, accessToken) => {
+    console.log("apai");
+    setLoading(true);
+    const result = await removePicture(image_id, accessToken);
+    console.log("qq", result);
+    setLoading(false);
+    if (result.error) navigate("/");
+    // else if (result.status === 400) {
+    //   setSuccessfully(true);
+    // }
+    else {
+      getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
+      setPictureDelete(true);
+    }
+  };
+
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState.workerOrderId, userGlobalState.details.token);
     } else {
-      navigate("/");
+      <ModalForAuthentication show={true} />;
     }
   }, []);
 
@@ -122,7 +161,7 @@ const JobDetails = () => {
   const handleAdhocItemChange = (option) => {
     const filteredData = originalApiWODetail?.ad_hoc_items?.sub_items?.filter((ele) => ele?.name === option.label);
     console.log(filteredData);
-    if (filteredData.length) {
+    if (filteredData?.length) {
       setAlertForSameItem(true);
       setShow(false);
     } else {
@@ -154,6 +193,19 @@ const JobDetails = () => {
     setTaskCounting(taskCounting + 1);
     setConfirmServiceItem(false);
   };
+  // Function to handle file selection
+  const handleFileChange = (event) => {
+    console.log(event.target.files[0]);
+    toUploadPictureAPICall(userGlobalState.workerOrderId, event.target.files[0], userGlobalState.details.token);
+  };
+  // Function to remove file
+  const removeImage = async (id) => {
+    await toRemovePictureAPICall(id, userGlobalState.details.token);
+    return null;
+  };
+
+  let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
+  let subTotal = Number(originalApiWODetail?.option_price + adjustmentValue);
 
   return (
     <>
@@ -221,7 +273,7 @@ const JobDetails = () => {
                 <p className="m-0">{originalApiWODetail?.option_name ?? ""}</p>
               </div>
               <div className={` ${Styles.IconPlusCleaning} `}>
-                <p className="m-0">${Number(originalApiWODetail?.option_price).toFixed(2)}</p>
+                <p className="m-0">₹{Number(originalApiWODetail?.option_price).toFixed(2)}</p>
               </div>
             </div>
             {/* adjustment */}
@@ -303,7 +355,7 @@ const JobDetails = () => {
                               <p className="m-0 me-4">{selectedFilteredServiceItem?.[0]?.quantity ?? ele?.quantity}</p>
                             )}
                           </div>
-                          <p className="m-0">${Number(Number(ele?.amount) * Number(selectedFilteredServiceItem?.[0]?.quantity ?? ele?.quantity)).toFixed(2)}</p>
+                          <p className="m-0">₹{Number(Number(ele?.amount) * Number(selectedFilteredServiceItem?.[0]?.quantity ?? ele?.quantity)).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -322,6 +374,9 @@ const JobDetails = () => {
               <>
                 {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {
                   // console.log(originalApiWODetail?.ad_hoc_items?.sub_items?.map(ele=>ele));
+                  subTotal = +subTotal + ele?.amount * ele?.quantity;
+                  console.log(subTotal);
+
                   return (
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
@@ -350,7 +405,7 @@ const JobDetails = () => {
                               {ele?.["quantity"]}
                             </button>
                           </div>
-                          <p className="m-0">${Number(ele?.amount * 1).toFixed(2)}</p>
+                          <p className="m-0">₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</p>
                         </div>
                       </div>
                       <hr></hr>
@@ -380,15 +435,16 @@ const JobDetails = () => {
               <h2>Pictures for the Work Order</h2>
             </div>
             {/* pictures */}
+
             {originalApiWODetail?.gallery?.map((ele) => {
               return (
                 <div className={` ${Styles.PictureShow} `}>
                   <div className={` ${Styles.PictureStyleInner} `}>
                     <img className="img-fluid" alt="img" src={ele?.name} />
                     <div className={` ${Styles.picturText} `}>
-                     { formatTimestamp(ele?.timestamp)}
+                      {formatTimestamp(ele?.timestamp)}
                       <span>
-                        <button className="btn btn-btn p-0">
+                        <button className="btn btn-btn p-0" onClick={() => removeImage(ele?.id)}>
                           <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
                         </button>
                       </span>
@@ -408,11 +464,16 @@ const JobDetails = () => {
                 </div>
               );
             })}
-
+            {/* Add picture for work Order */}
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
-                  <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                  <div className={`m-0 ${Styles.AdHocText} `}>Add picture for work Order</div>
+                <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
+                <div className={`m-0 ${Styles.AdHocText} `}>
+                  <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={()=>navigate("/imageCapture")}>
+                    Add picture for Work Order
+                    {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
+                  </label>
+                </div>
               </div>
             </div>
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
@@ -434,6 +495,7 @@ const JobDetails = () => {
               </Link>
             </div>
           </section>
+          {/* for total, subtotal, tax */}
           <section className={` ${Styles.bottomFixedSection} `}>
             <div className="accordion accordion-flush" id="accordionFlushExample">
               <div className="accordion-item">
@@ -450,19 +512,19 @@ const JobDetails = () => {
                 <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                   <div className="accordion-body">
                     <div className={` ${Styles.ExpendSectionTop} `}>
-                      <img className="img-fluid " src="/assets/hand-cru.png" />
+                      <img className="img-fluid " src="/assets/hand-cru.png" alt="img" />
                       <div className={` ${Styles.Totalpay} `}>
                         <p className="mb-1">
-                          Sub-Total: <strong>SGD $520.25</strong>{" "}
+                          Sub-Total: <strong>SGD ₹{Number(subTotal).toFixed(2)}</strong>
                         </p>
                         <p className="mb-1">
-                          TAX @ 20%: <strong>SGD $34.25</strong>{" "}
+                          TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(subTotal * (originalApiWODetail?.companytax / 100)).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          Discount: <strong>SGD $150.00</strong>{" "}
+                          Discount: <strong>SGD ₹{Number(originalApiWODetail?.discount_value ?? 0).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          Amount to Collect: <strong>SGD $404.67</strong>{" "}
+                          Amount to Collect: <strong>SGD ₹{Number(subTotal + subTotal * (originalApiWODetail?.companytax / 100)).toFixed(2)}</strong>{" "}
                         </p>
                       </div>
                     </div>
@@ -470,23 +532,32 @@ const JobDetails = () => {
                     <div className={` ${Styles.ExpendSectionTop} `}>
                       <div className={` ${Styles.StartExAC} `}>
                         <p className={`mb-0  ${Styles.Ex} `}>
-                          Expected Start: <strong> 02:30pm</strong>
+                          Date: <strong> {originalApiWODetail?.start_date ?? ""}</strong>
+                        </p>{" "}
+                        <p className={`mb-0  ${Styles.Ex} `}>
+                          Expected Start: <strong> {convertTimeInAMPM(originalApiWODetail?.actual_start_time) ?? ""}</strong>
                         </p>
                         <p className={`mb-0  ${Styles.Ac} `}>
-                          Actual Start: <strong> 02:30pm</strong>
+                          Actual Start: <strong>{originalApiWODetail?.ground_start_time ? convertTimeInAMPM(originalApiWODetail?.ground_start_time) : null}</strong>
                         </p>
                       </div>
                       <div className={` ${Styles.ButtonTimeClock} `}>
-                        <button className="btn btn-btn">
+                        <button className="btn btn-btn" onClick={() => navigate("/final-job-detail")}>
                           <div className={` ${Styles.ButtonInnerIconText} `}>
                             <img className="img-fluid " alt="img" src="/assets/Stop-icon.png" />
-                            01:37:45
+                            {originalApiWODetail?.workstatusname === "In Progress" ? (originalApiWODetail?.is_leader ? "Stop" : "Check Out") : null}
+                            {originalApiWODetail?.workstatusname === "Pending" ? (originalApiWODetail?.is_leader ? "Start" : "Check In") : null}
                           </div>
                         </button>
                       </div>
                     </div>
                     <div className={` ${Styles.TakePicturebutton} `}>
-                      <button className="btn btn-btn">Take Pictures for Work Order</button>
+                      <div className="btn btn-btn">
+                        <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                          Take Pictures for Work Order
+                          <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -514,6 +585,8 @@ const JobDetails = () => {
           </Modal>
         </div>
       )}
+      {/* Modal For Authentication */}
+      {isAuthModalOpen && <ModalForAuthentication show={isAuthModalOpen} />}
       {/* Modal Items Added Successfully */}
       <Modal show={adhocModalShow} onHide={handleAdhocModalClose}>
         <Modal.Header closeButton>
@@ -613,6 +686,50 @@ const JobDetails = () => {
               OK
             </button>
           </div> */}
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal picture Upload Successfully */}
+      <Modal show={pictureUpload} onHide={handlePictureUpload}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          File uploaded Successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* Modal picture delete Successfully */}
+      <Modal show={pictureDelete} onHide={handlePictureDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Image deleted Successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handlePictureDelete} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal for Successfully something*/}
+      <Modal show={successfully} onHide={handleSuccessfully}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Something went wrong. Try Again!
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
         </Modal.Body>
       </Modal>
     </>
