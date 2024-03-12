@@ -34,7 +34,7 @@ function App() {
           <Route path='/notification' element={<Notification />}/>
           <Route path='/remark' element={<Remarks />}/>
           <Route path='*' element={<NotFound />}/>
-           {/* <Route path='/i' element={<ImageCapture />}/> */}
+           <Route path='/imageCapture' element={<ImageCapture />}/>
           {/* <Route path='/sign' element={<SignaturePad />}/>  */}
         </Routes>      
     </BrowserRouter>
