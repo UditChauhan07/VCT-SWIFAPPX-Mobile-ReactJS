@@ -70,9 +70,10 @@ const Dashboard = () => {
   };
   const handleLeaderModalYes = async (values) => {
     if (userGlobalState?.details?.token) {
-      const result=await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
+      const result = await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
       setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      navigate("/job-details");
     } else {
       alert("Token expired. Login Again");
     }
@@ -96,9 +97,8 @@ const Dashboard = () => {
     const result = await workOrderList(day, month, year, token);
     setLoading(false);
     if (result.error) {
-      navigate("/")
-    }
-    else {
+      navigate("/");
+    } else {
       setOriginalApiWOs(result.list);
       setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
     }
@@ -374,65 +374,68 @@ const Dashboard = () => {
             </div>
             <FooterNav></FooterNav>
             {/* modal for leader */}
-            {leaderModalShow?<Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
-              <Modal.Header closeButton>
-                <Modal.Title> Worker List</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <>
+            {leaderModalShow ? (
+              <Modal show={leaderModalShow} onHide={handleLeaderCloseCross}>
+                <Modal.Header closeButton>
+                  <Modal.Title> Worker List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <>
                     <Formik initialValues={initialValues} onSubmit={handleLeaderModalYes}>
-                    {({ isSubmitting }) => (
-                      <Form>
-                  {leaders.length ? (
-                        <>
-                          {leaders.map((ele) =>
-                            ele.workers.map((item, index) => {
-                              return (
-                                <div className="formCheck d-flex gap-2" key={index}>
-                                  <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
-                                  <label className="form-check-label" htmlFor={`${item.name}`}>
-                                    {item?.name}
-                                  </label>
-                                </div>
-                              );
-                            })
-                          )}
-                        </>
-                  ) : null}
+                      {({ isSubmitting }) => (
+                        <Form>
+                          {leaders.length ? (
+                            <>
+                              {leaders.map((ele) =>
+                                ele.workers.map((item, index) => {
+                                  return (
+                                    <div className="formCheck d-flex gap-2" key={index}>
+                                      <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
+                                      <label className="form-check-label" htmlFor={`${item.name}`}>
+                                        {item?.name}
+                                      </label>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </>
+                          ) : null}
 
+                          <div className="d-flex gap-5 mt-3">
+                            <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
+                              Submit
+                            </button>
+                            <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
+                              Cancel
+                            </button>
+                          </div>
+                        </Form>
+                      )}
+                    </Formik>
+                  </>
+                </Modal.Body>
+              </Modal>
+            ) : null}
+
+            {/*  Modal for worker */}
+            {show ? (
+              <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title> Work Order</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <p className="text-center">Are you sure you want to start work order?</p>
                   <div className="d-flex gap-5 mt-3">
-                    <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
-                      Submit
+                    <button variant="primary" onClick={handleModalYes} className="PurpulBtnClock w-30 btn btn-btn">
+                      Yes
                     </button>
-                    <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
-                      Cancel
+                    <button variant="primary" onClick={handleClose} className="PurpulBtnClock w-30 btn btn-btn">
+                      No
                     </button>
                   </div>
-                  </Form>
-                  )}
-                </Formik>
-                </>
-              </Modal.Body>
-            </Modal>:null}
-            
-            {/*  Modal for worker */}
-            {show?<Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title> Work Order</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <p className="text-center">Are you sure you want to start work order?</p>
-                <div className="d-flex gap-5 mt-3">
-                  <button variant="primary" onClick={handleModalYes} className="PurpulBtnClock w-30 btn btn-btn">
-                    Yes
-                  </button>
-                  <button variant="primary" onClick={handleClose} className="PurpulBtnClock w-30 btn btn-btn">
-                    No
-                  </button>
-                </div>
-              </Modal.Body>
-            </Modal>:null}
-            
+                </Modal.Body>
+              </Modal>
+            ) : null}
           </div>
         </div>
       )}
