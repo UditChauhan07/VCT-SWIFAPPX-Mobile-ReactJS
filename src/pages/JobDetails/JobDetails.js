@@ -33,9 +33,10 @@ const JobDetails = () => {
   const [itemRemoveModal, setItemRemoveModal] = useState(false);
   const [pictureUpload, setPictureUpload] = useState(false);
   const [pictureDelete, setPictureDelete] = useState(false);
+  const [pictureDeleteConfirmation, setPictureDeleteConfirmation] = useState(false);
   const [successfully, setSuccessfully] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
+  const [idOfPictureForDeletion, setIdOfPictureForDeletion] = useState();
   // modals show/hide
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -47,6 +48,7 @@ const JobDetails = () => {
   const handleConfirmServiceModalShow = () => setConfirmServiceItem(false);
   const handlePictureUpload = () => setPictureUpload(false);
   const handlePictureDelete = () => setPictureDelete(false);
+  const handlePictureDeleteConfirmationHideModal = () => setPictureDeleteConfirmation(false);
   const handleSuccessfully = () => setSuccessfully(false);
 
   // API Call for details
@@ -56,10 +58,9 @@ const JobDetails = () => {
     console.log("result", result);
     setLoading(false);
     if (result === 401) {
-      console.log("4777");
       setIsAuthModalOpen(true);
     } else {
-      getAdhocItemsListApiCall(result.detail.ad_hoc_catid, userGlobalState.details.token);
+      getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState.details.token);
       const address = `${result.detail?.block}${result.detail?.street ? `, ${result.detail?.street}` : ""}${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
         result.detail?.country ? `, ${result.detail?.country}` : ""
       }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
@@ -70,10 +71,6 @@ const JobDetails = () => {
       dispatch(getAddress(address));
     }
   };
-  // // to update added adhoc items list
-  // useEffect(() => {
-  //   setSelectedAdhocItemList(originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => ele));
-  // }, [originalApiWODetail]);
 
   // API Call for getting Adhoc Items List
   const getAdhocItemsListApiCall = async (id, token) => {
@@ -201,7 +198,9 @@ const JobDetails = () => {
   // Function to remove file
   const removeImage = async (id) => {
     await toRemovePictureAPICall(id, userGlobalState.details.token);
+    setPictureDeleteConfirmation(false)
     return null;
+    
   };
 
   let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
@@ -444,7 +443,13 @@ const JobDetails = () => {
                     <div className={` ${Styles.picturText} `}>
                       {formatTimestamp(ele?.timestamp)}
                       <span>
-                        <button className="btn btn-btn p-0" onClick={() => removeImage(ele?.id)}>
+                        <button
+                          className="btn btn-btn p-0"
+                          onClick={() => {
+                            setPictureDeleteConfirmation(true);
+                            setIdOfPictureForDeletion(ele?.id);
+                          }}
+                        >
                           <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
                         </button>
                       </span>
@@ -469,7 +474,7 @@ const JobDetails = () => {
               <div className={` ${Styles.IconPlusCleaning} `}>
                 <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
                 <div className={`m-0 ${Styles.AdHocText} `}>
-                  <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={()=>navigate("/imageCapture")}>
+                  <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
                     Add picture for Work Order
                     {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                   </label>
@@ -574,7 +579,7 @@ const JobDetails = () => {
               <Select
                 className={` ${Styles.SearchBorder} `}
                 placeholder="Search items"
-                options={adhocItemsList.map((ele) => ({
+                options={adhocItemsList?.map((ele) => ({
                   value: ele?.id,
                   label: ele?.name,
                 }))}
@@ -718,7 +723,7 @@ const JobDetails = () => {
         </Modal.Body>
       </Modal>
 
-      {/* Modal for Successfully something*/}
+      {/* Modal for Unsuccessfully something*/}
       <Modal show={successfully} onHide={handleSuccessfully}>
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
@@ -728,6 +733,23 @@ const JobDetails = () => {
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
               OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* Modal for confirmation to Removal of Image Successfully */}
+      <Modal show={pictureDeleteConfirmation} onHide={handlePictureDeleteConfirmationHideModal}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Do you want to <strong>delete</strong> this picture?
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={() => removeImage(idOfPictureForDeletion)}>
+              Yes
+            </button>
+            <button variant="primary" onClick={handlePictureDeleteConfirmationHideModal} className="PurpulBtnClock w-30 btn btn-btn">
+              Cancel
             </button>
           </div>
         </Modal.Body>
