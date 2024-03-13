@@ -29,6 +29,12 @@ export const getAddress = (address) => {
     payload: address,
   };
 };
+export const logout = () => {
+  return {
+    type: actionTypes.logout,
+    // payload: address,
+  };
+};
 // export const selectedAdhocItems = (id, quantity) => {
 //   return {
 //     type: actionTypes.selectedAdhocItems,

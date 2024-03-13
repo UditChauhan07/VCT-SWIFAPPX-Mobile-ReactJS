@@ -7,8 +7,8 @@ export const userInitialState = {
   details: null,
   workerOrderId: null,
   address: null,
-  adhocItems: [],
-  serviceItems: [],
+  // adhocItems: [],
+  // serviceItems: [],
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -38,6 +38,8 @@ export const userModule = (state = userInitialState, action) => {
         ...state,
         address: action.payload,
       };
+    case actionTypes.logout:
+      return userInitialState;
     // case actionTypes.selectedAdhocItems:
     //   if (Array.isArray(state.adhocItems)) {
     //     return {

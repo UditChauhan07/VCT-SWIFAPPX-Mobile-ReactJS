@@ -23,6 +23,8 @@ export const companyModule = (state = companyInitialState, action) => {
         ...state,
         tax: action.payload,
       };
+    case actionTypes.companyLogout:
+      return companyInitialState;
     default:
       return state;
   }

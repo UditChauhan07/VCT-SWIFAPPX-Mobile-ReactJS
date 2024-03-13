@@ -58,7 +58,6 @@ function Remarks() {
   const scrollToBottom = () => {
     endRef.current.scrollIntoView();
     // endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
   };
   return (
     <>
@@ -118,15 +117,15 @@ function Remarks() {
               <div className={Styles.NoData}>No Comments.</div>
             )}
             {/* add comment section */}
-            <div style={{marginTop:"100px"}} ref={endRef}></div>
+            <div style={{ marginTop: "100px" }} ref={endRef}></div>
 
             <Formik initialValues={initialValues} onSubmit={handleAddComment} validationSchema={CommentSchema}>
               <Form>
                 <div className={Styles.BottomChatFixed}>
+                  <ErrorMessage component={TextError} name="comment"/>
                   <div className={Styles.Chatsend}>
                     <div className={Styles.chatInput}>
                       <Field type="text" placeholder="Message" name="comment" />
-                      <ErrorMessage component={TextError} name="comment" />
                     </div>
 
                     <button type="submit">
