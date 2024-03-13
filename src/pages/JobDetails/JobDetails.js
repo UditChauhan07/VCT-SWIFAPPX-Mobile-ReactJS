@@ -83,7 +83,6 @@ const JobDetails = () => {
     if (result === 401) {
       setIsAuthModalOpen(true);
     } else {
-
       getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
       const address = `${result?.detail?.block}${result?.detail?.street ? `, ${result?.detail?.street}` : ""}${result?.detail?.unit ? `, ${result?.detail?.unit}` : ""}${
         result?.detail?.country ? `, ${result?.detail?.country}` : ""
@@ -160,7 +159,6 @@ const JobDetails = () => {
       setSuccessfully(true);
     } else {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
-
       setPictureUpload(true);
     }
   };
@@ -202,7 +200,6 @@ const JobDetails = () => {
       setShow(false);
     } else {
       toAddAdhocItemAPICall(userGlobalState?.workerOrderId, adhocItemsList.filter((ele) => ele.id === option.value)?.[0]?.category_id, option.value, 1, userGlobalState?.details?.token);
-
       setTimeout(() => {
         setShow(false);
         setAdhocModalShow(true);
@@ -213,17 +210,13 @@ const JobDetails = () => {
   const handleRemoveSelectedAdhocItem = () => {
     setTaskCounting(taskCounting - 1);
     console.log(activeAdhocItem);
-
     toRemoveAdhocItemAPICall(activeAdhocItem?.id, userGlobalState?.details?.token);
-
     setItemRemoveModal(false);
   };
   const handleQuantitySelectorChangeForAdhocItems = (option) => {
     console.log("option", option);
     console.log("activeAdhocItem", activeAdhocItem);
-
     updateQuantityOfServiceSubItemAPICall(activeAdhocItem?.id, option.value, userGlobalState?.details?.token);
-
     setTimeout(() => {
       setQuantitySelector(false);
       setQuantityModalShow(true);
@@ -242,13 +235,11 @@ const JobDetails = () => {
   // Function to handle file selection
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
-
     toUploadPictureAPICall(userGlobalState?.workerOrderId, event.target.files[0], userGlobalState?.details?.token);
   };
   // Function to remove file
   const removeImage = async (id) => {
     await toRemovePictureAPICall(id, userGlobalState?.details?.token);
-
     setPictureDeleteConfirmation(false);
     return null;
   };
@@ -274,7 +265,6 @@ const JobDetails = () => {
       console.error("Error accessing camera:", error);
     }
   };
-
 
   // Function to stop capturing video
   const stopCapture = () => {
@@ -436,14 +426,12 @@ const JobDetails = () => {
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
               ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
-
                   if (ele?.checked) {
                     subTotal.current += ele?.amount * ele?.quantity;
                     tax.current = subTotal.current * (originalApiWODetail?.companytax / 100);
                     discount.current = ((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100;
                     grandTotal.current = subTotal.current + tax.current - discount.current;
                   }
-
 
                   return (
                     <>
@@ -472,9 +460,7 @@ const JobDetails = () => {
                                   onChange={() => {
                                     if (ele?.checked) {
                                     } else {
-
                                       setActiveService({ id: ele?.id, name: ele?.name, quantity: ele?.quantity, type: ele?.type, token: userGlobalState?.details?.token });
-
 
                                       setConfirmServiceItem(true);
                                     }
@@ -498,9 +484,8 @@ const JobDetails = () => {
                                 className="form-control"
                                 value={ele?.quantity}
                                 onChange={(e) => {
-
                                   updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
-                    setTaskCounting(taskCounting + 1);
+                                  setTaskCounting(taskCounting + 1);
                                   setQuantityModalShow(true);
                                 }}
                                 name={ele?.id}
@@ -516,7 +501,6 @@ const JobDetails = () => {
                             )}
                           </div>
                           <p className="m-0">₹{Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
-
                         </div>
                       </div>
                       <hr></hr>
@@ -633,11 +617,9 @@ const JobDetails = () => {
                       </span>
                     </div>
                   </div>
-
                 );
               })}
             </div>
-
             {/* Add picture for work Order */}
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
@@ -647,10 +629,8 @@ const JobDetails = () => {
                   src="/assets/plus-circle-fill.png"
                 />
                 <div className={`m-0 ${Styles.AdHocText} `}>
-
                   {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
                   <label style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}>
-
                     Add picture for Work Order
                     {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                   </label>
@@ -726,7 +706,6 @@ const JobDetails = () => {
                       />
                       <div className={` ${Styles.Totalpay} `}>
                         <p className="mb-1">
-
                           Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
                         </p>
                         <p className="mb-1">
@@ -739,7 +718,6 @@ const JobDetails = () => {
                         </p>
                         <p className="mb-1">
                           Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>{" "}
-
                         </p>
                       </div>
                     </div>
