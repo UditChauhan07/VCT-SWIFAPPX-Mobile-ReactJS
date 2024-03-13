@@ -3,17 +3,17 @@ import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 
 const ModalForAuthentication = ({ show }) => {
-    console.log("jdfdfhdefjehrfrehh");
-    console.log(show);
   const [modalShow, setModalShow] = useState(show);
   const navigate = useNavigate();
   const handleModalClose = () => {
     setModalShow(false);
     navigate("/");
   };
+  useState(() => {
+    setModalShow(true);
+  }, []);
   return (
     <>
-      {/* Modal picture delete Successfully */}
       <Modal show={modalShow} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title> Hold on!</Modal.Title>
