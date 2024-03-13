@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
@@ -53,6 +53,7 @@ const JobDetails = () => {
   const [successfully, setSuccessfully] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [idOfPictureForDeletion, setIdOfPictureForDeletion] = useState();
+  const [startCaptureState, setStartCaptureState] = useState(false);
   // modals show/hide
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -67,6 +68,11 @@ const JobDetails = () => {
   const handlePictureDeleteConfirmationHideModal = () =>
     setPictureDeleteConfirmation(false);
   const handleSuccessfully = () => setSuccessfully(false);
+  const handleCaptureClose = () => {
+    setStartCaptureState(false);
+    stopCapture();
+    // navigate("/job-details")
+  };
 
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -77,19 +83,15 @@ const JobDetails = () => {
     if (result === 401) {
       setIsAuthModalOpen(true);
     } else {
-      getAdhocItemsListApiCall(
-        result?.detail?.ad_hoc_catid,
-        userGlobalState.details.token
-      );
-      const address = `${result.detail?.block}${
-        result.detail?.street ? `, ${result.detail?.street}` : ""
-      }${result.detail?.unit ? `, ${result.detail?.unit}` : ""}${
-        result.detail?.country ? `, ${result.detail?.country}` : ""
-      }${result.detail?.zip ? `, ${result.detail?.zip}` : ""}`;
-      if (result.detail?.workstatusname === "In Progress") {
+
+      getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
+      const address = `${result?.detail?.block}${result?.detail?.street ? `, ${result?.detail?.street}` : ""}${result?.detail?.unit ? `, ${result?.detail?.unit}` : ""}${
+        result?.detail?.country ? `, ${result?.detail?.country}` : ""
+      }${result?.detail?.zip ? `, ${result?.detail?.zip}` : ""}`;
+      if (result?.detail?.workstatusname === "In Progress") {
         setTaskCounting(taskCounting + 1);
       }
-      setOriginalApiWODetail(result.detail);
+      setOriginalApiWODetail(result?.detail);
       dispatch(getAddress(address));
     }
   };
@@ -99,15 +101,15 @@ const JobDetails = () => {
     setLoading(true);
     const result = await getAdhocItemsList(id, token);
     setLoading(false);
-    if (result.error) navigate("/");
-    else setAdhocItemsList(result.content);
+    if (result?.error) navigate("/");
+    else setAdhocItemsList(result?.content);
   };
   // API Call for update quantity of service sub Item
   const updateQuantityOfServiceSubItemAPICall = async (id, quantity, token) => {
     setLoading(true);
     const result = await updateQuantityOfServiceSubItem(id, quantity, token);
-    if (result.error) navigate("/");
-    else setOriginalApiWODetail(result.data);
+    if (result?.error) navigate("/");
+    else setOriginalApiWODetail(result?.data);
     setLoading(false);
   };
   // API Call to check/ finalize service sub Item
@@ -115,8 +117,8 @@ const JobDetails = () => {
     setLoading(true);
     const result = await toCheckServiceSubItem(id, quantity, type, token);
     setLoading(false);
-    if (result.error) navigate("/");
-    else setOriginalApiWODetail(result.data);
+    if (result?.error) navigate("/");
+    else setOriginalApiWODetail(result?.data);
   };
   // API Call to add adhoc Item
   const toAddAdhocItemAPICall = async (
@@ -137,30 +139,28 @@ const JobDetails = () => {
     );
     console.log("qq", result);
     setLoading(false);
-    if (result.error) navigate("/");
-    else setOriginalApiWODetail(result.data);
+    if (result?.error) navigate("/");
+    else setOriginalApiWODetail(result?.data);
   };
   // API Call to remove adhoc Item
   const toRemoveAdhocItemAPICall = async (item_id, accessToken) => {
     setLoading(true);
     const result = await removeServiceSubItem(item_id, accessToken);
     setLoading(false);
-    if (result.error) navigate("/");
-    else setOriginalApiWODetail(result.data);
+    if (result?.error) navigate("/");
+    else setOriginalApiWODetail(result?.data);
   };
   // API Call to Upload Picture
   const toUploadPictureAPICall = async (item_id, file, accessToken) => {
     setLoading(true);
     const result = await uploadPicture(item_id, file, accessToken);
     setLoading(false);
-    if (result.error) navigate("/");
-    else if (result.status === 400) {
+    if (result?.error) navigate("/");
+    else if (result?.status === 400) {
       setSuccessfully(true);
     } else {
-      getWorkerOrderDetailApiCall(
-        userGlobalState.workerOrderId,
-        userGlobalState.details.token
-      );
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+
       setPictureUpload(true);
     }
   };
@@ -171,25 +171,19 @@ const JobDetails = () => {
     const result = await removePicture(image_id, accessToken);
     console.log("qq", result);
     setLoading(false);
-    if (result.error) navigate("/");
-    // else if (result.status === 400) {
+    if (result?.error) navigate("/");
+    // else if (result?.status === 400) {
     //   setSuccessfully(true);
     // }
     else {
-      getWorkerOrderDetailApiCall(
-        userGlobalState.workerOrderId,
-        userGlobalState.details.token
-      );
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
       setPictureDelete(true);
     }
   };
 
   useEffect(() => {
     if (userGlobalState?.details?.token) {
-      getWorkerOrderDetailApiCall(
-        userGlobalState.workerOrderId,
-        userGlobalState.details.token
-      );
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
     } else {
       <ModalForAuthentication show={true} />;
     }
@@ -207,14 +201,8 @@ const JobDetails = () => {
       setAlertForSameItem(true);
       setShow(false);
     } else {
-      toAddAdhocItemAPICall(
-        userGlobalState?.workerOrderId,
-        adhocItemsList.filter((ele) => ele.id === option.value)?.[0]
-          ?.category_id,
-        option.value,
-        1,
-        userGlobalState.details.token
-      );
+      toAddAdhocItemAPICall(userGlobalState?.workerOrderId, adhocItemsList.filter((ele) => ele.id === option.value)?.[0]?.category_id, option.value, 1, userGlobalState?.details?.token);
+
       setTimeout(() => {
         setShow(false);
         setAdhocModalShow(true);
@@ -225,20 +213,17 @@ const JobDetails = () => {
   const handleRemoveSelectedAdhocItem = () => {
     setTaskCounting(taskCounting - 1);
     console.log(activeAdhocItem);
-    toRemoveAdhocItemAPICall(
-      activeAdhocItem?.id,
-      userGlobalState.details.token
-    );
+
+    toRemoveAdhocItemAPICall(activeAdhocItem?.id, userGlobalState?.details?.token);
+
     setItemRemoveModal(false);
   };
   const handleQuantitySelectorChangeForAdhocItems = (option) => {
     console.log("option", option);
     console.log("activeAdhocItem", activeAdhocItem);
-    updateQuantityOfServiceSubItemAPICall(
-      activeAdhocItem?.id,
-      option.value,
-      userGlobalState.details.token
-    );
+
+    updateQuantityOfServiceSubItemAPICall(activeAdhocItem?.id, option.value, userGlobalState?.details?.token);
+
     setTimeout(() => {
       setQuantitySelector(false);
       setQuantityModalShow(true);
@@ -257,25 +242,60 @@ const JobDetails = () => {
   // Function to handle file selection
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
-    toUploadPictureAPICall(
-      userGlobalState.workerOrderId,
-      event.target.files[0],
-      userGlobalState.details.token
-    );
+
+    toUploadPictureAPICall(userGlobalState?.workerOrderId, event.target.files[0], userGlobalState?.details?.token);
   };
   // Function to remove file
   const removeImage = async (id) => {
-    await toRemovePictureAPICall(id, userGlobalState.details.token);
+    await toRemovePictureAPICall(id, userGlobalState?.details?.token);
+
     setPictureDeleteConfirmation(false);
     return null;
   };
 
-  let adjustmentValue =
-    originalApiWODetail?.adjustment_type === "addition"
-      ? +originalApiWODetail?.adjustment_value
-      : -originalApiWODetail?.adjustment_value;
-  let subTotal = Number(originalApiWODetail?.option_price + adjustmentValue);
+  let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
+  // let subTotal = Number(originalApiWODetail?.option_price + adjustmentValue);
+  const subTotal = useRef(0);
+  subTotal.current = Number(originalApiWODetail?.option_price + adjustmentValue);
+  const tax = useRef(0);
+  const discount = useRef(0);
+  const grandTotal = useRef(0);
+  const videoRef = useRef(null);
+  const [imageData, setImageData] = useState(null);
+  const [stream, setStream] = useState(null);
+  console.log("subTotal.current", subTotal.current, originalApiWODetail?.option_price, adjustmentValue);
+  // Function to start capturing video
+  const startCapture = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      videoRef.current.srcObject = mediaStream;
+      setStream(mediaStream);
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+    }
+  };
 
+
+  // Function to stop capturing video
+  const stopCapture = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+  };
+
+  // Function to capture image
+  const captureImage = () => {
+    const video = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+    // const dataUrl = canvas.toDataURL('image/jpeg');
+    const dataUrl = canvas.toDataURL("image/png");
+    setImageData(dataUrl);
+    stopCapture(); // Stop capturing after image capture
+  };
   return (
     <>
       {loading ? (
@@ -416,10 +436,15 @@ const JobDetails = () => {
             <hr></hr>
             {originalApiWODetail?.task_list?.task?.length
               ? originalApiWODetail?.task_list?.task?.map((ele, index) => {
-                  const selectedFilteredServiceItem =
-                    userGlobalState?.serviceItems?.filter(
-                      (element) => element?.id === ele?.id
-                    );
+
+                  if (ele?.checked) {
+                    subTotal.current += ele?.amount * ele?.quantity;
+                    tax.current = subTotal.current * (originalApiWODetail?.companytax / 100);
+                    discount.current = ((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100;
+                    grandTotal.current = subTotal.current + tax.current - discount.current;
+                  }
+
+
                   return (
                     <>
                       <div
@@ -447,13 +472,9 @@ const JobDetails = () => {
                                   onChange={() => {
                                     if (ele?.checked) {
                                     } else {
-                                      setActiveService({
-                                        id: ele?.id,
-                                        name: ele?.name,
-                                        quantity: ele?.quantity,
-                                        type: ele?.type,
-                                        token: userGlobalState.details.token,
-                                      });
+
+                                      setActiveService({ id: ele?.id, name: ele?.name, quantity: ele?.quantity, type: ele?.type, token: userGlobalState?.details?.token });
+
 
                                       setConfirmServiceItem(true);
                                     }
@@ -477,12 +498,9 @@ const JobDetails = () => {
                                 className="form-control"
                                 value={ele?.quantity}
                                 onChange={(e) => {
-                                  updateQuantityOfServiceSubItemAPICall(
-                                    ele?.id,
-                                    e.target.value,
-                                    userGlobalState.details.token
-                                  );
-                                  setTaskCounting(taskCounting + 1);
+
+                                  updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
+                    setTaskCounting(taskCounting + 1);
                                   setQuantityModalShow(true);
                                 }}
                                 name={ele?.id}
@@ -494,22 +512,11 @@ const JobDetails = () => {
                                 ))}
                               </select>
                             ) : (
-                              <p className="m-0 me-4">
-                                {selectedFilteredServiceItem?.[0]?.quantity ??
-                                  ele?.quantity}
-                              </p>
+                              <p className="m-0 me-4">{ele?.quantity}</p>
                             )}
                           </div>
-                          <p className="m-0">
-                            ₹
-                            {Number(
-                              Number(ele?.amount) *
-                                Number(
-                                  selectedFilteredServiceItem?.[0]?.quantity ??
-                                    ele?.quantity
-                                )
-                            ).toFixed(2)}
-                          </p>
+                          <p className="m-0">₹{Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+
                         </div>
                       </div>
                       <hr></hr>
@@ -532,9 +539,10 @@ const JobDetails = () => {
               <>
                 {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {
                   // console.log(originalApiWODetail?.ad_hoc_items?.sub_items?.map(ele=>ele));
-                  subTotal = +subTotal + ele?.amount * ele?.quantity;
-                  console.log(subTotal);
-
+                  subTotal.current = +subTotal.current + ele?.amount * ele?.quantity;
+                  tax.current = subTotal.current * (originalApiWODetail?.companytax / 100);
+                  discount.current = ((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100;
+                  grandTotal.current = subTotal.current + tax.current - discount.current;
                   return (
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
@@ -625,9 +633,11 @@ const JobDetails = () => {
                       </span>
                     </div>
                   </div>
+
                 );
               })}
             </div>
+
             {/* Add picture for work Order */}
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
@@ -637,17 +647,33 @@ const JobDetails = () => {
                   src="/assets/plus-circle-fill.png"
                 />
                 <div className={`m-0 ${Styles.AdHocText} `}>
-                  <label
-                    htmlFor="fileInput"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate("/imageCapture")}
-                  >
+
+                  {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
+                  <label style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}>
+
                     Add picture for Work Order
                     {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                   </label>
                 </div>
               </div>
             </div>
+            {/* for capturing image */}
+            {startCaptureState ? (
+              <>
+                <video ref={videoRef} autoPlay />
+                {imageData && <img src={imageData} alt="Captured" />}
+
+                <div className="d-flex gap-5">
+                  <button onClick={startCapture}>Start Capture</button>
+                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
+                    Capture Image
+                  </button>
+                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={handleCaptureClose}>
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : null}
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
               <Link to="/remark">
                 {originalApiWODetail?.workordercommentlist?.length ? (
@@ -700,37 +726,20 @@ const JobDetails = () => {
                       />
                       <div className={` ${Styles.Totalpay} `}>
                         <p className="mb-1">
-                          Sub-Total:{" "}
-                          <strong>SGD ₹{Number(subTotal).toFixed(2)}</strong>
+
+                          Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
                         </p>
                         <p className="mb-1">
-                          TAX @ {originalApiWODetail?.companytax}%:{" "}
-                          <strong>
-                            SGD ₹
-                            {Number(
-                              subTotal * (originalApiWODetail?.companytax / 100)
-                            ).toFixed(2)}
-                          </strong>{" "}
+                          {console.log("tax", tax.current, subTotal.current, originalApiWODetail?.companytax / 100)}
+                          TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(subTotal.current * (originalApiWODetail?.companytax / 100)).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          Discount:{" "}
-                          <strong>
-                            SGD ₹
-                            {Number(
-                              originalApiWODetail?.discount_value ?? 0
-                            ).toFixed(2)}
-                          </strong>{" "}
+                          Discount @ {originalApiWODetail?.discount_value ?? 0}%:{" "}
+                          <strong>SGD ₹{Number(((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          Amount to Collect:{" "}
-                          <strong>
-                            SGD ₹
-                            {Number(
-                              subTotal +
-                                subTotal *
-                                  (originalApiWODetail?.companytax / 100)
-                            ).toFixed(2)}
-                          </strong>{" "}
+                          Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>{" "}
+
                         </p>
                       </div>
                     </div>
@@ -743,9 +752,11 @@ const JobDetails = () => {
                         <p className={`mb-0  ${Styles.Ex} `}>
                           Expected Start: <strong> {convertTimeInAMPM(originalApiWODetail?.actual_start_time) ?? ""}</strong>
                         </p>
-                        <p className={`mb-0  ${Styles.Ac} `}>
-                          Actual Start: <strong>{originalApiWODetail?.ground_start_time ? convertTimeInAMPM(originalApiWODetail?.ground_start_time) : null}</strong>
-                        </p>
+                        {originalApiWODetail?.workstatusname === "In Progress" ? (
+                          <p className={`mb-0  ${Styles.Ac} `}>
+                            Actual Start: <strong>{originalApiWODetail?.ground_start_time ? convertTimeInAMPM(originalApiWODetail?.ground_start_time) : null}</strong>
+                          </p>
+                        ) : null}
                       </div>
                       <div className={` ${Styles.ButtonTimeClock} `}>
                         <button className="btn btn-btn" onClick={() => navigate("/final-job-detail")}>
@@ -1058,6 +1069,25 @@ const JobDetails = () => {
           </div>
         </Modal.Body>
       </Modal>
+      {/* <Modal show={startCaptureState} onHide={handleCaptureClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Capturing</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <video ref={videoRef} autoPlay />
+          {imageData && <img src={imageData} alt="Captured" />}
+
+          <div className="d-flex gap-5 mt-3">
+            <button onClick={startCapture}>Start Capture</button>
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
+              Capture Image
+            </button>
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={handleCaptureClose}>
+              Cancel
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal> */}
     </>
   );
 };
