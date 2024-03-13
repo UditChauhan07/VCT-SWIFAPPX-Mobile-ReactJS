@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Modal } from "react-bootstrap";
 
-const CameraApp = () => {
+const CameraApp = ({ show }) => {
+  const [showModal, setShowModal] = useState(show);
   const videoRef = useRef(null);
   const [imageData, setImageData] = useState(null);
   const [stream, setStream] = useState(null);
@@ -23,7 +25,10 @@ const CameraApp = () => {
       setStream(null);
     }
   };
-
+  const handleOnHide = () => {
+    setShowModal(false);
+    stopCapture();
+  };
   // Function to capture image
   const captureImage = () => {
     const video = videoRef.current;
@@ -36,13 +41,32 @@ const CameraApp = () => {
     setImageData(dataUrl);
     stopCapture(); // Stop capturing after image capture
   };
+  useEffect(() => {
+    startCapture();
+  }, []);
   console.log(imageData);
   return (
     <div>
-      <video ref={videoRef} autoPlay />
-      <button onClick={startCapture}>Start Capture</button>
-      <button onClick={captureImage}>Capture Image</button>
-      {imageData && <img src={imageData} alt="Captured" />}
+      <Modal show={showModal} onHide={handleOnHide}>
+        <Modal.Header closeButton>
+          <Modal.Title> Capturing</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <video ref={videoRef} autoPlay />
+          {imageData && <img src={imageData} alt="Captured" />}
+
+          <div className="d-flex gap-5 mt-3">
+            {/* <button onClick={startCapture}>Start Capture</button> */}
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
+              Capture Image
+            </button>
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={handleOnHide}>
+              Cancel
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* <button onClick={captureImage}>Capture Image</button> */}
     </div>
   );
 };
