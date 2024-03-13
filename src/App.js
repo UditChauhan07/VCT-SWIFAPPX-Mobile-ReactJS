@@ -30,9 +30,9 @@ function App() {
           <Route path='/job-details' element={<JobDetails />} />
           <Route path='/final-job-detail' element={<FinalJobDetail />} />
           <Route path='/signature-screen' element={<SignatureScreen />} />
-          <Route path='/history' element={<HistoryDetail />} />
+          {/* <Route path='/history' element={<HistoryDetail />} /> */}
           <Route path='/profile' element={<Profile />} />
-          <Route path='/notification' element={<Notification />}/>
+          {/* <Route path='/notification' element={<Notification />}/> */}
           <Route path='/remark' element={<Remarks />}/>
            <Route path='/imageCapture' element={<ImageCapture />}/>
            <Route path='/edit-details' element={<EditDetail />}/>

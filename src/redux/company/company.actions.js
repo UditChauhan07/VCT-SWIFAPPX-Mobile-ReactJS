@@ -17,3 +17,8 @@ export const taxValueOfCompany=(value)=>{
         payload:value,
     }
 }
+export const companyLogout=()=>{
+    return{
+        type: actionTypes.companyLogout,
+    }
+}

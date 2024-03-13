@@ -73,3 +73,21 @@ export const removeServiceSubItem = async (id, accessToken) => {
     }
   }
 };
+export const stopWorkOrder = async (workorder_id, time, accessToken) => {
+  try {
+    const response = await axios.post(`${live}/wxWorkOrderWorkersFinish`, { workorder_id, time }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log("Error", error.message);
+    }
+  }
+};
