@@ -620,10 +620,6 @@ const JobDetails = () => {
                 );
               })}
             </div>
-                  </div>
-                </div>
-              );
-            })}
             {/* Add picture for work Order */}
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>

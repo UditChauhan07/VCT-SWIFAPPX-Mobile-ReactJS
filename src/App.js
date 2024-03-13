@@ -34,10 +34,10 @@ function App() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/notification' element={<Notification />}/>
           <Route path='/remark' element={<Remarks />}/>
-          <Route path='*' element={<NotFound />}/>
            <Route path='/imageCapture' element={<ImageCapture />}/>
            <Route path='/edit-details' element={<EditDetail />}/>
           {/* <Route path='/sign' element={<SignaturePad />}/>  */}
+          <Route path='*' element={<NotFound />}/>
         </Routes>      
     </BrowserRouter>
   );

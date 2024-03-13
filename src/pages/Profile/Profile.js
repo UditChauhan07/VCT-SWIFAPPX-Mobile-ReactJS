@@ -3,11 +3,15 @@ import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import { useSelector } from "react-redux";
 import { capitalizeEachWord } from "../../utils/format";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {
   const userGlobalState = useSelector((state) => state.userModule);
-  const [edit, setEdit] = useState(false);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("persist:root");
+    navigate("/");
+  };
   return (
     <div>
       <div className={Styles.TopControler}>
@@ -28,9 +32,7 @@ function Profile() {
                 />
               </div>
               <div>
-                <span className={Styles.ProfileEmail}>
-                  {userGlobalState?.details?.email}
-                </span>
+                <span className={Styles.ProfileEmail}>{userGlobalState?.details?.email}</span>
                 {/* <br />
                 <span className={Styles.ProfilePoints}> 208 Points</span> */}
               </div>
@@ -57,10 +59,8 @@ function Profile() {
               <div className={Styles.EditImg}>
                 <img src="/assets/Edit_fill.svg" alt="img" />
               </div>
-              <Link to="/edit-details">              
-                <button onClick={() => setEdit(true)}>
-                  Edit Login Details
-                </button>
+              <Link to="/edit-details">
+                <button>Edit Login Details</button>
               </Link>
             </div>
             <hr></hr>
@@ -70,7 +70,7 @@ function Profile() {
                 <img src="/assets/Sign_out_squre.svg" alt="img" />
               </div>
 
-              <button> Logout</button>
+              <button onClick={handleLogout}> Logout</button>
             </div>
           </div>
         </div>
