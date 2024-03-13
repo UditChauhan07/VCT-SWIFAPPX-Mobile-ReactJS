@@ -249,3 +249,30 @@ export const getWorkerProfile = async (accessToken) => {
     }
   }
 };
+export const editWorkerProfile = async (name, contact, address, accessToken) => {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("contact", contact);
+  formData.append("address", address);
+  console.log(formData);
+  try {
+    const response = await axios.post(`${live}/UserProfile`, formData, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+  }
+};
