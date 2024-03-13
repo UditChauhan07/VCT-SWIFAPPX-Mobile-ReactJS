@@ -210,6 +210,16 @@
 hr {
   margin: 0.5rem 0;
 }
+.Pur{
+  font-weight: 600;
+  color: #6f00c5;
+  font-size: 16px;
+
+}
+.ContactNoSection .Ex{
+  font-size: 14px;
+  color: #2F2F2F;
+}
 
 @media (min-width: 769px) {
   .ddnone {
