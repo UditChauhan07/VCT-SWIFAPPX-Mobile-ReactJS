@@ -16,6 +16,7 @@ import Remarks from './pages/Remarks/Remarks';
 import ImageCapture from './pages/PictureUploading/ImageCapture';
 import SignaturePad from './components/SignaturePad';
 import NotFound from './pages/NotFound/NotFound';
+import EditDetail from './pages/EditDetail/EditDetail';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path='/remark' element={<Remarks />}/>
           <Route path='*' element={<NotFound />}/>
            <Route path='/imageCapture' element={<ImageCapture />}/>
+           <Route path='/edit-details' element={<EditDetail />}/>
           {/* <Route path='/sign' element={<SignaturePad />}/>  */}
         </Routes>      
     </BrowserRouter>

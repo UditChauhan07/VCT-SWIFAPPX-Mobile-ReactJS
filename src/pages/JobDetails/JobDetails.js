@@ -435,9 +435,9 @@ const JobDetails = () => {
             </div>
             {/* pictures */}
 
+            <div className={` ${Styles.PictureShow} `}>
             {originalApiWODetail?.gallery?.map((ele) => {
               return (
-                <div className={` ${Styles.PictureShow} `}>
                   <div className={` ${Styles.PictureStyleInner} `}>
                     <img className="img-fluid" alt="img" src={ele?.name} />
                     <div className={` ${Styles.picturText} `}>
@@ -455,20 +455,10 @@ const JobDetails = () => {
                       </span>
                     </div>
                   </div>
-                  {/* <div className={` ${Styles.PictureStyleInner} `}>
-                <img className="img-fluid" alt="img" src="/assets/click01.png" />
-                <div className={` ${Styles.picturText} `}>
-                  03:35pm on 26 may 2024
-                  <span>
-                    <button className="btn btn-btn p-0">
-                      <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" />
-                    </button>
-                  </span>
-                </div>
-              </div> */}
-                </div>
+                
               );
             })}
+            </div>
             {/* Add picture for work Order */}
             <div className={`  ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
