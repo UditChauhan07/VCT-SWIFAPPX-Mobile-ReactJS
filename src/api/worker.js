@@ -30,11 +30,7 @@ export const workerLogin = async (userName, password, company_id) => {
 };
 export const workOrderList = async (day, month, year, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxWorkerOrderList`,
-      { day: `${day}`, month: `${month}`, year: `${year}` },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxWorkerOrderList`, { day: `${day}`, month: `${month}`, year: `${year}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -53,17 +49,9 @@ export const workOrderList = async (day, month, year, accessToken) => {
     }
   }
 };
-export const workOrderWorkersStart = async (
-  workorder_id,
-  time,
-  accessToken
-) => {
+export const workOrderWorkersStart = async (workorder_id, time, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxWorkOrderWorkersStart`,
-      { workorder_id: `${workorder_id}`, time: `${time}` },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxWorkOrderWorkersStart`, { workorder_id: `${workorder_id}`, time: `${time}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -83,12 +71,7 @@ export const workOrderWorkersStart = async (
     }
   }
 };
-export const workOrderWorkersStartLeader = async (
-  workorder_id,
-  time,
-  accessToken,
-  workers
-) => {
+export const workOrderWorkersStartLeader = async (workorder_id, time, accessToken, workers) => {
   try {
     const response = await axios.post(
       `${live}/wxWorkOrderWorkersStart`,
@@ -116,11 +99,7 @@ export const workOrderWorkersStartLeader = async (
 };
 export const workerOrderDetail = async (id, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxWorkerOrderDetail`,
-      { id: `${id}` },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxWorkerOrderDetail`, { id: `${id}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -141,11 +120,7 @@ export const workerOrderDetail = async (id, accessToken) => {
 };
 export const getCommentList = async (id, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxWorkorderCommentlist`,
-      { workorder_id: `${id}` },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxWorkorderCommentlist`, { workorder_id: `${id}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -167,11 +142,7 @@ export const getCommentList = async (id, accessToken) => {
 };
 export const addComment = async (id, comment, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxAddWorkorderComment`,
-      { workorder_id: `${id}`, comment },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxAddWorkorderComment`, { workorder_id: `${id}`, comment }, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -193,11 +164,7 @@ export const addComment = async (id, comment, accessToken) => {
 };
 export const getAdhocItemsList = async (id, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxAdHocItems`,
-      { ad_hoc_catid: `${id}` },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxAdHocItems`, { ad_hoc_catid: `${id}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
     // console.log(response.data);
     return response.data;
   } catch (error) {
@@ -219,6 +186,7 @@ export const getAdhocItemsList = async (id, accessToken) => {
 };
 export const uploadPicture = async (workorder_id, file, accessToken) => {
   try {
+    console.log(workorder_id, file, accessToken);
     const formData = new FormData();
     formData.append("workorder_id", workorder_id);
     formData.append("file", file);
@@ -236,7 +204,7 @@ export const uploadPicture = async (workorder_id, file, accessToken) => {
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
-      return error.response;
+      return error.response.status;
     } else if (error.request) {
       console.log(error.request);
     } else {
@@ -246,11 +214,7 @@ export const uploadPicture = async (workorder_id, file, accessToken) => {
 };
 export const removePicture = async (image_id, accessToken) => {
   try {
-    const response = await axios.post(
-      `${live}/wxuploadRemoveImage`,
-      { id: image_id },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const response = await axios.post(`${live}/wxuploadRemoveImage`, { id: image_id }, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -293,13 +257,7 @@ export const getWorkerProfile = async (accessToken) => {
     }
   }
 };
-export const editWorkerProfile = async (
-  name,
-  contact,
-  address,
-  profile_image,
-  accessToken
-) => {
+export const editWorkerProfile = async (name, contact, address, profile_image, accessToken) => {
   const formData = new FormData();
   formData.append("name", name);
   formData.append("contact", contact);
