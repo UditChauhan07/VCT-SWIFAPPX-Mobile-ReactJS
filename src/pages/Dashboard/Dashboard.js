@@ -69,6 +69,7 @@ const Dashboard = () => {
     setShow(false);
   };
   const handleLeaderModalYes = async (values) => {
+    dispatch(getWorkerOrderDetail(startWOId[0]));
     if (userGlobalState?.details?.token) {
       const result = await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
       setOriginalApiWOs(result?.data);
@@ -285,10 +286,10 @@ const Dashboard = () => {
               </div>
               {/* cards of WO */}
               {listOfWO.length ? (
-                listOfWO.map((ele) => {
+                listOfWO.map((ele, index) => {
                   return (
                     <>
-                      <div className="OrderCreate">
+                      <div className="OrderCreate" key={index}>
                         <div
                           onClick={() => {
                             dispatch(getWorkerOrderDetail(ele.id));
