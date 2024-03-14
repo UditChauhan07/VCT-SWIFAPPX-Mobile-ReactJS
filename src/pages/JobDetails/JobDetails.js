@@ -221,7 +221,6 @@ const JobDetails = () => {
   const videoRef = useRef(null);
   const [imageData, setImageData] = useState(null);
   const [stream, setStream] = useState(null);
-  console.log("subTotal.current", subTotal.current, originalApiWODetail?.option_price, adjustmentValue);
   // Function to start capturing video
   const startCapture = async () => {
     try {
