@@ -21,11 +21,10 @@ function Remarks() {
   };
   // API Call for details
   const getCommentListAPICall = async (id, token) => {
-    setLoading(true);
-
+    // setLoading(true);
     const result = await getCommentList(id, token);
     console.log("result", result);
-    setLoading(false);
+    // setLoading(false);
     if (result.error) {
       navigate("/");
     } else {
@@ -40,9 +39,10 @@ function Remarks() {
     }
   }, []);
   console.log(originalApiCommentDetails);
-  const handleAddComment = async (values) => {
+  const handleAddComment = async (values, actions) => {
     // setLoading(true);
     const result = await addComment(userGlobalState.workerOrderId, values.comment, userGlobalState.details.token);
+    actions.resetForm();
     if (!result.error) {
       getCommentListAPICall(userGlobalState.workerOrderId, userGlobalState.details.token);
     }
@@ -122,7 +122,7 @@ function Remarks() {
             <Formik initialValues={initialValues} onSubmit={handleAddComment} validationSchema={CommentSchema}>
               <Form>
                 <div className={Styles.BottomChatFixed}>
-                  <ErrorMessage component={TextError} name="comment"/>
+                  <ErrorMessage component={TextError} name="comment" />
                   <div className={Styles.Chatsend}>
                     <div className={Styles.chatInput}>
                       <Field type="text" placeholder="Message" name="comment" />
