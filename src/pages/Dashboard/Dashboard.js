@@ -3,10 +3,18 @@ import "./style.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } from "../../api/worker";
+import {
+  workOrderList,
+  workOrderWorkersStart,
+  workOrderWorkersStartLeader,
+} from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
-import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
+import {
+  capitalizeEachWord,
+  getCurrentTime,
+  getDateAfterNoOfDays,
+} from "../../utils/format";
 import { getWorkerOrderDetail } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
@@ -60,7 +68,11 @@ const Dashboard = () => {
   };
   const handleModalYes = () => {
     if (userGlobalState?.details?.token) {
-      workOrderWorkersStartAPICall(startWOId[0], getCurrentTime(), userGlobalState?.details?.token);
+      workOrderWorkersStartAPICall(
+        startWOId[0],
+        getCurrentTime(),
+        userGlobalState?.details?.token
+      );
     } else {
       alert("Token expired. Login Again");
     }
@@ -71,9 +83,18 @@ const Dashboard = () => {
   const handleLeaderModalYes = async (values) => {
     dispatch(getWorkerOrderDetail(startWOId[0]));
     if (userGlobalState?.details?.token) {
-      const result = await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
+      const result = await workOrderWorkersStartLeader(
+        startWOId[0],
+        getCurrentTime(),
+        userGlobalState?.details?.token,
+        values.workers
+      );
       setOriginalApiWOs(result?.data);
-      setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      setListOfWO(
+        result?.data?.filter(
+          (ele) => ele.workstatus === 1 || ele.workstatus === 2
+        )
+      );
       navigate("/job-details");
     } else {
       alert("Token expired. Login Again");
@@ -91,7 +112,12 @@ const Dashboard = () => {
   const handleDateClick = (date) => {
     console.log("date", date);
     setActiveDate(date);
-    workOrderListAPICall(date.substring(8), date.substring(5, 7), date.substring(0, 4), userGlobalState?.details?.token);
+    workOrderListAPICall(
+      date.substring(8),
+      date.substring(5, 7),
+      date.substring(0, 4),
+      userGlobalState?.details?.token
+    );
   };
   const workOrderListAPICall = async (day, month, year, token) => {
     setLoading(true);
@@ -101,7 +127,11 @@ const Dashboard = () => {
       navigate("/");
     } else {
       setOriginalApiWOs(result.list);
-      setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      setListOfWO(
+        originalApiWOs?.filter(
+          (ele) => ele.workstatus === 1 || ele.workstatus === 2
+        )
+      );
     }
   };
   const workOrderWorkersStartAPICall = async (wo_id, time, token) => {
@@ -111,13 +141,21 @@ const Dashboard = () => {
     if (result.error) alert(result.message);
     else {
       setOriginalApiWOs(result?.data);
-      setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      setListOfWO(
+        result?.data?.filter(
+          (ele) => ele.workstatus === 1 || ele.workstatus === 2
+        )
+      );
     }
   };
   useEffect(() => {
     switch (activeIndex) {
       case 0:
-        setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+        setListOfWO(
+          originalApiWOs?.filter(
+            (ele) => ele.workstatus === 1 || ele.workstatus === 2
+          )
+        );
         break;
       case 1:
         setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 5));
@@ -149,14 +187,21 @@ const Dashboard = () => {
   // worker list api call
   useEffect(() => {
     if (userGlobalState?.details?.token) {
-      workOrderListAPICall(today.getDate(), today.getMonth() + 1, today.getFullYear(), userGlobalState?.details?.token);
+      workOrderListAPICall(
+        today.getDate(),
+        today.getMonth() + 1,
+        today.getFullYear(),
+        userGlobalState?.details?.token
+      );
     } else {
       navigate("/");
     }
   }, []);
 
   const pendingWO = useMemo(() => {
-    return originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2).length;
+    return originalApiWOs?.filter(
+      (ele) => ele.workstatus === 1 || ele.workstatus === 2
+    ).length;
   }, [originalApiWOs]);
   const cancelWO = useMemo(() => {
     return originalApiWOs?.filter((ele) => ele.workstatus === 5).length;
@@ -179,7 +224,9 @@ const Dashboard = () => {
     ).length;
   }, [originalApiWOs]);
   const leaders = useMemo(() => {
-    return originalApiWOs?.filter((ele) => ele?.id === startWOId[0] && ele?.is_leader === true);
+    return originalApiWOs?.filter(
+      (ele) => ele?.id === startWOId[0] && ele?.is_leader === true
+    );
   }, [originalApiWOs, startWOId]);
   return (
     <>
@@ -193,13 +240,23 @@ const Dashboard = () => {
               <div className="userName">
                 <div className="UserProfile">
                   <div className="UserIcon">
-                    <img className="img-fluid" alt="img" src="/assets/UserIcon.png" />
+                    <img
+                      className="img-fluid"
+                      alt="img"
+                      src={userGlobalState?.details?.profile_image}
+                    />
                   </div>
-                  <span>Hi, {capitalizeEachWord(userGlobalState?.details?.name)}</span>
+                  <span>
+                    Hi, {capitalizeEachWord(userGlobalState?.details?.name)}
+                  </span>
                 </div>
 
                 <div className="CompanyIcon">
-                  <img className="img-fluid" alt="img" src="/assets/Swif-logo.png" />
+                  <img
+                    className="img-fluid"
+                    alt="img"
+                    src="/assets/Swif-logo.png"
+                  />
                 </div>
               </div>
             </div>
@@ -214,42 +271,123 @@ const Dashboard = () => {
                   {/* calender dates */}
                   <div className="WeeklyCal">
                     <div
-                      className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
+                      className={`DayDate ${
+                        activeDate === getDateAfterNoOfDays(0) ? "Active" : null
+                      }`}
                       id={getDateAfterNoOfDays(0).substring(8)}
                       onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
                     >
-                      <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
-                      <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
+                      <p className="WeekDay">
+                        {getDayOfWeek(getDateAfterNoOfDays(0))}
+                      </p>
+                      <p className="WeekDate">
+                        {getDateAfterNoOfDays(0).substring(8)}
+                      </p>
                     </div>
                     {companyGlobalState.topBarPermission ? (
                       <>
                         <div
-                          className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(1)
+                              ? "Active"
+                              : null
+                          }`}
                           id={getDateAfterNoOfDays(1).substring(8)}
-                          onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(1))
+                          }
                         >
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(1))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(1).substring(8)}
+                          </p>
                         </div>
-                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
+                        <div
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(2)
+                              ? "Active"
+                              : null
+                          }`}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(2))
+                          }
+                        >
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(2))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(2).substring(8)}
+                          </p>
                         </div>
-                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
+                        <div
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(3)
+                              ? "Active"
+                              : null
+                          }`}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(3))
+                          }
+                        >
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(3))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(3).substring(8)}
+                          </p>
                         </div>
-                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
+                        <div
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(4)
+                              ? "Active"
+                              : null
+                          }`}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(4))
+                          }
+                        >
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(4))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(4).substring(8)}
+                          </p>
                         </div>
-                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
+                        <div
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(5)
+                              ? "Active"
+                              : null
+                          }`}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(5))
+                          }
+                        >
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(5))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(5).substring(8)}
+                          </p>
                         </div>
-                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
-                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
-                          <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
+                        <div
+                          className={`DayDate ${
+                            activeDate === getDateAfterNoOfDays(6)
+                              ? "Active"
+                              : null
+                          }`}
+                          onClick={() =>
+                            handleDateClick(getDateAfterNoOfDays(6))
+                          }
+                        >
+                          <p className="WeekDay">
+                            {getDayOfWeek(getDateAfterNoOfDays(6))}
+                          </p>
+                          <p className="WeekDate">
+                            {getDateAfterNoOfDays(6).substring(8)}
+                          </p>
                         </div>
                       </>
                     ) : null}
@@ -257,26 +395,38 @@ const Dashboard = () => {
                   {/* counting of status of tasks */}
                   <div className="FourTaskShow">
                     <div className="Pending">
-                      <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
+                      <li
+                        onClick={() => handleClick(0)}
+                        className={activeIndex === 0 ? "active" : ""}
+                      >
                         <div className="YellowBg">{pendingWO}</div>
                         <p>Pending</p>
                       </li>
                     </div>
 
                     <div className="Pending">
-                      <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
+                      <li
+                        onClick={() => handleClick(1)}
+                        className={activeIndex === 1 ? "active" : ""}
+                      >
                         <div className="RedBg">{cancelWO}</div>
                         <p>Cancel</p>
                       </li>
                     </div>
                     <div className="Pending">
-                      <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
+                      <li
+                        onClick={() => handleClick(2)}
+                        className={activeIndex === 2 ? "active" : ""}
+                      >
                         <div className="GreenBg">{completeWO}</div>
                         <p>Completed</p>
                       </li>
                     </div>
                     <div className="Pending">
-                      <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
+                      <li
+                        onClick={() => handleClick(3)}
+                        className={activeIndex === 3 ? "active" : ""}
+                      >
                         <div className="BlueBg">{totalWO}</div>
                         <p>Total</p>
                       </li>
@@ -300,28 +450,51 @@ const Dashboard = () => {
 
                           <div className="OrderDetailsInfo">
                             <div className="InnerInfo">
-                              <img className="img-fluid" src="/assets/call-mess.png" alt="img" />
-                              <span>{ele?.customer_contact_number ?? "N/A"}</span>
+                              <img
+                                className="img-fluid"
+                                src="/assets/call-mess.png"
+                                alt="img"
+                              />
+                              <span>
+                                {ele?.customer_contact_number ?? "N/A"}
+                              </span>
                             </div>
                             <div className="InnerInfo">
-                              <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
+                              <img
+                                className="img-fluid"
+                                alt="img"
+                                src="/assets/Home_icon.png"
+                              />
                               <span>{ele?.customer_address ?? "N/A"}</span>
                             </div>
                             <div className="InnerInfo">
-                              <img className="img-fluid" alt="img" src="/assets/Read-icon.png" />
+                              <img
+                                className="img-fluid"
+                                alt="img"
+                                src="/assets/Read-icon.png"
+                              />
                               <span>{ele?.service_name ?? "N/A"}</span>
                             </div>
                             <div className="ClockOrRead">
                               <div className="InnerInfo w-50">
-                                <img className="img-fluid" alt="img" src="/assets/Clock.png" />
+                                <img
+                                  className="img-fluid"
+                                  alt="img"
+                                  src="/assets/Clock.png"
+                                />
                                 <span>{ele?.expected_start_time ?? "N/A"}</span>
                               </div>
                               <div className="InnerInfo w-50">
-                                <img className="img-fluid" alt="img" src="/assets/Reading.png" />
+                                <img
+                                  className="img-fluid"
+                                  alt="img"
+                                  src="/assets/Reading.png"
+                                />
                                 <span>{ele?.contractNumber ?? "N/A"}</span>
                               </div>
                             </div>
-                            {ele?.start_date === getDateAfterNoOfDays(0) && (ele?.workstatus === 1 || ele?.workstatus === 2) ? (
+                            {ele?.start_date === getDateAfterNoOfDays(0) &&
+                            (ele?.workstatus === 1 || ele?.workstatus === 2) ? (
                               <>
                                 <div className="Bottom-button">
                                   <div className="w-40">
@@ -337,22 +510,42 @@ const Dashboard = () => {
                                       }}
                                       className="PurpulBtnClock btn btn-btn"
                                     >
-                                      <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                                      {ele?.workstatus === 1 ? (ele?.is_leader ? "Start" : "Check In") : null}
-                                      {ele?.workstatus === 2 ? (ele?.is_leader ? "Stop" : "Check Out") : null}
+                                      <img
+                                        className="img-fluid"
+                                        alt="img"
+                                        src="/assets/Clock-white.png"
+                                      />
+                                      {ele?.workstatus === 1
+                                        ? ele?.is_leader
+                                          ? "Start"
+                                          : "Check In"
+                                        : null}
+                                      {ele?.workstatus === 2
+                                        ? ele?.is_leader
+                                          ? "Stop"
+                                          : "Check Out"
+                                        : null}
                                     </button>
                                   </div>
                                   {ele?.is_leader && ele?.workstatus === 1 ? (
                                     <div className="w-30">
                                       <button className="YellowBtn btn btn-btn">
-                                        <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                                        <img
+                                          className="img-fluid"
+                                          alt="img"
+                                          src="/assets/Clock-Time.png"
+                                        />
                                       </button>
                                     </div>
                                   ) : null}
                                   {ele?.is_leader && ele?.workstatus === 1 ? (
                                     <div className="w-30">
                                       <div className="YellowBtn btn btn-btn">
-                                        <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
+                                        <img
+                                          className="img-fluid"
+                                          alt="img"
+                                          src="/assets/Anti-clock.png"
+                                        />
                                       </div>
                                     </div>
                                   ) : null}
@@ -382,7 +575,10 @@ const Dashboard = () => {
                 </Modal.Header>
                 <Modal.Body>
                   <>
-                    <Formik initialValues={initialValues} onSubmit={handleLeaderModalYes}>
+                    <Formik
+                      initialValues={initialValues}
+                      onSubmit={handleLeaderModalYes}
+                    >
                       {({ isSubmitting }) => (
                         <Form>
                           {leaders.length ? (
@@ -390,9 +586,21 @@ const Dashboard = () => {
                               {leaders.map((ele) =>
                                 ele.workers.map((item, index) => {
                                   return (
-                                    <div className="formCheck d-flex gap-2" key={index}>
-                                      <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
-                                      <label className="form-check-label" htmlFor={`${item.name}`}>
+                                    <div
+                                      className="formCheck d-flex gap-2"
+                                      key={index}
+                                    >
+                                      <Field
+                                        type="checkbox"
+                                        className="formCheckInput "
+                                        name="workers"
+                                        id={`${item.name}`}
+                                        value={`${item.worker_id}`}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`${item.name}`}
+                                      >
                                         {item?.name}
                                       </label>
                                     </div>
@@ -403,10 +611,19 @@ const Dashboard = () => {
                           ) : null}
 
                           <div className="d-flex gap-5 mt-3">
-                            <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
+                            <button
+                              variant="primary"
+                              disabled={isSubmitting}
+                              className="PurpulBtnClock w-30 btn btn-btn"
+                            >
                               Submit
                             </button>
-                            <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
+                            <button
+                              variant="primary"
+                              type="button"
+                              onClick={handleLeaderClose}
+                              className="PurpulBtnClock w-30 btn btn-btn"
+                            >
                               Cancel
                             </button>
                           </div>
@@ -425,12 +642,22 @@ const Dashboard = () => {
                   <Modal.Title> Work Order</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <p className="text-center">Are you sure you want to start work order?</p>
+                  <p className="text-center">
+                    Are you sure you want to start work order?
+                  </p>
                   <div className="d-flex gap-5 mt-3">
-                    <button variant="primary" onClick={handleModalYes} className="PurpulBtnClock w-30 btn btn-btn">
+                    <button
+                      variant="primary"
+                      onClick={handleModalYes}
+                      className="PurpulBtnClock w-30 btn btn-btn"
+                    >
                       Yes
                     </button>
-                    <button variant="primary" onClick={handleClose} className="PurpulBtnClock w-30 btn btn-btn">
+                    <button
+                      variant="primary"
+                      onClick={handleClose}
+                      className="PurpulBtnClock w-30 btn btn-btn"
+                    >
                       No
                     </button>
                   </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import { useDispatch, useSelector } from "react-redux";
-import { capitalizeEachWord } from "../../utils/format";
 import { Link, useNavigate } from "react-router-dom";
 import { persistor } from "../../redux/store";
 import { logout } from "../../redux/user/user.actions";
@@ -49,7 +48,9 @@ function Profile() {
                     />
                   </div>
                   <div>
-                    <span className={Styles.ProfileEmail}>{userGlobalState?.details?.email}</span>
+                    <span className={Styles.ProfileEmail}>
+                      {userGlobalState?.details?.email}
+                    </span>
                     {/* <br />
                 <span className={Styles.ProfilePoints}> 208 Points</span> */}
                   </div>
@@ -61,9 +62,9 @@ function Profile() {
               <h3>PERSONAL</h3>
 
               <div className={Styles.PersonalInfo}>
-                <p> {capitalizeEachWord(userGlobalState?.details?.name)}</p>
-                <p> {capitalizeEachWord(userGlobalState?.details?.gender)}</p>
-                <p> {capitalizeEachWord(userGlobalState?.details?.address)}</p>
+                <p> {userGlobalState?.details?.name}</p>
+                <p> {userGlobalState?.details?.gender}</p>
+                <p> {userGlobalState?.details?.address}</p>
                 <p> {userGlobalState?.details?.contact}</p>
               </div>
             </div>
