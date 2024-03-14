@@ -1,9 +1,9 @@
 .UserIcon {
-    height: 60px;
-    width: 60px;
+    height: 70px;
+    width: 70px;
     overflow: hidden;
-    border-radius: 200px;
-    display: inline-flex;
+    border-radius: 50%;
+    /* display: inline-flex; */
 }
 .CompanyIcon{
     height: 60px;
