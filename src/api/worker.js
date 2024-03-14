@@ -68,14 +68,13 @@ export const workOrderWorkersStart = async (workorder_id, time, accessToken) => 
   }
 };
 export const workOrderWorkersStartLeader = async (workorder_id, time, accessToken, workers) => {
-  console.log(workers);
   try {
     const response = await axios.post(
       `${live}/wxWorkOrderWorkersStart`,
       { workorder_id: `${workorder_id}`, time: `${time}`, workers: workers },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
