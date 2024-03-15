@@ -59,6 +59,8 @@ const Dashboard = () => {
     setLeaderModalShow(true);
   };
   const handleModalYes = () => {
+    dispatch(getWorkerOrderDetail(startWOId[0]));
+
     if (userGlobalState?.details?.token) {
       workOrderWorkersStartAPICall(
         startWOId[0],
@@ -66,6 +68,7 @@ const Dashboard = () => {
         new Date().toLocaleTimeString().substring(0, 8),
         userGlobalState?.details?.token
       );
+      navigate("/job-details");
     } else {
       alert("Token expired. Login Again");
     }
@@ -341,8 +344,13 @@ const Dashboard = () => {
                                             handleShow(ele?.id);
                                           }
                                         else if (ele?.workstatus === 2) {
+                                          if (ele?.is_leader) {
+                                            navigate("/job-details");
+                                          } else {
+                                            dispatch(getWorkerOrderDetail(ele.id));
+                                            navigate("/job-details");
+                                          }
                                         } else {
-                                          
                                         }
                                       }}
                                       className="PurpulBtnClock btn btn-btn"

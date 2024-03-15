@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Styles from "./styles.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
-import { capitalizeEachWord, getCurrentTime } from "../../utils/format";
+import { capitalizeEachWord } from "../../utils/format";
 import { useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import { Modal } from "react-bootstrap";
