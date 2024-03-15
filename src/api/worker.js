@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { live } from "./liveLink";
+import { generateRandomDigits } from "../utils/updation";
 
 export const workerLogin = async (userName, password, company_id) => {
   try {
@@ -185,11 +186,14 @@ export const getAdhocItemsList = async (id, accessToken) => {
   }
 };
 export const uploadPicture = async (workorder_id, file, accessToken) => {
+  const uniqueid=generateRandomDigits(6)
+  console.log(uniqueid);
   try {
     console.log(workorder_id, file, accessToken);
     const formData = new FormData();
     formData.append("workorder_id", workorder_id);
     formData.append("file", file);
+    formData.append("uniqueid", uniqueid);
     console.log(formData);
     const response = await axios.post(`${live}/wxuploadImage`, formData, {
       headers: { Authorization: `Bearer ${accessToken}` },

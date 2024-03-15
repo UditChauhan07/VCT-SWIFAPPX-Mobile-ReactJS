@@ -29,3 +29,24 @@ export const dataUrlToFile = (dataUrl, filename) => {
   const buff = Buffer.from(arr[1], "base64");
   return new File([buff], filename, { type: mime });
 };
+export const generateRandomDigits=(length) =>{
+  // Input validation (optional but recommended)
+  if (length <= 0) {
+    throw new Error('Length of random digits string must be a positive integer.');
+  }
+
+  const digits = '0123456789';
+  let result = '';
+
+  // Generate random digits using Math.random()
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * digits.length);
+    result += digits[randomIndex];
+  }
+
+  return result;
+}
+
+// Example usage:
+// const randomDigits = generateRandomDigits(6); // Get 6 random digits
+// console.log(randomDigits); // Output: Example: 521874 (may vary on each run)
