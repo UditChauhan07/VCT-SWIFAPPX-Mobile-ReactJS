@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { live } from "./liveLink";
+import { generateRandomDigits } from "../utils/updation";
 
 export const workerLogin = async (userName, password, company_id) => {
   try {
@@ -185,11 +186,14 @@ export const getAdhocItemsList = async (id, accessToken) => {
   }
 };
 export const uploadPicture = async (workorder_id, file, accessToken) => {
+  const uniqueid=generateRandomDigits(6)
+  console.log(uniqueid);
   try {
     console.log(workorder_id, file, accessToken);
     const formData = new FormData();
     formData.append("workorder_id", workorder_id);
     formData.append("file", file);
+    formData.append("uniqueid", uniqueid);
     console.log(formData);
     const response = await axios.post(`${live}/wxuploadImage`, formData, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -317,6 +321,28 @@ export const uploadSignature = async (workorder_id, file, signOffPerson, signOff
     } else if (error.request) {
       console.log(error.request);
     } else {
+      console.log("Error", error.message);
+    }
+  }
+};
+export const workOrderWorkersFinish = async (workorder_id, time, accessToken) => {
+  try {
+    const response = await axios.post(`${live}/wxWorkOrderWorkersFinish`, { workorder_id: `${workorder_id}`, time: `${time}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
       console.log("Error", error.message);
     }
   }
