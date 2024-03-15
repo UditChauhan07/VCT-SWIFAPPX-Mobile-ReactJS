@@ -38,6 +38,7 @@ const JobDetails = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [idOfPictureForDeletion, setIdOfPictureForDeletion] = useState();
   const [woStopped, setWoStopped] = useState(false);
+  const [woStoppedConfirmation, setWoStoppedConfirmation] = useState(false);
 
   // modals show/hide
   const handleClose = () => setShow(false);
@@ -55,6 +56,9 @@ const JobDetails = () => {
   const handleWoStopped = () => {
     setWoStopped(false);
     navigate("/dashboard");
+  };
+  const handleWoStoppedConfirmation = () => {
+    setWoStoppedConfirmation(false);
   };
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -469,24 +473,26 @@ const JobDetails = () => {
                     <img className="img-fluid" alt="img" src={ele?.name} />
                     <div className={` ${Styles.picturText} `}>
                       {formatTimestamp(ele?.timestamp)}
-                      <span>
-                        <button
-                          className="btn btn-btn p-0"
-                          onClick={() => {
-                            setPictureDeleteConfirmation(true);
-                            setIdOfPictureForDeletion(ele?.id);
-                          }}
-                        >
-                          <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
-                        </button>
-                      </span>
+                      {ele?.uploaded_type === 2 || ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
+                        <span>
+                          <button
+                            className="btn btn-btn p-0"
+                            onClick={() => {
+                              setPictureDeleteConfirmation(true);
+                              setIdOfPictureForDeletion(ele?.id);
+                            }}
+                          >
+                            <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
+                          </button>
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 );
               })}
             </div>
             {/* Add picture for work Order */}
-            {originalApiWODetail?.workstatusname === "In Progress" ? (
+            {originalApiWODetail?.workstatusname === "In Progress" || originalApiWODetail?.workstatusname === "Pending" ? (
               <div className={`  ${Styles.RegularCleaning} `}>
                 <div className={` ${Styles.IconPlusCleaning} `}>
                   <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
@@ -576,7 +582,7 @@ const JobDetails = () => {
                               if (originalApiWODetail?.is_leader) {
                                 navigate("/final-job-detail");
                               } else {
-                                FinishWO();
+                                setWoStoppedConfirmation(true);
                               }
                             }}
                           >
@@ -836,6 +842,24 @@ const JobDetails = () => {
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
               OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal for confirmation to stop WO */}
+      <Modal show={woStoppedConfirmation} onHide={handleWoStoppedConfirmation}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Do you want to <strong>Stop</strong> this Work Order?
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={() => FinishWO()}>
+              Yes
+            </button>
+            <button variant="primary" onClick={handleWoStoppedConfirmation} className="PurpulBtnClock w-30 btn btn-btn">
+              No
             </button>
           </div>
         </Modal.Body>
