@@ -88,35 +88,35 @@ const JobDetails = () => {
   };
   // API Call for update quantity of service sub Item
   const updateQuantityOfServiceSubItemAPICall = async (id, quantity, token) => {
-    setLoading(true);
+    // setLoading(true);
     const result = await updateQuantityOfServiceSubItem(id, quantity, token);
     if (result?.error) navigate("/");
     else setOriginalApiWODetail(result?.data);
-    setLoading(false);
+    // setLoading(false);
   };
   // API Call to check/ finalize service sub Item
   const toCheckServiceSubItemAPICall = async (id, quantity, type, token) => {
-    setLoading(true);
+    // setLoading(true);
     const result = await toCheckServiceSubItem(id, quantity, type, token);
-    setLoading(false);
+    // setLoading(false);
     if (result?.error) navigate("/");
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to add adhoc Item
   const toAddAdhocItemAPICall = async (workorder_id, category_id, item_id, quantity, accessToken) => {
     console.log("apai");
-    setLoading(true);
+    // setLoading(true);
     const result = await toAddAdhocItem(workorder_id, category_id, item_id, quantity, accessToken);
     console.log("qq", result);
-    setLoading(false);
+    // setLoading(false);
     if (result?.error) navigate("/");
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to remove adhoc Item
   const toRemoveAdhocItemAPICall = async (item_id, accessToken) => {
-    setLoading(true);
+    // setLoading(true);
     const result = await removeServiceSubItem(item_id, accessToken);
-    setLoading(false);
+    // setLoading(false);
     if (result?.error) navigate("/");
     else setOriginalApiWODetail(result?.data);
   };
@@ -136,10 +136,10 @@ const JobDetails = () => {
   // API Call to remove Picture
   const toRemovePictureAPICall = async (image_id, accessToken) => {
     console.log("apai");
-    setLoading(true);
+    // setLoading(true);
     const result = await removePicture(image_id, accessToken);
     console.log("qq", result);
-    setLoading(false);
+    // setLoa ding(false);
     if (result?.error) navigate("/");
     // else if (result?.status === 400) {
     //   setSuccessfully(true);
@@ -517,7 +517,8 @@ const JobDetails = () => {
                 <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
                 <div className={`m-0 ${Styles.AdHocText} `}>
                   {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
-                  <label style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}>
+                  {/* setStartCaptureState(true) */}
+                  <label style={{ cursor: "pointer" }} onClick={() =>navigate("/imageCapture") }>
                     Add picture for Work Order
                     {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                   </label>
@@ -624,9 +625,9 @@ const JobDetails = () => {
                     {originalApiWODetail?.workstatusname === "In Progress" ? (
                       <div className={` ${Styles.TakePicturebutton} `}>
                         <div className="btn btn-btn">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={()=>navigate("/imageCapture")}>
                             Take Pictures for Work Order
-                            <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} />
+                            {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                           </label>
                         </div>
                       </div>
