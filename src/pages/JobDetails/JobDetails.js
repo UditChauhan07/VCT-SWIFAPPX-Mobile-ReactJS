@@ -12,6 +12,7 @@ import { capitalizeEachWord, convertTimeInAMPM, formatDateString, formatTimestam
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
+import { Field, Form, Formik } from "formik";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
@@ -51,11 +52,6 @@ const JobDetails = () => {
   const handlePictureDelete = () => setPictureDelete(false);
   const handlePictureDeleteConfirmationHideModal = () => setPictureDeleteConfirmation(false);
   const handleSuccessfully = () => setSuccessfully(false);
-  const handleCaptureClose = () => {
-    setStartCaptureState(false);
-    stopCapture();
-    // navigate("/job-details")
-  };
 
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
@@ -218,40 +214,7 @@ const JobDetails = () => {
   tax.current = subTotal.current * (originalApiWODetail?.companytax / 100);
   discount.current = ((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100;
   grandTotal.current = subTotal.current + tax.current - discount.current;
-  const videoRef = useRef(null);
-  const [imageData, setImageData] = useState(null);
-  const [stream, setStream] = useState(null);
-  // Function to start capturing video
-  const startCapture = async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = mediaStream;
-      setStream(mediaStream);
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-    }
-  };
 
-  // Function to stop capturing video
-  const stopCapture = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
-    }
-  };
-
-  // Function to capture image
-  const captureImage = () => {
-    const video = videoRef.current;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-    // const dataUrl = canvas.toDataURL('image/jpeg');
-    const dataUrl = canvas.toDataURL("image/png");
-    setImageData(dataUrl);
-    stopCapture(); // Stop capturing after image capture
-  };
   return (
     <>
       {loading ? (
@@ -525,23 +488,6 @@ const JobDetails = () => {
                 </div>
               </div>
             </div>
-            {/* for capturing image */}
-            {startCaptureState ? (
-              <>
-                <video ref={videoRef} autoPlay />
-                {imageData && <img src={imageData} alt="Captured" />}
-
-                <div className="d-flex gap-5">
-                  <button onClick={startCapture}>Start Capture</button>
-                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
-                    Capture Image
-                  </button>
-                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={handleCaptureClose}>
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : null}
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
               <Link to="/remark">
                 {originalApiWODetail?.workordercommentlist?.length ? (
@@ -859,25 +805,6 @@ const JobDetails = () => {
           </div>
         </Modal.Body>
       </Modal>
-      {/* <Modal show={startCaptureState} onHide={handleCaptureClose}>
-        <Modal.Header closeButton>
-          <Modal.Title> Capturing</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <video ref={videoRef} autoPlay />
-          {imageData && <img src={imageData} alt="Captured" />}
-
-          <div className="d-flex gap-5 mt-3">
-            <button onClick={startCapture}>Start Capture</button>
-            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
-              Capture Image
-            </button>
-            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={handleCaptureClose}>
-              Cancel
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal> */}
     </>
   );
 };
