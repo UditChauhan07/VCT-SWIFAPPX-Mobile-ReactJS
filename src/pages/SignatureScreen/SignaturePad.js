@@ -1,63 +1,39 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import SignatureCanvas from "react-signature-canvas";
 import Styles from "./styles.module.css";
 
-const CustomSignaturePad = () => {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+const DigitalSignature = () => {
+  const sigCanvas = useRef(null);
+  const [isNotSignedModal, setIsNotSignedModal] = useState(false);
 
-  const startDrawing = (e) => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const { offsetX, offsetY } = e.nativeEvent;
+  const clearSignature = () => {
+    sigCanvas.current.clear();
+  };
+  const saveSignature = () => {
+    const signatureImage = sigCanvas.current.getCanvas().toDataURL("image/png");
+    // Further processing or sending the signature data (explained later)
+    if (sigCanvas.current?.isEmpty()) {
+      setIsNotSignedModal(true);
+    } else {
+      setIsNotSignedModal(true);
 
-    context.beginPath();
-    context.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
+      console.log(signatureImage);
+    }
   };
 
-  const draw = (e) => {
-    if (!isDrawing) return;
-
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const { offsetX, offsetY } = e.nativeEvent;
-
-    context.lineTo(offsetX, offsetY);
-    context.stroke();
-  };
-
-  const endDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  };
+  // console.log(sigCanvas?.current?.getCanvas()?.toDataURL("image/png"), sigCanvas.current?.isEmpty());
 
   return (
     <div>
-      <canvas
-        className={Styles.Canvas}
-        ref={canvasRef}
-        width={400}
-        height={200}
-        style={{ border: "1px solid #F0F0F0", backgroundColor: "#fff" }}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={endDrawing}
-        onMouseOut={endDrawing}
-      />
-
+      <div className="bg-white">
+        <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ width: 500, height: 200 }} />
+      </div>
       <div className={Styles.CodButton}>
-        <a onClick={clearCanvas} href="/signature-screen" className={Styles.Btn1}>
-          Clear
-        </a>
-        <a>Confirm</a>
+        <button onClick={clearSignature}>Clear Signature</button>
+        <button onClick={saveSignature}>Save Signature</button>
       </div>
     </div>
   );
 };
 
-export default CustomSignaturePad;
+export default DigitalSignature;

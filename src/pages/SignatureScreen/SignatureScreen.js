@@ -1,23 +1,46 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import Styles from "./styles.module.css";
-import SignaturePad from "./SignaturePad";
+import { Link } from "react-router-dom";
+import { WhiteBackArrow } from "../../utils/svg";
+import { capitalizeEachWord } from "../../utils/format";
+import { useSelector } from "react-redux";
+import SignatureCanvas from "react-signature-canvas";
+import { Modal } from "react-bootstrap";
 
 function SignatureScreen() {
+  const userGlobalState = useSelector((state) => state.userModule);
+  const sigCanvas = useRef(null);
+  const [isNotSignedModal, setIsNotSignedModal] = useState(false);
+  const [successfully, setSuccessfully] = useState(false);
+  const handleSuccessfully = () => setSuccessfully(false);
+
+  const clearSignature = () => {
+    sigCanvas.current.clear();
+  };
+  const saveSignature = () => {
+    const signatureImage = sigCanvas.current.getCanvas().toDataURL("image/png");
+    // Further processing or sending the signature data (explained later)
+    if (sigCanvas.current?.isEmpty()) {
+      setIsNotSignedModal(true);
+    } else {
+      setIsNotSignedModal(false);
+
+      console.log(signatureImage);
+    }
+  };
   return (
     <div>
       <div className={Styles.JobDetalTop}>
         <div className={Styles.TopSection}>
           <div className={Styles.backArrow}>
-            <a href="/final-job-detail">
-              <svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" className="css-8mmkcg">
-                <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
-              </svg>
-            </a>
+            <Link to="/final-job-detail">
+              <WhiteBackArrow />
+            </Link>
           </div>
           <div className={Styles.Greetings}>
             <p className="m-0">Thank you</p>
             <h5>
-              John, <span>kindly sign off below</span>{" "}
+              {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
             </h5>
           </div>
         </div>
@@ -31,17 +54,39 @@ function SignatureScreen() {
             <input type="text" placeholder="Enter your remarks/comment" />
 
             <label> Signature</label>
-            <SignaturePad />
+            <div className="bg-white">
+              <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ width: 500, height: 200 }} />
+            </div>
+            <div className={Styles.CodButton}>
+              <button onClick={clearSignature}>Clear Signature</button>
+              <button onClick={saveSignature}>Confirm Signature</button>
+            </div>
+            <div className={Styles.CodButton}>
+              <button onClick={clearSignature}>Submit</button>
+            </div>
           </div>
 
-          {/* 
-            <div className={Styles.CodButton}>
+          {/* <div className={Styles.CodButton}>
                     <a href='/signature-screen' className={Styles.Btn1}>Clear</a>
                     <a>Confirm</a>
 
                 </div> */}
         </div>
       </div>
+      {/* Modal for Unsuccessfully something*/}
+      <Modal show={successfully} onHide={handleSuccessfully}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Something went wrong. Try Again!
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
