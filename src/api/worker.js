@@ -291,11 +291,13 @@ export const editWorkerProfile = async (name, contact, address, profile_image, a
   }
 };
 
-export const uploadSignature = async (workorder_id, file, accessToken) => {
+export const uploadSignature = async (workorder_id, file, signOffPerson, signOffRemark, accessToken) => {
   try {
     console.log(workorder_id, file, accessToken);
     const formData = new FormData();
     formData.append("workorder_id", workorder_id);
+    formData.append("signOffRemark", signOffRemark);
+    formData.append("signOffPerson", signOffPerson);
     formData.append("file", file);
     console.log(formData);
     const response = await axios.post(`${live}/wxuploadSignature`, formData, {

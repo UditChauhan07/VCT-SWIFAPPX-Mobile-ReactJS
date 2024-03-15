@@ -105,7 +105,7 @@ const EditDetail = () => {
                 <div className={Styles.InputField}>
                   <div className="form-group">
                     <Field type="text" className="form-control" id="First" placeholder="Enter User name" name="name" />
-                    <ErrorMessage component={TextError} name="name" />
+                    <ErrorMessage component={TextError} name="name" className="mb-3"/>
                   </div>
                   <div className="form-group">
                     <Field type="text" className="form-control" id="Second" placeholder="Enter Address" name="address" />
