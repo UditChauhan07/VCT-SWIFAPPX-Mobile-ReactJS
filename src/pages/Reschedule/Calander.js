@@ -3,13 +3,13 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "./style.module.css"
 // import "./style.css"; // Assuming this is a custom CSS file
-import { WhiteBackArrow } from "../../utils/svg"; // Assuming this is a custom SVG component
 import { Link, useNavigate } from "react-router-dom";
+import { WhiteBackArrow } from "../../utils/svg";
 // import Select from "react-select";
 
 
 
-function App() {
+function Reschedule() {
    const [date, changeDate] = useState(new Date()); // State to hold the selected date
 
    // Function to update the selected date
@@ -55,4 +55,4 @@ function App() {
    );
 }
 
-export default App;
+export default Reschedule;
