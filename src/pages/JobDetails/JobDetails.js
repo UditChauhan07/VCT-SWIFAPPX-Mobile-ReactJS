@@ -289,7 +289,7 @@ const JobDetails = () => {
             <div className={` ${Styles.RegularCleaning} `}>
               <div className={` ${Styles.IconPlusCleaning} `}>
                 <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
-                <p className="m-0">{originalApiWODetail?.option_name ?? ""}</p>
+                <p className="m-0">{originalApiWODetail?.option_name ?? "N/A"}</p>
               </div>
               <div className={` ${Styles.IconPlusCleaning} `}>
                 <p className="m-0">₹{Number(originalApiWODetail?.option_price).toFixed(2)}</p>
@@ -486,19 +486,21 @@ const JobDetails = () => {
               })}
             </div>
             {/* Add picture for work Order */}
-            <div className={`  ${Styles.RegularCleaning} `}>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                <div className={`m-0 ${Styles.AdHocText} `}>
-                  {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
-                  {/* setStartCaptureState(true) */}
-                  <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
-                    Add picture for Work Order
-                    {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
-                  </label>
+            {originalApiWODetail?.workstatusname === "In Progress" ? (
+              <div className={`  ${Styles.RegularCleaning} `}>
+                <div className={` ${Styles.IconPlusCleaning} `}>
+                  <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
+                  <div className={`m-0 ${Styles.AdHocText} `}>
+                    {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
+                    {/* setStartCaptureState(true) */}
+                    <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
+                      Add picture for Work Order
+                      {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
             <div className={`mb-5 mt-2 ${Styles.AddCommnet} `}>
               <Link to="/remark">
                 {originalApiWODetail?.workordercommentlist?.length ? (
