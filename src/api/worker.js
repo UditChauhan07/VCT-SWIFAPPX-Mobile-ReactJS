@@ -186,7 +186,7 @@ export const getAdhocItemsList = async (id, accessToken) => {
   }
 };
 export const uploadPicture = async (workorder_id, file, accessToken) => {
-  const uniqueid=generateRandomDigits(6)
+  const uniqueid = generateRandomDigits(6);
   console.log(uniqueid);
   try {
     console.log(workorder_id, file, accessToken);
@@ -328,6 +328,72 @@ export const uploadSignature = async (workorder_id, file, signOffPerson, signOff
 export const workOrderWorkersFinish = async (workorder_id, time, accessToken) => {
   try {
     const response = await axios.post(`${live}/wxWorkOrderWorkersFinish`, { workorder_id: `${workorder_id}`, time: `${time}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+  }
+};
+export const workOrderCancel = async (workorder_id, accessToken) => {
+  try {
+    const response = await axios.post(`${live}/wxCancelWorkorder`, { workorder_id: `${workorder_id}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+  }
+};
+export const workOrderReschedule = async (workorder_id, date, reason, accessToken) => {
+  try {
+    const response = await axios.post(`${live}/wxWorkOrderWorkersReschedule`, { workorder_id: `${workorder_id}`, date, reason }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.data;
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+  }
+};
+export const reasonsForCancelAndReschedule = async (accessToken) => {
+  try {
+    const response = await axios.post(`${live}/getRequestReason`, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
