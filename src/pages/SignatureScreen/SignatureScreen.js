@@ -6,14 +6,23 @@ import { capitalizeEachWord } from "../../utils/format";
 import { useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import { Modal } from "react-bootstrap";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { SignatureValidationSchema } from "../../ValidationSchema/Signature";
+import TextError from "../../utils/TextError";
+import { dataUrlToFile } from "../../utils/updation";
+import { uploadSignature } from "../../api/worker";
+import Loading from "../../components/Loading";
 
 function SignatureScreen() {
   const userGlobalState = useSelector((state) => state.userModule);
   const sigCanvas = useRef(null);
   const [isNotSignedModal, setIsNotSignedModal] = useState(false);
-  const [successfully, setSuccessfully] = useState(false);
-  const handleSuccessfully = () => setSuccessfully(false);
+  const [pictureUpload, setPictureUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const handleIsNotSignedModal = () => setIsNotSignedModal(false);
+  const handlePictureUpload = () => setPictureUpload(false);
+  const file = useRef();
   const clearSignature = () => {
     sigCanvas.current.clear();
   };
@@ -24,70 +33,111 @@ function SignatureScreen() {
       setIsNotSignedModal(true);
     } else {
       setIsNotSignedModal(false);
-
-      console.log(signatureImage);
+      file.current = dataUrlToFile(signatureImage, "image.png");
+      console.log(file.current, signatureImage);
+      // console.log(signatureImage);
+    }
+  };
+  console.log(isNotSignedModal);
+  const initialValues = {
+    signOff: "",
+    remarks: "",
+  };
+  const handleSubmit = async (values) => {
+    console.log(values);
+    saveSignature();
+    if (sigCanvas.current?.isEmpty()) {
+      setIsNotSignedModal(true);
+    } else {
+      setLoading(true);
+      const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
+      console.log(result);
+      setLoading(false);
     }
   };
   return (
-    <div>
-      <div className={Styles.JobDetalTop}>
-        <div className={Styles.TopSection}>
-          <div className={Styles.backArrow}>
-            <Link to="/final-job-detail">
-              <WhiteBackArrow />
-            </Link>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div>
+          <div className={Styles.JobDetalTop}>
+            <div className={Styles.TopSection}>
+              <div className={Styles.backArrow}>
+                <Link to="/final-job-detail">
+                  <WhiteBackArrow />
+                </Link>
+              </div>
+              <div className={Styles.Greetings}>
+                <p className="m-0">Thank you</p>
+                <h5>
+                  {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>
+                </h5>
+              </div>
+            </div>
+            <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={SignatureValidationSchema}>
+              <Form>
+                <div className={Styles.BorderRadiusTop}>
+                  <div className={Styles.CodAmount}>
+                    <label> Sign off by</label>
+                    <Field type="text" placeholder="Enter your name" name="signOff" />
+                    <ErrorMessage component={TextError} name="signOff" />
+
+                    <label> Add Remarks</label>
+                    <Field type="text" placeholder="Enter your remarks/comment" name="remarks" />
+                    <ErrorMessage component={TextError} name="remarks" />
+
+                    <label> Signature</label>
+                    <div className="bg-white">
+                      <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ width: 500, height: 200 }} />
+                    </div>
+                    <div className={Styles.CodButton}>
+                      <button type="button" onClick={clearSignature}>
+                        Clear Signature
+                      </button>
+                      {/* <button type="button" onClick={saveSignature}>
+                    Confirm Signature
+                  </button> */}
+                      {/* </div>
+                <div className={Styles.CodButton}> */}
+                      <button type="submit">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </Form>
+            </Formik>
           </div>
-          <div className={Styles.Greetings}>
-            <p className="m-0">Thank you</p>
-            <h5>
-              {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
-            </h5>
-          </div>
+          {/* Modal for Unsuccessfully something*/}
+          <Modal show={isNotSignedModal} onHide={handleIsNotSignedModal}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Please do Signature!
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handleIsNotSignedModal} className="PurpulBtnClock w-30 btn btn-btn">
+                  OK
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+          {/* Modal picture Upload Successfully */}
+          <Modal show={pictureUpload} onHide={handlePictureUpload}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              File uploaded Successfully.
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
+                  OK
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
         </div>
-
-        <div className={Styles.BorderRadiusTop}>
-          <div className={Styles.CodAmount}>
-            <label> Sign off by</label>
-            <input type="text" placeholder="Enter your name" />
-
-            <label> Add Remarks</label>
-            <input type="text" placeholder="Enter your remarks/comment" />
-
-            <label> Signature</label>
-            <div className="bg-white">
-              <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ width: 500, height: 200 }} />
-            </div>
-            <div className={Styles.CodButton}>
-              <button onClick={clearSignature}>Clear Signature</button>
-              <button onClick={saveSignature}>Confirm Signature</button>
-            </div>
-            <div className={Styles.CodButton}>
-              <button onClick={clearSignature}>Submit</button>
-            </div>
-          </div>
-
-          {/* <div className={Styles.CodButton}>
-                    <a href='/signature-screen' className={Styles.Btn1}>Clear</a>
-                    <a>Confirm</a>
-
-                </div> */}
-        </div>
-      </div>
-      {/* Modal for Unsuccessfully something*/}
-      <Modal show={successfully} onHide={handleSuccessfully}>
-        <Modal.Header closeButton>
-          <Modal.Title> Alert</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Something went wrong. Try Again!
-          <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
-              OK
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-    </div>
+      )}
+    </>
   );
 }
 
