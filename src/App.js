@@ -17,6 +17,7 @@ import ImageCapture from './pages/PictureUploading/ImageCapture';
 import SignaturePad from './components/SignaturePad';
 import NotFound from './pages/NotFound/NotFound';
 import EditDetail from './pages/EditDetail/EditDetail';
+import Cancel from './pages/Cancel/Cancel';
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
           <Route path='/job-details' element={<JobDetails />} />
           <Route path='/final-job-detail' element={<FinalJobDetail />} />
           <Route path='/signature-screen' element={<SignatureScreen />} />
+          {/* <Route path='/cancel' element={<Cancel />} /> */}
+          {/* <Route path='/reschedule' element={< />} /> */}
+          
           {/* <Route path='/history' element={<HistoryDetail />} /> */}
           <Route path='/profile' element={<Profile />} />
           {/* <Route path='/notification' element={<Notification />}/> */}
