@@ -108,6 +108,13 @@ function FinalJobDetail() {
                         </td>
                         <td>₹{Number(originalApiWODetail?.noption_price).toFixed(2)}</td>
                       </tr>
+                      <tr>
+                        <th scope="row">Adjustment</th>
+                        <td>
+                          <span>(x1 Main Package)</span>{" "}
+                        </td>
+                        <td>₹{Number(adjustmentValue).toFixed(2)}</td>
+                      </tr>
                       {originalApiWODetail?.task_list?.task?.map((ele) => {
                         if (ele?.checked) {
                           subTotal.current += ele?.amount * ele?.quantity;
@@ -126,6 +133,7 @@ function FinalJobDetail() {
                             </td>
                             <td className={ele?.checked ? "" : `${Styles.uncheckLine}`}>₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</td>
                           </tr>
+                          
                         );
                       })}
                       {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {

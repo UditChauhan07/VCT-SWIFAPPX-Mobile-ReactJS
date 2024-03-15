@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import Styles from "./styles.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
-import { capitalizeEachWord } from "../../utils/format";
+import { capitalizeEachWord, getCurrentTime } from "../../utils/format";
 import { useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import { Modal } from "react-bootstrap";
@@ -10,18 +10,23 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { SignatureValidationSchema } from "../../ValidationSchema/Signature";
 import TextError from "../../utils/TextError";
 import { dataUrlToFile } from "../../utils/updation";
-import { uploadSignature } from "../../api/worker";
+import { uploadSignature, workOrderWorkersFinish } from "../../api/worker";
 import Loading from "../../components/Loading";
 
 function SignatureScreen() {
+  const navigate = useNavigate();
+
   const userGlobalState = useSelector((state) => state.userModule);
   const sigCanvas = useRef(null);
   const [isNotSignedModal, setIsNotSignedModal] = useState(false);
-  const [pictureUpload, setPictureUpload] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [woStopped, setWoStopped] = useState(false);
 
   const handleIsNotSignedModal = () => setIsNotSignedModal(false);
-  const handlePictureUpload = () => setPictureUpload(false);
+  const handleWoStopped = () => {
+    setWoStopped(false);
+    navigate("/dashboard");
+  };
   const file = useRef();
   const clearSignature = () => {
     sigCanvas.current.clear();
@@ -50,8 +55,16 @@ function SignatureScreen() {
       setIsNotSignedModal(true);
     } else {
       setLoading(true);
-      const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
+      // api for uploading WO signature
+      
+      // const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
+      
+      // api for finishing WO
+      const result = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
       console.log(result);
+      if (!result.error) {
+        setWoStopped(true);
+      }
       setLoading(false);
     }
   };
@@ -121,15 +134,15 @@ function SignatureScreen() {
               </div>
             </Modal.Body>
           </Modal>
-          {/* Modal picture Upload Successfully */}
-          <Modal show={pictureUpload} onHide={handlePictureUpload}>
+          {/* Modal WO stopped Successfully */}
+          <Modal show={woStopped} onHide={handleWoStopped}>
             <Modal.Header closeButton>
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              File uploaded Successfully.
+              Work Order completed Successfully.
               <div className="d-flex gap-5 mt-3">
-                <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
+                <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
                 </button>
               </div>
