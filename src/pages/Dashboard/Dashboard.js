@@ -60,10 +60,12 @@ const Dashboard = () => {
   };
   const handleModalYes = () => {
     if (userGlobalState?.details?.token) {
-      workOrderWorkersStartAPICall(startWOId[0], 
+      workOrderWorkersStartAPICall(
+        startWOId[0],
         // getCurrentTime(),
-        new Date().toLocaleTimeString().substring(0, 8), 
-        userGlobalState?.details?.token);
+        new Date().toLocaleTimeString().substring(0, 8),
+        userGlobalState?.details?.token
+      );
     } else {
       alert("Token expired. Login Again");
     }
@@ -332,10 +334,15 @@ const Dashboard = () => {
                                       variant="primary"
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        if (ele?.is_leader) {
-                                          handleLeaderShow(ele?.id);
+                                        if (ele?.workstatus === 1)
+                                          if (ele?.is_leader) {
+                                            handleLeaderShow(ele?.id);
+                                          } else {
+                                            handleShow(ele?.id);
+                                          }
+                                        else if (ele?.workstatus === 2) {
                                         } else {
-                                          handleShow(ele?.id);
+                                          
                                         }
                                       }}
                                       className="PurpulBtnClock btn btn-btn"

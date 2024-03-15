@@ -21,7 +21,9 @@ function SignatureScreen() {
   const [isNotSignedModal, setIsNotSignedModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [woStopped, setWoStopped] = useState(false);
+  const [isSignatureUploaded, setIsSignatureUploaded] = useState(false);
 
+  const handleIsSignatureUploaded = () => setIsSignatureUploaded(false);
   const handleIsNotSignedModal = () => setIsNotSignedModal(false);
   const handleWoStopped = () => {
     setWoStopped(false);
@@ -54,18 +56,22 @@ function SignatureScreen() {
     if (sigCanvas.current?.isEmpty()) {
       setIsNotSignedModal(true);
     } else {
-      setLoading(true);
+      // setLoading(true);
       // api for uploading WO signature
-      
-      // const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
-      
-      // api for finishing WO
-      const result = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
+      const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
       console.log(result);
-      if (!result.error) {
-        setWoStopped(true);
+      if (result?.status === 200) {
+        setIsSignatureUploaded(true);
+        // api for finishing WO
+        const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
+        console.log(resultFinishing);
+        if (!resultFinishing.error) {
+          setIsSignatureUploaded(false);
+          setWoStopped(true);
+        }
       }
-      setLoading(false);
+
+      // setLoading(false);
     }
   };
   return (
@@ -143,6 +149,20 @@ function SignatureScreen() {
               Work Order completed Successfully.
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
+                  OK
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+          {/* Modal WO sign upload Successfully */}
+          <Modal show={isSignatureUploaded} onHide={handleIsSignatureUploaded}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Signature along with details uploaded Successfully.
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handleIsSignatureUploaded} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
                 </button>
               </div>
