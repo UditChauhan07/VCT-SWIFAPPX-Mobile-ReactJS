@@ -4,7 +4,7 @@ import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { getAdhocItemsList, removePicture, uploadPicture, workerOrderDetail } from "../../api/worker";
+import { getAdhocItemsList, removePicture, uploadPicture, workOrderWorkersFinish, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAddress } from "../../redux/user/user.actions";
@@ -12,7 +12,6 @@ import { capitalizeEachWord, convertTimeInAMPM, formatDateString, formatTimestam
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
-import { Field, Form, Formik } from "formik";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
@@ -38,7 +37,8 @@ const JobDetails = () => {
   const [successfully, setSuccessfully] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [idOfPictureForDeletion, setIdOfPictureForDeletion] = useState();
-  const [startCaptureState, setStartCaptureState] = useState(false);
+  const [woStopped, setWoStopped] = useState(false);
+
   // modals show/hide
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -52,7 +52,10 @@ const JobDetails = () => {
   const handlePictureDelete = () => setPictureDelete(false);
   const handlePictureDeleteConfirmationHideModal = () => setPictureDeleteConfirmation(false);
   const handleSuccessfully = () => setSuccessfully(false);
-
+  const handleWoStopped = () => {
+    setWoStopped(false);
+    navigate("/dashboard");
+  };
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     setLoading(true);
@@ -73,7 +76,15 @@ const JobDetails = () => {
       dispatch(getAddress(address));
     }
   };
-
+  const FinishWO = async () => {
+    // api for finishing WO
+    const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
+    console.log(resultFinishing);
+    if (!resultFinishing.error) {
+      // setIsSignatureUploaded(false);
+      setWoStopped(true);
+    }
+  };
   // API Call for getting Adhoc Items List
   const getAdhocItemsListApiCall = async (id, token) => {
     setLoading(true);
@@ -481,7 +492,7 @@ const JobDetails = () => {
                 <div className={`m-0 ${Styles.AdHocText} `}>
                   {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
                   {/* setStartCaptureState(true) */}
-                  <label style={{ cursor: "pointer" }} onClick={() =>navigate("/imageCapture") }>
+                  <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
                     Add picture for Work Order
                     {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                   </label>
@@ -533,8 +544,7 @@ const JobDetails = () => {
                           TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(tax.current).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
-                          Discount @ {originalApiWODetail?.discount_value ?? 0}%:{" "}
-                          <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
+                          Discount @ {originalApiWODetail?.discount_value ?? 0}%: <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
                         </p>
                         <p className="mb-1">
                           Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>
@@ -558,7 +568,16 @@ const JobDetails = () => {
                           ) : null}
                         </div>
                         <div className={` ${Styles.ButtonTimeClock} `}>
-                          <button className="btn btn-btn" onClick={() => navigate("/final-job-detail")}>
+                          <button
+                            className="btn btn-btn"
+                            onClick={() => {
+                              if (originalApiWODetail?.is_leader) {
+                                navigate("/final-job-detail");
+                              } else {
+                                FinishWO();
+                              }
+                            }}
+                          >
                             <div className={` ${Styles.ButtonInnerIconText} `}>
                               <img className="img-fluid " alt="img" src="/assets/Stop-icon.png" />
                               {originalApiWODetail?.workstatusname === "In Progress" ? (originalApiWODetail?.is_leader ? "Stop" : "Check Out") : null}
@@ -571,7 +590,7 @@ const JobDetails = () => {
                     {originalApiWODetail?.workstatusname === "In Progress" ? (
                       <div className={` ${Styles.TakePicturebutton} `}>
                         <div className="btn btn-btn">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={()=>navigate("/imageCapture")}>
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
                             Take Pictures for Work Order
                             {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                           </label>
@@ -801,6 +820,20 @@ const JobDetails = () => {
             </button>
             <button variant="primary" onClick={handlePictureDeleteConfirmationHideModal} className="PurpulBtnClock w-30 btn btn-btn">
               Cancel
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* Modal WO stopped Successfully */}
+      <Modal show={woStopped} onHide={handleWoStopped}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Work Order completed Successfully.
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
             </button>
           </div>
         </Modal.Body>
