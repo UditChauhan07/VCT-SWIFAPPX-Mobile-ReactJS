@@ -1,26 +1,71 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Styles from "./style.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
 import { useSelector } from "react-redux";
 import { capitalizeEachWord } from "../../utils/format";
+import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 
 function FinalJobDetail() {
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
+  const [loading, setLoading] = useState(false);
+  const [adhocItemsList, setAdhocItemsList] = useState([]);
+  const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // API Call for getting Adhoc Items List
+  const getAdhocItemsListApiCall = async (id, token) => {
+    setLoading(true);
+    const result = await getAdhocItemsList(id, token);
+    setLoading(false);
+    if (result?.error) navigate("/");
+    else setAdhocItemsList(result?.content);
+  };
+  // API Call for details
+  const getWorkerOrderDetailApiCall = async (id, token) => {
+    setLoading(true);
+    const result = await workerOrderDetail(id, token);
+    console.log("result", result);
+    setLoading(false);
+    if (result === 401) {
+      setIsAuthModalOpen(true);
+    } else {
+      getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
+      if (result?.detail?.workstatusname === "In Progress") {
+      }
+      setOriginalApiWODetail(result?.detail);
+    }
+  };
+  
+  useEffect(() => {
+    if (userGlobalState?.details?.token) {
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+    } else {
+      // <ModalForAuthentication show={true} />;
+    }
+  }, []);
+  let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
+  const subTotal = useRef(0);
+  const tax = useRef(0);
+  const discount = useRef(0);
+  const grandTotal = useRef(0);
+  subTotal.current = Number(originalApiWODetail?.option_price + adjustmentValue);
+  tax.current = subTotal.current * (originalApiWODetail?.companytax / 100);
+  discount.current = ((subTotal.current + tax.current) * originalApiWODetail?.discount_value) / 100;
+  grandTotal.current = subTotal.current + tax.current - discount.current;
   return (
     <div className={Styles.JobDetalTop}>
       <div className={Styles.TopSection}>
         <div className={Styles.backArrow}>
           <Link to="/job-details">
-            <WhiteBackArrow/>
+            <WhiteBackArrow />
           </Link>
         </div>
         <div className={Styles.Greetings}>
           <p>Thank you</p>
           <h5>
-          {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
+            {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
           </h5>
         </div>
       </div>
@@ -38,14 +83,11 @@ function FinalJobDetail() {
         </div>
 
         <div className={Styles.AllJobDetails}>
-          {/* <h5>
+          <h5>
             {" "}
-            Team Details: <span>Nitin Sharma (TL), </span> <span className={Styles.Span2}>Nitin FU</span>
-          </h5> */}
-          <span>
-                {/* {originalApiWODetail?.leader?.name ? <strong>{`${originalApiWODetail?.leader?.name} (TL)`}</strong> : null}
-                {originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null} */}
-              </span>
+            Team Details: <span> {originalApiWODetail?.leader?.name ? `${originalApiWODetail?.leader?.name} (TL)` : null} </span>{" "}
+            <span className={Styles.Span2}>{originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null}</span>
+          </h5>
 
           <div className={Styles.mainServiceDetail}>
             <h3>JOB DETAILS</h3>
@@ -115,10 +157,10 @@ function FinalJobDetail() {
         </div>
 
         <div className={Styles.CodButton}>
-          <a href="/signature-screen" className={Styles.Btn1}>
+          <Link to="/signature-screen" className={Styles.Btn1}>
             Accept
-          </a>
-          <a>Decline</a>
+          </Link>
+          <Link to="/job-details">Decline</Link>
         </div>
       </div>
     </div>

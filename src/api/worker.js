@@ -290,3 +290,32 @@ export const editWorkerProfile = async (name, contact, address, profile_image, a
     }
   }
 };
+
+export const uploadSignature = async (workorder_id, file, accessToken) => {
+  try {
+    console.log(workorder_id, file, accessToken);
+    const formData = new FormData();
+    formData.append("workorder_id", workorder_id);
+    formData.append("file", file);
+    console.log(formData);
+    const response = await axios.post(`${live}/wxuploadSignature`, formData, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response);
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error.response.status;
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log("Error", error.message);
+    }
+  }
+};

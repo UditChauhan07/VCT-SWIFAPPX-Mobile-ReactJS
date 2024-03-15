@@ -80,9 +80,9 @@ const JobDetails = () => {
 
   // API Call for getting Adhoc Items List
   const getAdhocItemsListApiCall = async (id, token) => {
-    // setLoading(true);
+    setLoading(true);
     const result = await getAdhocItemsList(id, token);
-    // setLoading(false);
+    setLoading(false);
     if (result?.error) navigate("/");
     else setAdhocItemsList(result?.content);
   };
