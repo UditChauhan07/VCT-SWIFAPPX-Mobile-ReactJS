@@ -23,6 +23,12 @@ export const getWorkerOrderDetail = (id) => {
     payload: id,
   };
 };
+export const toCancelWO = (id, name) => {
+  return {
+    type: actionTypes.cancelWO,
+    payload: { id: id, customerName: name },
+  };
+};
 export const getAddress = (address) => {
   return {
     type: actionTypes.getAddress,
