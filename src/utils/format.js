@@ -74,3 +74,18 @@ export const convertTimeInAMPM = (timeString) => {
     return convertedTime;
   } else return null;
 };
+
+// convert  Wed Mar 13 2024 00:00:00 GMT+0530 (India Standard Time) into 2024-03-13
+export const convertDateIntoYYYYMMDD = (dateString) => {
+  // Parse the date string using Date object
+  const date = new Date(dateString);
+
+  // Get year, month (0-indexed), and day
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero for single-digit months
+  const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
+
+  // Format the date in YYYY-MM-DD
+  return `${year}-${month}-${day}`;
+};
+

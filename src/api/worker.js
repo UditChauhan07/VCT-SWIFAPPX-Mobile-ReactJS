@@ -392,8 +392,9 @@ export const workOrderReschedule = async (workorder_id, date, reason, accessToke
   }
 };
 export const reasonsForCancelAndReschedule = async (accessToken) => {
+  // console.log(accessToken);
   try {
-    const response = await axios.post(`${live}/getRequestReason`, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const response = await axios.post(`${live}/getRequestReason`, {},{ headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
