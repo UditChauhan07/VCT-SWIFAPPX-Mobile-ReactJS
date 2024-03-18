@@ -89,3 +89,19 @@ export const convertDateIntoYYYYMMDD = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
+// to check selected date is previous
+export const isPreviousDate = (dateString) => {
+  // Parse the date string using Date object
+  const date = new Date(dateString);
+
+  // Get today's date
+  const today = new Date();
+
+  // Set both dates to midnight (00:00:00) to avoid time zone differences affecting comparison
+  date.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  // Compare the dates (returns -1, 0, or 1)
+  return date <today;
+};
+

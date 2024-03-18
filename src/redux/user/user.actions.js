@@ -29,6 +29,12 @@ export const toCancelWO = (id, name) => {
     payload: { id: id, customerName: name },
   };
 };
+export const toRescheduleWO = (id, name) => {
+  return {
+    type: actionTypes.rescheduleWO,
+    payload: { id: id, customerName: name },
+  };
+};
 export const getAddress = (address) => {
   return {
     type: actionTypes.getAddress,
