@@ -7,7 +7,7 @@ import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } fro
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
-import { getWorkerOrderDetail, toCancelWO } from "../../redux/user/user.actions";
+import { getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
@@ -365,6 +365,7 @@ const Dashboard = () => {
                                       className="w-30"
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        dispatch(toRescheduleWO(ele?.id, ele?.customer_name));
                                         navigate("/reschedule");
                                       }}
                                     >
