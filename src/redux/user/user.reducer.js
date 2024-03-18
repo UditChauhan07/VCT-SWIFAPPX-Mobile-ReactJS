@@ -9,6 +9,7 @@ export const userInitialState = {
   address: null,
   // adhocItems: [],
   // serviceItems: [],
+  cancelWO: {},
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -37,6 +38,11 @@ export const userModule = (state = userInitialState, action) => {
       return {
         ...state,
         address: action.payload,
+      };
+    case actionTypes.cancelWO:
+      return {
+        ...state,
+        cancelWO: action.payload,
       };
     case actionTypes.logout:
       return userInitialState;
