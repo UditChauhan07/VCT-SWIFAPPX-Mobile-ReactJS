@@ -7,7 +7,7 @@ import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } fro
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
-import { getWorkerOrderDetail } from "../../redux/user/user.actions";
+import { getWorkerOrderDetail, toCancelWO } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
@@ -361,16 +361,38 @@ const Dashboard = () => {
                                     </button>
                                   </div>
                                   {ele?.is_leader && ele?.workstatus === 1 ? (
-                                    <div className="w-30">
+                                    <div
+                                      className="w-30"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate("/reschedule");
+                                      }}
+                                    >
                                       <button className="YellowBtn btn btn-btn">
                                         <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
                                       </button>
                                     </div>
                                   ) : null}
                                   {ele?.is_leader && ele?.workstatus === 1 ? (
-                                    <div className="w-30">
+                                    <div
+                                      className="w-30"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        dispatch(toCancelWO(ele?.id, ele?.customer_name));
+                                        navigate("/cancel");
+                                      }}
+                                    >
                                       <div className="YellowBtn btn btn-btn">
-                                        <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
+                                        <button
+                                          className="bg-transparent border-0"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            dispatch(toCancelWO(ele?.id, ele?.customer_name));
+                                            navigate("/cancel");
+                                          }}
+                                        >
+                                          <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
+                                        </button>
                                       </div>
                                     </div>
                                   ) : null}
