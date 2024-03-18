@@ -10,6 +10,7 @@ export const userInitialState = {
   // adhocItems: [],
   // serviceItems: [],
   cancelWO: {},
+  rescheduleWO: {},
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -43,6 +44,11 @@ export const userModule = (state = userInitialState, action) => {
       return {
         ...state,
         cancelWO: action.payload,
+      };
+    case actionTypes.rescheduleWO:
+      return {
+        ...state,
+        rescheduleWO: action.payload,
       };
     case actionTypes.logout:
       return userInitialState;
