@@ -361,7 +361,13 @@ const Dashboard = () => {
                                     </button>
                                   </div>
                                   {ele?.is_leader && ele?.workstatus === 1 ? (
-                                    <div className="w-30">
+                                    <div
+                                      className="w-30"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate("/reschedule");
+                                      }}
+                                    >
                                       <button className="YellowBtn btn btn-btn">
                                         <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
                                       </button>
@@ -372,6 +378,7 @@ const Dashboard = () => {
                                       className="w-30"
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        dispatch(toCancelWO(ele?.id, ele?.customer_name));
                                         navigate("/cancel");
                                       }}
                                     >

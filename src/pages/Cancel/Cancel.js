@@ -14,12 +14,15 @@ function Cancel() {
   const [showCancelSuccessfullyModal, setShowCancelSuccessfullyModal] = useState(false);
   const [selectedReason, setSelectedReason] = useState(null); // Track selected value
   const [reasonError, setReasonError] = useState(null); // State for error message
+  const [unSuccessfully, setUnsuccessfully] = useState(false);
 
   let navigate = useNavigate();
   const handleCancelSuccessfullyModal = () => {
     setShowCancelSuccessfullyModal(false);
     navigate("/dashboard");
   };
+  const handleUnsuccessfully = () => setUnsuccessfully(false);
+
   // // API call for reasons
   const reasonsAPICAll = async (accessToken) => {
     const result = await reasonsForCancelAndReschedule(accessToken);
@@ -37,6 +40,7 @@ function Cancel() {
     const result = await workOrderCancel(userGlobalState?.cancelWO?.id, userGlobalState?.details?.token);
     console.log(result);
     if (result.error) {
+      setUnsuccessfully(true);
     } else {
       setShowCancelSuccessfullyModal(true);
     }
@@ -84,9 +88,23 @@ function Cancel() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Work Order cancelled Successfully.
+        Cancel Work Order request has been sent to admin successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleCancelSuccessfullyModal} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      {/* Modal for Unsuccessfully something*/}
+      <Modal show={unSuccessfully} onHide={handleUnsuccessfully}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Something went wrong. Try Again!
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
               OK
             </button>
           </div>
