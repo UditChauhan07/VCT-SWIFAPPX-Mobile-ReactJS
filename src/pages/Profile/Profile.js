@@ -4,9 +4,10 @@ import FooterNav from "../footer/footerNav";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { persistor } from "../../redux/store";
-import { logout } from "../../redux/user/user.actions";
+import { getUserDetails, logout } from "../../redux/user/user.actions";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { companyLogout } from "../../redux/company/company.actions";
+import { getWorkerProfile } from "../../api/worker";
 
 function Profile() {
   const userGlobalState = useSelector((state) => state.userModule);
@@ -19,10 +20,16 @@ function Profile() {
     dispatch(companyLogout());
     navigate("/");
   };
+  const apiCallForProfile = async () => {
+    const result = await getWorkerProfile(userGlobalState?.details?.token);
+    dispatch(getUserDetails(result.details));
+    console.log(result?.details?.contact);
+  };
   useEffect(() => {
     if (!userGlobalState?.details?.token) {
       setAuthenticated(true);
     }
+    apiCallForProfile();
   }, []);
   return (
     <div>
@@ -48,9 +55,7 @@ function Profile() {
                     />
                   </div>
                   <div>
-                    <span className={Styles.ProfileEmail}>
-                      {userGlobalState?.details?.email}
-                    </span>
+                    <span className={Styles.ProfileEmail}>{userGlobalState?.details?.email}</span>
                     {/* <br />
                 <span className={Styles.ProfilePoints}> 208 Points</span> */}
                   </div>
