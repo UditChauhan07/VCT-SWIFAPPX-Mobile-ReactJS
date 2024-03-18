@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } from "../../api/worker";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
-import { capitalizeEachWord, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
+import { capitalizeEachWord, convertTimeTo24h, getCurrentTime, getDateAfterNoOfDays } from "../../utils/format";
 import { getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
 const Dashboard = () => {
@@ -65,7 +65,7 @@ const Dashboard = () => {
       workOrderWorkersStartAPICall(
         startWOId[0],
         // getCurrentTime(),
-        new Date().toLocaleTimeString().substring(0, 8),
+        convertTimeTo24h(new Date().toLocaleTimeString()),
         userGlobalState?.details?.token
       );
       navigate("/job-details");
@@ -78,8 +78,9 @@ const Dashboard = () => {
   };
   const handleLeaderModalYes = async (values) => {
     dispatch(getWorkerOrderDetail(startWOId[0]));
+
     if (userGlobalState?.details?.token) {
-      const result = await workOrderWorkersStartLeader(startWOId[0], getCurrentTime(), userGlobalState?.details?.token, values.workers);
+      const result = await workOrderWorkersStartLeader(startWOId[0], convertTimeTo24h(new Date().toLocaleTimeString()), userGlobalState?.details?.token, values.workers);
       setOriginalApiWOs(result?.data);
       setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
       navigate("/job-details");
