@@ -239,10 +239,10 @@ export const removePicture = async (image_id, accessToken) => {
 };
 export const getWorkerProfile = async (accessToken) => {
   try {
-    const response = await axios.post(`${live}/wxdetails`, {
+    const response = await axios.post(`${live}/wxdetails`,{}, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    // console.log(response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
