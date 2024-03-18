@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserDetails, getUserId, getUserPassword } from "../../redux/user/user.actions";
 import { workerLogin } from "../../api/worker";
+import { Modal } from "react-bootstrap";
 
 const Password = () => {
   // const globalUserState = useSelector((state) => state.userModule);
@@ -11,10 +12,12 @@ const Password = () => {
   const dispatch = useDispatch();
   const [password, setPassword] = useState();
   const [userName, setUserName] = useState();
+  const [unSuccessfully, setUnsuccessfully] = useState(false);
+  const handleUnsuccessfully = () => setUnsuccessfully(false);
 
   const login = async (userName, password, company_id) => {
     const result = await workerLogin(userName, password, company_id);
-    if (result.error) alert(result.message);
+    if (result.error) setUnsuccessfully(true);
     else {
       dispatch(getUserDetails(result.details));
       navigate("/dashboard");
@@ -25,7 +28,7 @@ const Password = () => {
     dispatch(getUserPassword(password));
     login(userName, password, globalCompanyState.company_id);
   };
-  
+
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
@@ -58,6 +61,20 @@ const Password = () => {
           </div>
         </div>
       </div>
+      {/* Modal for Unsuccessfully something*/}
+      <Modal show={unSuccessfully} onHide={handleUnsuccessfully}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Invalid Credentials. Try Again!
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

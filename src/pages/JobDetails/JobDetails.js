@@ -1,23 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Styles from "./style.module.css";
 import FooterNav from "../footer/footerNav";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import Loading from "../../components/Loading";
-import { getAdhocItemsList, removePicture, uploadPicture, workOrderWorkersFinish, workerOrderDetail } from "../../api/worker";
+import { getAdhocItemsList, removePicture, uploadPicture, workOrderWorkersFinish, workOrderWorkersStart, workOrderWorkersStartLeader, workerOrderDetail } from "../../api/worker";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getAddress } from "../../redux/user/user.actions";
-import { capitalizeEachWord, convertTimeInAMPM, formatDateString, formatTimestamp } from "../../utils/format";
+import { getAddress, getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
+import { capitalizeEachWord, convertTimeInAMPM, convertTimeTo24h, formatDateString, formatTimestamp } from "../../utils/format";
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
+import { Field, Form, Formik } from "formik";
 
 const JobDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   console.log(userGlobalState);
+  const initialValues = {
+    workers: [],
+  };
   const [loading, setLoading] = useState(false);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [show, setShow] = useState(false);
@@ -39,6 +43,8 @@ const JobDetails = () => {
   const [idOfPictureForDeletion, setIdOfPictureForDeletion] = useState();
   const [woStopped, setWoStopped] = useState(false);
   const [woStoppedConfirmation, setWoStoppedConfirmation] = useState(false);
+  const [workerShowModal, setWorkerShowModal] = useState(false);
+  const [leaderModalShow, setLeaderModalShow] = useState(false);
 
   // modals show/hide
   const handleClose = () => setShow(false);
@@ -53,13 +59,50 @@ const JobDetails = () => {
   const handlePictureDelete = () => setPictureDelete(false);
   const handlePictureDeleteConfirmationHideModal = () => setPictureDeleteConfirmation(false);
   const handleSuccessfully = () => setSuccessfully(false);
+  const handleWoStoppedConfirmation = () => setWoStoppedConfirmation(false);
+  const handleWorkerModalClose = () => setWorkerShowModal(false);
   const handleWoStopped = () => {
     setWoStopped(false);
     navigate("/dashboard");
   };
-  const handleWoStoppedConfirmation = () => {
-    setWoStoppedConfirmation(false);
+  const handleLeaderClose = (e) => setLeaderModalShow(false);
+  
+  // API call for starting WO by leader
+  const handleLeaderModalYes = async (values) => {
+    if (userGlobalState?.details?.token) {
+      const result = await workOrderWorkersStartLeader(originalApiWODetail?.id, convertTimeTo24h(new Date().toLocaleTimeString()), userGlobalState?.details?.token, values.workers);
+      console.log("result:..............", result);
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+
+      // setOriginalApiWOs(result?.data);
+      // setListOfWO(result?.data?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      navigate("/job-details");
+    } else {
+      alert("Token expired. Login Again");
+    }
+    setLeaderModalShow(false);
   };
+  const handleWorkerModalYes = () => {
+    if (userGlobalState?.details?.token) {
+      workOrderWorkersStartAPICall(originalApiWODetail?.id, convertTimeTo24h(new Date().toLocaleTimeString()), userGlobalState?.details?.token);
+    } else {
+      setSuccessfully(true);
+    }
+    setWorkerShowModal(false);
+  };
+  // API call for starting WO by worker
+  const workOrderWorkersStartAPICall = async (wo_id, time, token) => {
+    setLoading(true);
+    const result = await workOrderWorkersStart(wo_id, time, token);
+    setLoading(false);
+    if (result.error) setSuccessfully(true);
+    else {
+      console.log(result?.data);
+      // setOriginalApiWODetail(result?.data?.filter((ele) => ele?.id === userGlobalState?.workerOrderId)?.[0]);
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+    }
+  };
+
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     setLoading(true);
@@ -622,24 +665,51 @@ const JobDetails = () => {
                           </div>
                         </div>
                         <hr></hr>
-                        <div class="Bottom-button">
-                          <div class="w-40">
-                            <button variant="primary" class="PurpulBtnClock btn btn-btn">
-                              <img class="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                              Start
-                            </button>
-                          </div>
-                          <div class="w-30">
-                            <button class="YellowBtn btn btn-btn">
-                              <img class="img-fluid" alt="img" src="/assets/Clock-Time.png" />
-                            </button>
-                          </div>
-                          <div class="w-30">
-                            <div class="YellowBtn btn btn-btn">
-                              <img class="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
+                        {originalApiWODetail?.is_leader ? (
+                          <div class="Bottom-button">
+                            <div class="w-40">
+                              <button
+                                variant="primary"
+                                class="PurpulBtnClock btn btn-btn"
+                                onClick={() => {
+                                  setLeaderModalShow(true);
+                                }}
+                              >
+                                <img class="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                                Start
+                              </button>
+                            </div>
+                            <div class="w-30">
+                              <button
+                                class="YellowBtn btn btn-btn"
+                                onClick={() => {
+                                  dispatch(toRescheduleWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
+                                  navigate("/reschedule");
+                                }}
+                              >
+                                <img class="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                              </button>
+                            </div>
+                            <div class="w-30">
+                              <div
+                                class="YellowBtn btn btn-btn"
+                                onClick={() => {
+                                  dispatch(toCancelWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
+                                  navigate("/cancel");
+                                }}
+                              >
+                                <img class="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div class="w-100">
+                            <button variant="primary" class="PurpulBtnClock btn btn-btn" onClick={() => setWorkerShowModal(true)}>
+                              <img class="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                              Check In
+                            </button>
+                          </div>
+                        )}
                       </>
                     ) : null}
                   </div>
@@ -648,6 +718,26 @@ const JobDetails = () => {
             </div>
           </section>
           <FooterNav></FooterNav>
+          {/*  Modal for worker */}
+          {workerShowModal ? (
+            <Modal show={workerShowModal} onHide={handleWorkerModalClose}>
+              <Modal.Header closeButton>
+                <Modal.Title> Work Order</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p className="text-center">Are you sure you want to start work order?</p>
+                <div className="d-flex gap-5 mt-3">
+                  <button variant="primary" onClick={handleWorkerModalYes} className="PurpulBtnClock w-30 btn btn-btn">
+                    Yes
+                  </button>
+                  <button variant="primary" onClick={handleWorkerModalClose} className="PurpulBtnClock w-30 btn btn-btn">
+                    No
+                  </button>
+                </div>
+              </Modal.Body>
+            </Modal>
+          ) : null}
+
           {/* modal for Add Ad-hoc items to work Order */}
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -864,6 +954,48 @@ const JobDetails = () => {
           </div>
         </Modal.Body>
       </Modal>
+      <FooterNav></FooterNav>
+      {/* modal for leader */}
+      {leaderModalShow ? (
+        <Modal show={leaderModalShow} onHide={handleLeaderClose}>
+          <Modal.Header closeButton>
+            <Modal.Title> Worker List</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <>
+              <Formik initialValues={initialValues} onSubmit={handleLeaderModalYes}>
+                {({ isSubmitting }) => (
+                  <Form>
+                    {originalApiWODetail?.workers?.length ? (
+                      <>
+                        {originalApiWODetail?.workers?.map((ele, index) => {
+                          return (
+                            <div className="formCheck d-flex gap-2" key={index}>
+                              <Field type="checkbox" className="formCheckInput " name="workers" id={`${ele.name}`} value={`${ele.worker_id}`} />
+                              <label className="form-check-label" htmlFor={`${ele.name}`}>
+                                {ele?.name}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </>
+                    ) : null}
+
+                    <div className="d-flex gap-5 mt-3">
+                      <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
+                        Submit
+                      </button>
+                      <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
+                        Cancel
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </>
+          </Modal.Body>
+        </Modal>
+      ) : null}
     </>
   );
 };
