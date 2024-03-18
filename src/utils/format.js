@@ -102,6 +102,25 @@ export const isPreviousDate = (dateString) => {
   today.setHours(0, 0, 0, 0);
 
   // Compare the dates (returns -1, 0, or 1)
-  return date <today;
+  return date < today;
 };
 
+export const convertTimeTo24h = (timeString) => {
+  // Split the time string into components
+  const [hours, minutes, seconds, modifier] = timeString.split(":");
+
+  // Convert hours to 24-hour format based on modifier
+  let convertedHours = parseInt(hours, 10);
+  if (modifier === "PM" && convertedHours !== 12) {
+    convertedHours += 12;
+  } else if (modifier === "AM" && convertedHours === 12) {
+    convertedHours = 0;
+  }
+
+  // Return the formatted time string
+  return `${convertedHours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
+};
+
+// const timeString = '3:05:43 PM';
+// const convertedTime = convertTimeTo24h(timeString);
+// console.log(convertedTime); // Output: 15:05:43
