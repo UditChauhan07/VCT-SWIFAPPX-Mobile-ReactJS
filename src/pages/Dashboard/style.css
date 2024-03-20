@@ -2,8 +2,7 @@
   height: 70px;
   width: 70px;
   overflow: hidden;
-  border-radius: 50%;
-  display: inline-flex;
+  border-radius: 50%;  
 }
 .CompanyIcon {
   height: 60px;
@@ -264,6 +263,15 @@
   border-bottom: 1px solid #7c7c7c;
   padding: 10px 0px;
 }
+@media (max-width: 600px) {
+  .PurpulBtnClock {
+    
+    font-size: 17px;
+    gap: 2px;
+   
+}
+}
+
 @media (max-width: 400px) {
   .YellowBg,
   .BlueBg,
@@ -279,6 +287,7 @@
   .w-40 {
     width: 46%;
   }
+  
 }
 
 @media (max-width: 375px) {

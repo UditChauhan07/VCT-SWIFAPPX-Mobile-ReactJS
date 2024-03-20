@@ -45,7 +45,7 @@ const BusinessDetail = () => {
       </div>
       <div className="GrayBg">
         <div className="CompanylogoSection">
-          <div className="">
+          <div className="BusinessLogoIdentity">
             <img className="img-fluid" src={companyDetails?.company_logo ?? ""} alt="logo" />
           </div>
         </div>

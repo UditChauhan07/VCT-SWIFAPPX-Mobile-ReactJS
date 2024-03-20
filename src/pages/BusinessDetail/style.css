@@ -104,8 +104,13 @@
     width: 50%;
     align-items: center;
     display: flex;
+    margin: auto;
+    justify-content: center;
 
 }
 .weeks.underline {
     text-decoration: underline;
+}
+.BusinessLogoIdentity img{
+    height: 120px;
 }
