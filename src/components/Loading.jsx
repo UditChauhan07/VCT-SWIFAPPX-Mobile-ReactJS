@@ -9,7 +9,7 @@ const Loading = () => {
       </span>    
      
     </div> */}
-    <img src="/assets/Swif-loader.gif" alt="gif" />
+    <img  src="/assets/Swif-loader.gif" width={'120px'} alt="swif-loader" />
     </div>
   );
 };
