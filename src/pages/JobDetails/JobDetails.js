@@ -765,7 +765,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Items Added Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
@@ -780,7 +780,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           <strong> {capitalizeEachWord(activeService?.name)}</strong> service will be <strong>locked</strong> and cannot be changed. Do you want to continue?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleConfirmedServiceItem} className="PurpulBtnClock w-30 btn btn-btn">
@@ -797,7 +797,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Do you want to remove Adhoc Item?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleRemoveSelectedAdhocItem} className="PurpulBtnClock w-30 btn btn-btn">
@@ -815,7 +815,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Quantity updated successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleQuantityModalShow} className="PurpulBtnClock w-30 btn btn-btn">
@@ -829,7 +829,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Already Selected Item. Please Update Quantity if you want to add again.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleAlertForSameItem} className="PurpulBtnClock w-30 btn btn-btn">
@@ -867,7 +867,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           File uploaded Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
@@ -881,7 +881,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Image deleted Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handlePictureDelete} className="PurpulBtnClock w-30 btn btn-btn">
@@ -896,7 +896,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Something went wrong. Try Again!
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
@@ -910,7 +910,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Do you want to <strong>delete</strong> this picture?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={() => removeImage(idOfPictureForDeletion)}>
@@ -927,7 +927,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Work Order completed Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
@@ -942,7 +942,7 @@ const JobDetails = () => {
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="text-center">
           Do you want to <strong>Stop</strong> this Work Order?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={() => FinishWO()}>

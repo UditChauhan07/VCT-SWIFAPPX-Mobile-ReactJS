@@ -97,7 +97,7 @@
     padding: 10px;
 }
 .chatInput{
-    width: 80%;
+    width: 100%;
     border: 0.5px solid  #ECECEC;
     height: 55px;
 }
@@ -112,7 +112,16 @@
 .BottomChatFixed{
     position: fixed;
     bottom: 0px;
-    width: 100%;
+    width: 90%;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.bgWhite{
+    background-color: #fff;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 5px;
+    
 }
 
 @media(max-width:767px){
