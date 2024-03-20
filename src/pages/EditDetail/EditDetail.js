@@ -130,7 +130,7 @@ const EditDetail = () => {
               <Modal.Header closeButton>
                 <Modal.Title> Alert</Modal.Title>
               </Modal.Header>
-              <Modal.Body>
+              <Modal.Body className="text-center">
                 Profile updated Successfully.
                 <div className="d-flex gap-5 mt-3">
                   <button variant="primary" onClick={handleShow} className="PurpulBtnClock w-30 btn btn-btn">

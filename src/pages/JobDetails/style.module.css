@@ -159,6 +159,7 @@
 }
 .StartExAC{
   font-size: 14px;
+  width: 50%;
 
 }
 .StartExAC .Ex{
@@ -169,11 +170,16 @@
   color: #FF0000;
 
 }
+.ButtonTimeClock{
+  width: 50%;
+  padding-left: 10px;
+}
 .ButtonTimeClock button{
   background: #7700D4;
     color: #fff;
     font-weight: 500;
     font-size: 18px;
+    width: 100%;
 }
 .ButtonInnerIconText{  
   gap: 2px;
@@ -220,6 +226,10 @@ hr {
   font-size: 14px;
   color: #2F2F2F;
 }
+.ContactNoSection{
+  padding-left: 10px;
+  word-break: break-word;
+}
 
 @media (min-width: 769px) {
   .ddnone {
@@ -232,3 +242,15 @@ hr {
     display: block;
   }
 }
+
+@media (max-width: 375.98px) {
+  .ButtonInnerIconText {
+  
+    font-size: 15px;
+  }
+  .ButtonTimeClock {
+   
+    padding-left: 1px;
+}
+}
+

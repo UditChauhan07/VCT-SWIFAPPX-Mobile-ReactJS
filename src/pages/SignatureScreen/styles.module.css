@@ -79,7 +79,7 @@
   background-color: #8d28dd;
   width: 100%;
   height: 46px;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   color: #fff !important;
   border: none;
@@ -116,3 +116,4 @@
     display: block;
   }
 }
+
