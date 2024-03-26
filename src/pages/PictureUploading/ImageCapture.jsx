@@ -6,7 +6,6 @@ import Loading from "../../components/Loading";
 import { Modal } from "react-bootstrap";
 import { dataUrlToFile } from "../../utils/updation";
 
-
 const CameraApp = ({ show }) => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -82,6 +81,7 @@ const CameraApp = ({ show }) => {
       navigate("/job-details");
     }
   };
+  console.log(imageData, videoRef.current);
   return (
     <div>
       {loading ? (
@@ -92,25 +92,29 @@ const CameraApp = ({ show }) => {
           {imageData && <img src={imageData} alt="Captured" />}
           <div className="d-flex gap-5 justify-content-center mt-4">
             {/* <button onClick={startCapture}>Start Capture</button> */}
-            {!imageData ? (
-              <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
-                Capture Image
-              </button>
-            ) : (
-              <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={uploadImage}>
-                Upload Image
-              </button>
-            )}
-            <button
-              variant="primary"
-              className="PurpulBtnClock w-30 btn btn-btn"
-              onClick={() => {
-                stopCapture();
-                navigate("/job-details");
-              }}
-            >
-              Cancel
-            </button>
+            {videoRef.current ? (
+              <>
+                {!imageData ? (
+                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={captureImage}>
+                    Capture Image
+                  </button>
+                ) : (
+                  <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={uploadImage}>
+                    Upload Image
+                  </button>
+                )}
+                <button
+                  variant="primary"
+                  className="PurpulBtnClock w-30 btn btn-btn"
+                  onClick={() => {
+                    stopCapture();
+                    navigate("/job-details");
+                  }}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : null}
           </div>
           {/* Modal picture Upload Successfully */}
           <Modal show={pictureUpload} onHide={handlePictureUpload}>

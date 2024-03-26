@@ -8,12 +8,15 @@ import { getUserDetails, logout } from "../../redux/user/user.actions";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { companyLogout } from "../../redux/company/company.actions";
 import { getWorkerProfile } from "../../api/worker";
+import { Modal } from "react-bootstrap";
 
 function Profile() {
   const userGlobalState = useSelector((state) => state.userModule);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
+  const [logoutState, setLogoutState] = useState(false);
+
   const handleLogout = () => {
     persistor.purge();
     dispatch(logout());
@@ -31,6 +34,9 @@ function Profile() {
     }
     apiCallForProfile();
   }, []);
+  const handleClose = () => {
+    setLogoutState(false);
+  };
   return (
     <div>
       {authenticated ? (
@@ -93,11 +99,27 @@ function Profile() {
                     <img src="/assets/Sign_out_squre.svg" alt="img" />
                   </div>
 
-                  <button onClick={handleLogout}> Logout</button>
+                  <button onClick={() => setLogoutState(true)}> Logout</button>
                 </div>
               </div>
             </div>
           </div>
+          <Modal show={logoutState} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p className="text-center">Are you sure you want to log out?</p>
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handleLogout} className="PurpulBtnClock w-30 btn btn-btn">
+                  Yes
+                </button>
+                <button variant="primary" onClick={handleClose} className="PurpulBtnClock w-30 btn btn-btn">
+                  No
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
           <FooterNav></FooterNav>
         </>
       )}
