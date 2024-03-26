@@ -108,7 +108,9 @@ function Reschedule() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        <p className="text-center">
           Reschedule Work Order request has been sent to admin successfully.
+          </p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleRescheduleSuccessfullyModal} className="PurpulBtnClock w-30 btn btn-btn">
               OK
@@ -122,7 +124,9 @@ function Reschedule() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        <p className="text-center">
           Something went wrong. Try Again!
+          </p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
               OK
