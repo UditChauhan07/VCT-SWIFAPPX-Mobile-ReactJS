@@ -87,7 +87,7 @@ function Reschedule() {
       {reasonErrorDate && <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">{reasonErrorDate}</p>} {/* Display error if present */}
       {/* Display rescheduled reasons */}
       <Select
-        className="mx-5"
+        className="mx-5 mt-3"
         placeholder="Search Reason"
         options={reasons?.map((ele) => ({
           value: ele?.title,
@@ -136,7 +136,8 @@ function Reschedule() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Past Date can't be selected!
+          <p className="text-center"> Past Date can't be selected!</p>
+
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handlePreviousDate} className="PurpulBtnClock w-30 btn btn-btn">
               OK

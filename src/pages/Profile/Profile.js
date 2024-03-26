@@ -109,7 +109,7 @@ function Profile() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p className="text-center">Do you want to logout?</p>
+              <p className="text-center">Are you sure you want to log out?</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleLogout} className="PurpulBtnClock w-30 btn btn-btn">
                   Yes
