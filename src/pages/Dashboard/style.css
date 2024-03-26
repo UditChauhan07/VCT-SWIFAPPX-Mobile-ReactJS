@@ -3,6 +3,7 @@
   width: 70px;
   overflow: hidden;
   border-radius: 50%;  
+  display: flex;
 }
 .CompanyIcon {
   height: 60px;
