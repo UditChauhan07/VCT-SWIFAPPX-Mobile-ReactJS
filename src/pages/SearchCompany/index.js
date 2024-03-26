@@ -3,7 +3,7 @@ import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { getCompaniesList } from "../../api/company";
-import { getCompanyId, taxValueOfCompany, topBarPermission } from "../../redux/company/company.actions";
+import { getCompanyId, getLogoCompany, taxValueOfCompany, topBarPermission } from "../../redux/company/company.actions";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -46,15 +46,11 @@ const Index = () => {
                 value: ele.id,
                 label: ele.name,
               }))}
-              // value={{
-              //   value: globalState.company_id||null,
-              //   label: companiesList.filter((ele)=>ele.id===globalState.company_id)[0]?.name??"Company Name",
-              // }}
               onChange={(option) => {
-                // console.log(option);
                 dispatch(getCompanyId(option.value));
                 dispatch(topBarPermission(companiesList.filter((ele)=>ele.id===option.value)[0].topBarPermission))
                 dispatch(taxValueOfCompany(companiesList.filter((ele)=>ele.id===option.value)[0].tax))
+                dispatch(getLogoCompany(companiesList.filter((ele)=>ele.id===option.value)[0].company_logo))
               }}
             />
 

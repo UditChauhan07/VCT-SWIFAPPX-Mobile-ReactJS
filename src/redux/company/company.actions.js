@@ -17,6 +17,12 @@ export const taxValueOfCompany=(value)=>{
         payload:value,
     }
 }
+export const getLogoCompany=(value)=>{
+    return{
+        type: actionTypes.companyLogo,
+        payload:value,
+    }
+}
 export const companyLogout=()=>{
     return{
         type: actionTypes.companyLogout,

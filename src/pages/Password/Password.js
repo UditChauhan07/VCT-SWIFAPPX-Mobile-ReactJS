@@ -35,13 +35,15 @@ const Password = () => {
   const handleUserChange = (e) => {
     setUserName(e.target.value);
   };
+  console.log(globalCompanyState);
   return (
     <div>
       <div className="dd-none dd-block p20">
         <div className="vCenter">
           <div className="w-100">
             <div className="logo ">
-              <img className="img-fluid" src="/assets/dx-Icon.png" alt="img" />
+              {/* <img className="img-fluid" src="/assets/dx-Icon.png" alt="img" /> */}
+              <img className="img-fluid" src={globalCompanyState.company_logo} alt="img" />
             </div>
             <p className="SearchCompanyText">Enter Your Login Detail to Access Your Account</p>
             <div className="input-group rounded">

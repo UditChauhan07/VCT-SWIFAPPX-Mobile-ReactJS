@@ -202,7 +202,7 @@ const Dashboard = () => {
               <div className="userName">
                 <div className="UserProfile">
                   <div className="UserIcon">
-                    <img className="img-fluid" alt="img" src={userGlobalState?.details?.profile_image} />
+                    <img className="img-fluid" alt="img" src={userGlobalState?.details?.profile_image} height="70px" width={"70px"} />
                   </div>
                   <span>Hi, {capitalizeEachWord(userGlobalState?.details?.name)}</span>
                 </div>

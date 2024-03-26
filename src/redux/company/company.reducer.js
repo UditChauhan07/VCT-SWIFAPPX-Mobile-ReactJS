@@ -4,6 +4,7 @@ export const companyInitialState = {
   company_id: null,
   topBarPermission: null,
   tax: null,
+  company_logo: null,
 };
 
 export const companyModule = (state = companyInitialState, action) => {
@@ -22,6 +23,11 @@ export const companyModule = (state = companyInitialState, action) => {
       return {
         ...state,
         tax: action.payload,
+      };
+    case actionTypes.companyLogo:
+      return {
+        ...state,
+        company_logo: action.payload,
       };
     case actionTypes.companyLogout:
       return companyInitialState;
