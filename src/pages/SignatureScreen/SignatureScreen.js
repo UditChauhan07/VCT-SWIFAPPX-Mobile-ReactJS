@@ -132,7 +132,7 @@ function SignatureScreen() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Please do Signature!
+              <p className="text-center">Please do your signature!</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleIsNotSignedModal} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
@@ -146,7 +146,7 @@ function SignatureScreen() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Work Order completed Successfully.
+              <p className="text-center">Work Order completed Successfully.</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleWoStopped} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
@@ -160,7 +160,7 @@ function SignatureScreen() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Signature along with details uploaded Successfully.
+              <p className="text-center">Signature along with details uploaded Successfully.</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleIsSignatureUploaded} className="PurpulBtnClock w-30 btn btn-btn">
                   OK

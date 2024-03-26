@@ -66,7 +66,7 @@ const JobDetails = () => {
     navigate("/dashboard");
   };
   const handleLeaderClose = (e) => setLeaderModalShow(false);
-  
+
   // API call for starting WO by leader
   const handleLeaderModalYes = async (values) => {
     if (userGlobalState?.details?.token) {
@@ -454,29 +454,35 @@ const JobDetails = () => {
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
-                          <img
-                            className="img-fluid"
-                            style={{ cursor: "pointer" }}
-                            alt="img"
-                            src="/assets/x-circle.png"
-                            onClick={() => {
-                              setActiveAdhocItem(ele);
-                              setItemRemoveModal(true);
-                            }}
-                          />
+                          {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader? (
+                            <img
+                              className="img-fluid"
+                              style={{ cursor: "pointer" }}
+                              alt="img"
+                              src="/assets/x-circle.png"
+                              onClick={() => {
+                                setActiveAdhocItem(ele);
+                                setItemRemoveModal(true);
+                              }}
+                            />
+                          ) : null}
                           <p className="m-0">{ele?.name}</p>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            <button
-                              className="btn btn-light bg-white"
-                              onClick={() => {
-                                setActiveAdhocItem(ele);
-                                setQuantitySelector(true);
-                              }}
-                            >
-                              {ele?.["quantity"]}
-                            </button>
+                            {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
+                              <button
+                                className="btn btn-light bg-white"
+                                onClick={() => {
+                                  setActiveAdhocItem(ele);
+                                  setQuantitySelector(true);
+                                }}
+                              >
+                                {ele?.["quantity"]}
+                              </button>
+                            ) : (
+                              <p className="m-0 me-4">{ele?.quantity}</p>
+                            )}
                           </div>
                           <p className="m-0">₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</p>
                         </div>
@@ -489,19 +495,21 @@ const JobDetails = () => {
             ) : null}
             {/*  Add an Ad-hoc items for Above Service */}
             {originalApiWODetail?.is_leader && originalApiWODetail?.workstatusname === "In Progress" ? (
-              <div className={` ${Styles.RegularCleaning} `}>
-                <div className={` ${Styles.IconPlusCleaning} `}>
-                  <div variant="primary" onClick={handleShow}>
-                    <p className={`m-0 ${Styles.AdHocText} `}>
-                      <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
-                      Add an Ad-hoc items for Above Service
-                    </p>
+              <>
+                <div className={` ${Styles.RegularCleaning} `}>
+                  <div className={` ${Styles.IconPlusCleaning} `}>
+                    <div variant="primary" onClick={handleShow}>
+                      <p className={`m-0 ${Styles.AdHocText} `}>
+                        <img className="img-fluid" alt="img" src="/assets/plus-circle-fill.png" />
+                        Add an Ad-hoc items for Above Service
+                      </p>
+                    </div>
                   </div>
+                  <br></br>
                 </div>
-                <br></br>
-              </div>
+                <hr></hr>
+              </>
             ) : null}
-            <hr></hr>
             {/* picture heading */}
             <div className={` ${Styles.InnerInfo} `}>
               <img className="img-fluid" alt="img" src="/assets/picture.png" />
@@ -516,18 +524,20 @@ const JobDetails = () => {
                     <img className="img-fluid" alt="img" src={ele?.name} />
                     <div className={` ${Styles.picturText} `}>
                       {formatTimestamp(ele?.timestamp)}
-                      {ele?.uploaded_type === 2 || ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
-                        <span>
-                          <button
-                            className="btn btn-btn p-0"
-                            onClick={() => {
-                              setPictureDeleteConfirmation(true);
-                              setIdOfPictureForDeletion(ele?.id);
-                            }}
-                          >
-                            <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
-                          </button>
-                        </span>
+                      {ele?.uploaded_type !== 1 ? (
+                        ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
+                          <span>
+                            <button
+                              className="btn btn-btn p-0"
+                              onClick={() => {
+                                setPictureDeleteConfirmation(true);
+                                setIdOfPictureForDeletion(ele?.id);
+                              }}
+                            >
+                              <img className="img-fluid w-100 h-100" src="/assets/Close-pic.png" alt="pic" />
+                            </button>
+                          </span>
+                        ) : null
                       ) : null}
                     </div>
                   </div>
@@ -666,46 +676,46 @@ const JobDetails = () => {
                         </div>
                         <hr></hr>
                         {originalApiWODetail?.is_leader ? (
-                          <div class="Bottom-button">
-                            <div class="w-40">
+                          <div className="Bottom-button">
+                            <div className="w-40">
                               <button
                                 variant="primary"
-                                class="PurpulBtnClock btn btn-btn"
+                                className="PurpulBtnClock btn btn-btn"
                                 onClick={() => {
                                   setLeaderModalShow(true);
                                 }}
                               >
-                                <img class="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                                <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
                                 Start
                               </button>
                             </div>
-                            <div class="w-30">
+                            <div className="w-30">
                               <button
-                                class="YellowBtn btn btn-btn"
+                                className="YellowBtn btn btn-btn"
                                 onClick={() => {
                                   dispatch(toRescheduleWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
                                   navigate("/reschedule");
                                 }}
                               >
-                                <img class="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                                <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
                               </button>
                             </div>
-                            <div class="w-30">
+                            <div className="w-30">
                               <div
-                                class="YellowBtn btn btn-btn"
+                                className="YellowBtn btn btn-btn"
                                 onClick={() => {
                                   dispatch(toCancelWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
                                   navigate("/cancel");
                                 }}
                               >
-                                <img class="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
+                                <img className="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
                               </div>
                             </div>
                           </div>
                         ) : (
-                          <div class="w-100">
-                            <button variant="primary" class="PurpulBtnClock btn btn-btn" onClick={() => setWorkerShowModal(true)}>
-                              <img class="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                          <div className="w-100">
+                            <button variant="primary" className="PurpulBtnClock btn btn-btn" onClick={() => setWorkerShowModal(true)}>
+                              <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
                               Check In
                             </button>
                           </div>
@@ -781,7 +791,7 @@ const JobDetails = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <strong> {capitalizeEachWord(activeService?.name)}</strong> service will be <strong>locked</strong> and cannot be changed. Do you want to continue?
+          <strong> {capitalizeEachWord(activeService?.name)}</strong> product will be <strong>locked</strong> and its quantity cannot be changed. Do you want to continue?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleConfirmedServiceItem} className="PurpulBtnClock w-30 btn btn-btn">
               Yes

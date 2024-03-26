@@ -69,7 +69,9 @@ const Password = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        <p className="text-center">
           Invalid Credentials. Try Again!
+          </p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
               OK

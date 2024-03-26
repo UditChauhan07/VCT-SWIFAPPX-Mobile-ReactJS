@@ -19,7 +19,7 @@ const ModalForAuthentication = ({ show }) => {
           <Modal.Title> Hold on!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          You are not Authenticated User. Please sign in First
+        <p className="text-center">You are not Authenticated User. Please sign in First</p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleModalClose} className="PurpulBtnClock w-30 btn btn-btn">
               OK
