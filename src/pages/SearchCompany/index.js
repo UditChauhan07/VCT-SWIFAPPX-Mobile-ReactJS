@@ -47,7 +47,6 @@ const Index = () => {
                 label: ele.name,
               }))}
               onChange={(option) => {
-                // console.log(option);
                 dispatch(getCompanyId(option.value));
                 dispatch(topBarPermission(companiesList.filter((ele)=>ele.id===option.value)[0].topBarPermission))
                 dispatch(taxValueOfCompany(companiesList.filter((ele)=>ele.id===option.value)[0].tax))
