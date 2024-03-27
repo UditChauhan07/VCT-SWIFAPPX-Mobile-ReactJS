@@ -6,6 +6,7 @@ export const getAddress="GET_ADDRESS";
 export const logout="USER_LOGOUT";
 export const cancelWO= "CANCEL_WORK_ORDER";
 export const rescheduleWO= "RESCHEDULE_WORK_ORDER";
+export const woList= 'WORK_ORDER_LIST';
 // export const selectedAdhocItems= "SELECTED_ADHOC_ITEMS" ;  
 // export const removeAdhocItem= "REMOVE_ADHOC_ITEMS" ; 
 // export const updateAdhocItem= "UPDATE_ADHOC_ITEMS" ;

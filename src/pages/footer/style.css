@@ -2,7 +2,7 @@
     display: flex;
     gap: 30px;
     justify-content: space-around;
-    padding: 20px 15px;
+    padding: 22px 15px;
     border-radius: 25px 25px 0px 0px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
