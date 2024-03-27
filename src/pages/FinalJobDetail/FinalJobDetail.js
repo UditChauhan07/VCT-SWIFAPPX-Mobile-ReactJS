@@ -63,7 +63,7 @@ function FinalJobDetail() {
         <ModalForAuthentication show={isAuthModalOpen} />
       ) : (
         <div className={Styles.JobDetalTop}>
-          <div className={Styles.TopSection}>
+          <div className={`${Styles.TopSection} fixed-top`}>
             <div className={Styles.backArrow}>
               <Link to="/job-details">
                 <WhiteBackArrow />

@@ -1,7 +1,11 @@
 .JobHolder {
   padding: 0px 20px;
+  margin-top: 120px;
 }
-.JobHolder h1 {
+.JobHolder1 {
+  padding: 0px 10px;
+}
+.name {
   color: #8d28dd;
   font-size: 22px;
   font-weight: 500;
@@ -22,15 +26,31 @@
 .TopSection {
   display: flex;
   justify-content: space-between;
-  margin-top: 5%;
-  margin-bottom: 8%;
+  align-items: center;
+  /* margin-top: 5%; */
+  /* margin-bottom: 4%; */
   padding: 0 20px;
+  height: 120px;
+  background-color: white;
+  width: 100%;
 }
 .GrayBg {
   background-color: #f0f0f0;
   border-radius: 30px 30px 0px 0px;
   padding: 20px;
   padding-bottom: 100px;
+}
+.TaskCompleted{
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+}
+.rowed{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+ 
 }
 .NameWithTasks {
   display: flex;
@@ -40,14 +60,18 @@
   background-color: #6f00c5;
   color: #fff;
   padding: 5px 10px;
+  width: 170px;
+  text-align: center;
 }
 .PicTaken {
   background-color: #ffbf00;
   color: #fff;
   padding: 5px 10px;
-  text-align: end;
-  width: fit-content;
+  /* text-align: end; */
+  /* width: fit-content; */
   float: right;
+  width: 170px;
+  text-align: center;
 }
 .InnerInfo h2 {
   font-size: 20px;
@@ -116,7 +140,7 @@
 }
 .PictureStyleInner img {
   height: 160px;
-  width: 280px;
+  width: 200px;
 }
 
 .PictureStyleInner {
@@ -133,7 +157,7 @@
   justify-content: space-around;
   border-radius: 0px 0px 10px 10px;
   align-items: center;
-  font-size: 14px;
+  font-size: 12px;
 }
 .bottomFixedSection{
     position: fixed;
@@ -185,6 +209,7 @@
   gap: 2px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .TakePicturebutton div{
   background: #FFBE00;
