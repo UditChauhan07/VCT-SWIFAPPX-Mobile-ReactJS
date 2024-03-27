@@ -210,6 +210,7 @@ const Dashboard = () => {
   const leaders = useMemo(() => {
     return originalApiWOs?.filter((ele) => ele?.id === startWOId[0] && ele?.is_leader === true);
   }, [originalApiWOs, startWOId]);
+  console.log(leaders, "leaders");
   return (
     <>
       {loading ? (
@@ -218,8 +219,8 @@ const Dashboard = () => {
         <div className="DashboardBg">
           <div className="dd-none dd-block">
             {/* Top section */}
-            <div className="TopSection">
-              <div className="userName">
+            <div className="TopSection1 fixed-top">
+              <div className="userName ">
                 <div className="UserProfile">
                   <div className="UserIcon">
                     <img className="img-fluid" alt="img" src={userGlobalState?.details?.profile_image} height="70px" width={"70px"} />
@@ -233,7 +234,7 @@ const Dashboard = () => {
               </div>
             </div>
             {/* cards with counting  of  WO's and their details*/}
-            <div className="GrayBg">
+            <div className="GrayBg1">
               <div className="WorkOrderSectionTop">
                 <div className="OrderFor text-center">
                   <h1>Your Work Orders for</h1>
@@ -449,27 +450,32 @@ const Dashboard = () => {
                         <Form>
                           {leaders.length ? (
                             <>
-                              {leaders.map((ele) =>
-                                ele.workers.map((item, index) => {
-                                  return (
-                                    <div className="formCheck d-flex gap-2" key={index}>
-                                      <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
-                                      <label className="form-check-label" htmlFor={`${item.name}`}>
-                                        {item?.name}
-                                      </label>
-                                    </div>
-                                  );
-                                })
-                              )}
+                              {leaders.map((ele) => {
+                                console.log("ll",ele?.workers?.length);
+                                return(ele?.workers?.length ? (
+                                  ele.workers.map((item, index) => {
+                                    return (
+                                      <div className="formCheck d-flex gap-2" key={index}>
+                                        <Field type="checkbox" className="formCheckInput " name="workers" id={`${item.name}`} value={`${item.worker_id}`} />
+                                        <label className="form-check-label" htmlFor={`${item.name}`}>
+                                          {item?.name}
+                                        </label>
+                                      </div>
+                                    );
+                                  })
+                                ) : (
+                                  <p className="m-0 text-center">No Worker is available. <br></br>Do you want to <strong>start</strong> work order?</p>
+                                ))
+                              })}
                             </>
                           ) : null}
 
                           <div className="d-flex gap-5 mt-3">
                             <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
-                              Submit
+                             {leaders?.[0]?.workers?.length?"Submit":"Yes"} 
                             </button>
                             <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
-                              Cancel
+                            {leaders?.[0]?.workers?.length?"Cancel":"No"} 
                             </button>
                           </div>
                         </Form>

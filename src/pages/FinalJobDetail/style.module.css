@@ -1,5 +1,5 @@
-.JobDetalTop{
-    padding: 0 0px;
+.JobDetalTop {
+  padding: 0 0px;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -9,211 +9,204 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-.backArrow{
-    height: 35px;
-    width: 35px;
-    background-color: #8D28DD;
-    border-radius: 100px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.backArrow {
+  height: 35px;
+  width: 35px;
+  background-color: #8d28dd;
+  border-radius: 100px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .backArrow path {
-    fill: #fff;
+  fill: #fff;
 }
-.TopSection svg{
-    transform: rotate(90deg);
+.TopSection svg {
+  transform: rotate(90deg);
 }
 
 .TopSection {
-    display: flex;
-    padding: 0 20px;
-    gap: 15px;
-      margin-top: 5%;
-    margin-bottom: 8%;
-    
-    align-items: center;
+  display: flex;
+  padding: 0 20px;
+  gap: 15px;
+  /* margin-top: 5%; */
+  /* margin-bottom: 8%; */
+  background-color: white;
+  align-items: center;
+  height: 90px;
 }
 
-.Greetings p{
-    font-size: 12px;
-    font-weight: 500;
-    text-align: start;
-    margin: 0 0 0px 0;
+.Greetings p {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+  margin: 0 0 0px 0;
 }
 
-.Greetings h5{
-    color: #8D28DD;
-    font-size: 22px;
-    font-weight:600;
-    margin: 0;
+.Greetings h5 {
+  color: #8d28dd;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
 }
 
-.Greetings h5 span{
-    font-size: 14px;
-    font-weight: 500;
-
+.Greetings h5 span {
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.FinalMap{
-    width: 100%;
-    margin: auto;
-    border-radius: 12px;
+.FinalMap {
+  width: 100%;
+  margin: auto;
+  border-radius: 12px;
 }
 
-.FinalMap img{
-    width: 100%;
+.FinalMap img {
+  width: 100%;
 }
 
-.AdressDetail{
-    display: flex;
-    gap: 10px;
-    margin: 13px 0 0 0;
-
+.AdressDetail {
+  display: flex;
+  gap: 10px;
+  margin: 13px 0 0 0;
 }
-.MapImage{
-    width: 13px;
-}
-
-.MapImage img{
-    width:100%
+.MapImage {
+  width: 13px;
 }
 
-.AdressDetail p{
-    font-size: 14px;
-    font-weight: 400;
-    text-align: start;
-    color: #4B4B4B;
+.MapImage img {
+  width: 100%;
 }
 
-.AllJobDetails h5{
-    font-size: 15px;
-    font-weight: 600;
-    color: #000;
+.AdressDetail p {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: start;
+  color: #4b4b4b;
 }
 
-.AllJobDetails h5 span{
-    font-size: 14px;
-    font-weight: 500;
-    
+.AllJobDetails h5 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
 }
 
-.AllJobDetails h5 .Span2{
-    font-weight: 400 ;
-    color: #4b4b4b ;
-    
+.AllJobDetails h5 span {
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.mainServiceDetail{
-    border-top: 1px solid #636363;
-    border-bottom: 1px solid #636363;
-    padding: 12px 0;
+.AllJobDetails h5 .Span2 {
+  font-weight: 400;
+  color: #4b4b4b;
 }
 
-.mainServiceDetail h3{
-    font-size: 20px;
-    font-weight: 600;
-    color: #000;
+.mainServiceDetail {
+  border-top: 1px solid #636363;
+  border-bottom: 1px solid #636363;
+  padding: 12px 0;
 }
 
-.TbodyTable th{
-    font-size: 14px;
-    font-weight: 500;
-    color: #000;
+.mainServiceDetail h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
 }
 
-.TbodyTable td{
-    font-size: 14px;
-    font-weight: 400;
-    color: #000;
+.TbodyTable th {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
 }
 
-.TbodyTable  span{
-    font-size: 12px;
-    font-weight: 400;
+.TbodyTable td {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
 }
 
-.uncheckLine{
-    text-decoration: line-through;
-}
-.ItemTotalPrice{
-    text-align: end;
+.TbodyTable span {
+  font-size: 12px;
+  font-weight: 400;
 }
 
-.ItemTotalPrice h4{
-    font-size: 14px;
-    font-weight: 500;
-    color: #4b4b4b;
-
+.uncheckLine {
+  text-decoration: line-through;
+}
+.ItemTotalPrice {
+  text-align: end;
 }
 
-.ItemTotalPrice h4 span{
-    font-weight: 600;
-    color: #000;
-
+.ItemTotalPrice h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b4b4b;
 }
 
-.CodAmount{
-    padding: 30px 0 0 0;
+.ItemTotalPrice h4 span {
+  font-weight: 600;
+  color: #000;
 }
 
-.CodAmount input{
-    width: 100%;
-    border: 1px solid #F0F0F0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    height: 50px;
-    margin: 0 0 30px 0;
-    outline: none;
+.CodAmount {
+  padding: 30px 0 0 0;
 }
 
-.BorderRadiusTop{
-    padding: 30px 20px 0;
-    background-color: #fbfbfb;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
+.CodAmount input {
+  width: 100%;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  height: 50px;
+  margin: 0 0 30px 0;
+  outline: none;
+}
+
+.BorderRadiusTop {
+  margin-top: 90px;
+  padding: 30px 20px 0;
+  background-color: #fbfbfb;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 
 .CodAmount input::placeholder {
-    color:#4b4b4b;
+  color: #4b4b4b;
   font-size: 14px;
   font-weight: 400;
+}
+
+.CodButton {
+  display: flex;
+  gap: 33px;
+  margin: 0 0 40px 0;
+}
+
+.CodButton a {
+  background-color: #8d28dd;
+  width: 100%;
+  height: 46px;
+  font-size: 24px;
+  font-weight: 500;
+  color: #fff !important;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 8px;
+}
+
+.JobDetalTop {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .JobDetalTop {
+    display: block;
   }
-
-.CodButton{
-    
-    display: flex;
-gap: 33px;   
-margin: 0 0 40px 0;
-}
-
-.CodButton a{
-    background-color: #8D28DD;
-width: 100%;
-height: 46px;
-font-size: 24px;
-font-weight: 500;
-color: #fff !important;
-border: none;
-display: flex;
-justify-content: center;
-align-items: center;
-
-    border-radius: 8px;
-}
-
-
-
-.JobDetalTop{
-    display:none;
-}
-
-@media(max-width:767px){
-    .JobDetalTop{
-        display: block;
-    }
 }

@@ -295,25 +295,29 @@ const JobDetails = () => {
         <Loading />
       ) : (
         <div className={` ${Styles.ddnone} ${Styles.ddblock}`}>
-          <div className={` ${Styles.TopSection} `}>
-            <div className={` ${Styles.backArrow} `}>
-              <Link to="/dashboard">
-                <WhiteBackArrow />
-              </Link>
-            </div>
-            {/* <div className="CompanyLogo">
-          <img className="img-fluid" alt="img" src="/assets/Swif-logo.png" alt="logo" />
-        </div> */}
-          </div>
-          {/* name and tASk counting */}
-          <section className={` ${Styles.JobHolder} `}>
-            <div className={` ${Styles.NameWithTasks} `}>
-              <h1>{originalApiWODetail?.customer_name ? capitalizeEachWord(originalApiWODetail?.customer_name) : "N/A"}</h1>
-              <div className={` ${Styles.TaskCompleted} `}>
-                <div className={` ${Styles.Completed} `}>{taskCounting} Tasks Completed</div>
-                <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
+          <div className={` ${Styles.TopSection} fixed-top `}>
+            {/* name and tASk counting */}
+            <div className={` ${Styles.rowed} `}>
+              <div className={` ${Styles.backArrow} `}>
+                <Link to="/dashboard">
+                  <WhiteBackArrow />
+                </Link>
               </div>
+              <h1  className={` ${Styles.name} m-0`}>{originalApiWODetail?.customer_name ? capitalizeEachWord(originalApiWODetail?.customer_name) : "N/A"}</h1>
             </div>
+            <section className={` ${Styles.JobHolder1} `}>
+              <div className={` ${Styles.NameWithTasks} `}>
+                <div className={` ${Styles.TaskCompleted} `}>
+                  <div className={` ${Styles.Completed} `}>{taskCounting} Tasks Completed</div>
+                  <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
+                </div>
+              </div>
+              {/* <div className="CompanyLogo"> */}
+              {/* <img className="img-fluid" alt="img" src="/assets/Swif-logo.png" alt="logo" /> */}
+              {/* </div> */}
+            </section>
+          </div>
+          <section className={` ${Styles.JobHolder} `}>
             {/* customer_contact_number */}
             <div>
               <div className={` ${Styles.InnerInfo} `}>
