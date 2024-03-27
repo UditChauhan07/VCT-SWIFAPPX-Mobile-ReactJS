@@ -220,6 +220,13 @@ const JobDetails = () => {
       <ModalForAuthentication show={true} />;
     }
   }, []);
+  useEffect(() => {
+    if (userGlobalState?.details?.token) {
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+    } else {
+      <ModalForAuthentication show={true} />;
+    }
+  }, [online]);
 
   console.log("originalApiWODetail", originalApiWODetail);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
