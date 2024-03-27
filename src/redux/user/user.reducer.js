@@ -11,6 +11,7 @@ export const userInitialState = {
   // serviceItems: [],
   cancelWO: {},
   rescheduleWO: {},
+  woList: [],
 };
 
 export const userModule = (state = userInitialState, action) => {
@@ -49,6 +50,11 @@ export const userModule = (state = userInitialState, action) => {
       return {
         ...state,
         rescheduleWO: action.payload,
+      };
+    case actionTypes.woList:
+      return {
+        ...state,
+        woList: action.payload,
       };
     case actionTypes.logout:
       return userInitialState;

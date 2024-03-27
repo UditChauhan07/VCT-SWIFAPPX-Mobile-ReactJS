@@ -7,13 +7,14 @@ import { workOrderList, workOrderWorkersStart, workOrderWorkersStartLeader } fro
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { capitalizeEachWord, convertTimeTo24h, getDateAfterNoOfDays } from "../../utils/format";
-import { getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
+import { getWorkerOrderDetail, saveWOList, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
+import { useInternetStatusChecks } from "../../utils/updation";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState?.details, companyGlobalState);
+  console.log(userGlobalState, companyGlobalState);
   const [show, setShow] = useState(false);
   const [leaderModalShow, setLeaderModalShow] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -25,6 +26,7 @@ const Dashboard = () => {
 
   const today = new Date();
   const navigate = useNavigate();
+  const online = useInternetStatusChecks();
   const dispatch = useDispatch();
   const getDayOfWeek = (dateString) => {
     const date = new Date(dateString);
@@ -106,14 +108,21 @@ const Dashboard = () => {
     workOrderListAPICall(date.substring(8), date.substring(5, 7), date.substring(0, 4), userGlobalState?.details?.token);
   };
   const workOrderListAPICall = async (day, month, year, token) => {
-    setLoading(true);
-    const result = await workOrderList(day, month, year, token);
-    setLoading(false);
-    if (result.error) {
-      setIsAuthModalOpen(true);
+    if (online) {
+      setLoading(true);
+      const result = await workOrderList(day, month, year, token);
+      setLoading(false);
+      if (result.error) {
+        setIsAuthModalOpen(true);
+      } else {
+        setOriginalApiWOs(result.list);
+        dispatch(saveWOList(result.list));
+        setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      }
     } else {
-      setOriginalApiWOs(result.list);
-      setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
+      setOriginalApiWOs(userGlobalState?.woList);
+      console.log("hi", userGlobalState?.woList);
+      setListOfWO(userGlobalState?.woList?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
     }
   };
   const workOrderWorkersStartAPICall = async (wo_id, time, token) => {
@@ -158,6 +167,14 @@ const Dashboard = () => {
     }
   }, [activeIndex, originalApiWOs]);
   console.log("list", listOfWO);
+  // worker list api call
+  useEffect(() => {
+    if (userGlobalState?.details?.token) {
+      workOrderListAPICall(today.getDate(), today.getMonth() + 1, today.getFullYear(), userGlobalState?.details?.token);
+    } else {
+      <ModalForAuthentication show={true} />;
+    }
+  }, [online]);
   // worker list api call
   useEffect(() => {
     if (userGlobalState?.details?.token) {
