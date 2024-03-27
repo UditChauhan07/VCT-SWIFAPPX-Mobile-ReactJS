@@ -218,8 +218,8 @@ const Dashboard = () => {
         <div className="DashboardBg">
           <div className="dd-none dd-block">
             {/* Top section */}
-            <div className="TopSection">
-              <div className="userName">
+            <div className="TopSection1 fixed-top" >
+              <div className="userName ">
                 <div className="UserProfile">
                   <div className="UserIcon">
                     <img className="img-fluid" alt="img" src={userGlobalState?.details?.profile_image} height="70px" width={"70px"} />
@@ -233,7 +233,7 @@ const Dashboard = () => {
               </div>
             </div>
             {/* cards with counting  of  WO's and their details*/}
-            <div className="GrayBg">
+            <div className="GrayBg1">
               <div className="WorkOrderSectionTop">
                 <div className="OrderFor text-center">
                   <h1>Your Work Orders for</h1>
