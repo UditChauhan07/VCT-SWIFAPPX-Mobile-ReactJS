@@ -9,6 +9,7 @@ import Loading from "../../components/Loading";
 import { capitalizeEachWord, convertTimeTo24h, getDateAfterNoOfDays } from "../../utils/format";
 import { getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
 import { Field, Form, Formik } from "formik";
+import ModalForAuthentication from "../../components/ModalForAuthentication";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -20,6 +21,8 @@ const Dashboard = () => {
   const [listOfWO, setListOfWO] = useState([]);
   const [startWOId, setStartWOId] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   const today = new Date();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -107,7 +110,7 @@ const Dashboard = () => {
     const result = await workOrderList(day, month, year, token);
     setLoading(false);
     if (result.error) {
-      navigate("/");
+      setIsAuthModalOpen(true);
     } else {
       setOriginalApiWOs(result.list);
       setListOfWO(originalApiWOs?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
@@ -160,7 +163,7 @@ const Dashboard = () => {
     if (userGlobalState?.details?.token) {
       workOrderListAPICall(today.getDate(), today.getMonth() + 1, today.getFullYear(), userGlobalState?.details?.token);
     } else {
-      navigate("/");
+      <ModalForAuthentication show={true} />;
     }
   }, []);
 
@@ -479,6 +482,8 @@ const Dashboard = () => {
                 </Modal.Body>
               </Modal>
             ) : null}
+            {/* Modal For Authentication */}
+            {isAuthModalOpen && <ModalForAuthentication show={isAuthModalOpen} />}
           </div>
         </div>
       )}
