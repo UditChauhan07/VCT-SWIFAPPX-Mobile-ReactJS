@@ -35,7 +35,6 @@ const Password = () => {
   const handleUserChange = (e) => {
     setUserName(e.target.value);
   };
-  console.log(globalCompanyState);
   return (
     <div>
       <div className="dd-none dd-block p20">

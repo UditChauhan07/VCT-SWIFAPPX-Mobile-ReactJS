@@ -454,32 +454,42 @@ const JobDetails = () => {
                     <>
                       <div className={` ${Styles.RegularCleaning} `}>
                         <div className={` ${Styles.IconPlusCleaning} `}>
-                          {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader? (
-                            <img
-                              className="img-fluid"
-                              style={{ cursor: "pointer" }}
-                              alt="img"
-                              src="/assets/x-circle.png"
-                              onClick={() => {
-                                setActiveAdhocItem(ele);
-                                setItemRemoveModal(true);
-                              }}
-                            />
+                          {originalApiWODetail?.workstatusname === "In Progress" ? (
+                            <>
+                              {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
+                                <img
+                                  className="img-fluid"
+                                  style={{ cursor: "pointer" }}
+                                  alt="img"
+                                  src="/assets/x-circle.png"
+                                  onClick={() => {
+                                    setActiveAdhocItem(ele);
+                                    setItemRemoveModal(true);
+                                  }}
+                                />
+                              ) : null}
+                            </>
                           ) : null}
                           <p className="m-0">{ele?.name}</p>
                         </div>
                         <div className={` ${Styles.IconPlusCleaning} `}>
                           <div className="form-group">
-                            {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
-                              <button
-                                className="btn btn-light bg-white"
-                                onClick={() => {
-                                  setActiveAdhocItem(ele);
-                                  setQuantitySelector(true);
-                                }}
-                              >
-                                {ele?.["quantity"]}
-                              </button>
+                            {originalApiWODetail?.workstatusname === "In Progress" ? (
+                              <>
+                                {ele?.upload_by === userGlobalState?.details?.id || originalApiWODetail?.is_leader ? (
+                                  <button
+                                    className="btn btn-light bg-white"
+                                    onClick={() => {
+                                      setActiveAdhocItem(ele);
+                                      setQuantitySelector(true);
+                                    }}
+                                  >
+                                    {ele?.["quantity"]}
+                                  </button>
+                                ) : (
+                                  <p className="m-0 me-4">{ele?.quantity}</p>
+                                )}
+                              </>
                             ) : (
                               <p className="m-0 me-4">{ele?.quantity}</p>
                             )}
