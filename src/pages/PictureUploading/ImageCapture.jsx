@@ -26,8 +26,19 @@ const CameraApp = ({ show }) => {
 
   // Function to start capturing video
   const startCapture = async () => {
+    // try {
+    //   const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //   videoRef.current.srcObject = mediaStream;
+    //   setStream(mediaStream);
+    // } catch (error) {
+    //   console.error("Error accessing camera:", error);
+    // }
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const constraints = { video: true };
+      // Add facingMode: 'environment' to specify the back camera
+      constraints.facingMode = 'environment';
+  
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       videoRef.current.srcObject = mediaStream;
       setStream(mediaStream);
     } catch (error) {

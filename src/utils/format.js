@@ -124,3 +124,15 @@ export const convertTimeTo24h = (timeString) => {
 // const timeString = '3:05:43 PM';
 // const convertedTime = convertTimeTo24h(timeString);
 // console.log(convertedTime); // Output: 15:05:43
+
+export const extractPhoneNumber = (numberWithCountryCode) => {
+  // Handle potential variations in formatting
+  const cleanedNumber = numberWithCountryCode.replace(/\s+/g, ""); // Remove extra spaces
+  const indexOfClosingParenthesis = cleanedNumber.indexOf(")");
+
+  if (indexOfClosingParenthesis !== -1) {
+    return cleanedNumber.slice(indexOfClosingParenthesis + 1); // Extract number after closing parenthesis
+  } else {
+    return cleanedNumber; // Return original number if no country code found
+  }
+};

@@ -9,6 +9,7 @@ import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { companyLogout } from "../../redux/company/company.actions";
 import { getWorkerProfile } from "../../api/worker";
 import { Modal } from "react-bootstrap";
+import { convertTimeTo24h } from "../../utils/format";
 
 function Profile() {
   const userGlobalState = useSelector((state) => state.userModule);
@@ -37,6 +38,7 @@ function Profile() {
   const handleClose = () => {
     setLogoutState(false);
   };
+
   return (
     <div>
       {authenticated ? (
@@ -84,22 +86,22 @@ function Profile() {
               <h3>SETTINGS</h3>
 
               <div className={`${Styles.PersonalInfo}  `}>
-                <div className={Styles.EditProile}>
-                  <div className={Styles.EditImg}>
-                    <img src="/assets/Edit_fill.svg" alt="img" />
-                  </div>
-                  <Link to="/edit-details">
+                <Link to="/edit-details">
+                  <div className={Styles.EditProile}>
+                    <div className={Styles.EditImg}>
+                      <img src="/assets/Edit_fill.svg" alt="img" />
+                    </div>
                     <button>Edit Login Details</button>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
                 <hr></hr>
 
-                <div className={`${Styles.EditProile} mb-5 `}>
+                <div className={`${Styles.EditProile} mb-5 `} onClick={() => setLogoutState(true)} style={{cursor:"pointer"}}>
                   <div className={Styles.EditImg}>
                     <img src="/assets/Sign_out_squre.svg" alt="img" />
                   </div>
 
-                  <button onClick={() => setLogoutState(true)}> Logout</button>
+                  <button> Logout</button>
                 </div>
               </div>
             </div>
