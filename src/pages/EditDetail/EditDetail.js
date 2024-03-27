@@ -10,6 +10,7 @@ import { editWorkerProfile } from "../../api/worker";
 import { Modal } from "react-bootstrap";
 import { getUserDetails } from "../../redux/user/user.actions";
 import { EditIcon, WhiteBackArrow } from "../../utils/svg";
+import { extractPhoneNumber } from "../../utils/format";
 
 const EditDetail = () => {
   const navigate = useNavigate();
@@ -18,18 +19,22 @@ const EditDetail = () => {
   const initialValues = {
     name: userGlobalState?.details?.name,
     address: userGlobalState?.details?.address,
-    contact: userGlobalState?.details?.contact,
+    contact: extractPhoneNumber(userGlobalState?.details?.contact),
   };
   const [imageFile, setImageFile] = useState();
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [successfully, setSuccessfully] = useState(false);
-
+  const [notImageFile, setNotImageFile] = useState(false);
+  const contactNumberWithCountryCode = "( +50)1234567890";
+  const parsedPhoneNumber = extractPhoneNumber(contactNumberWithCountryCode);
+  console.log(parsedPhoneNumber);
   const handleShow = () => {
     setShow(false);
     navigate("/profile");
   };
   const handleSuccessfully = () => setSuccessfully(false);
+  const handleSetNotImageFile = () => setNotImageFile(false);
 
   // API Call to edit user details
   const handleSubmitDetails = async (values) => {
@@ -49,7 +54,18 @@ const EditDetail = () => {
   };
   const handleFileChange = (event) => {
     // console.log(event.target.files[0]);
-    setImageFile(event.target.files[0]);
+    const file = event?.target?.files[0];
+    const fileExtension = file?.name?.split(".")?.pop()?.toLowerCase();
+    const validImageExtensions = ["jpg", "jpeg", "png", "gif"];
+
+    if (validImageExtensions.includes(fileExtension)) {
+      setImageFile(event.target.files[0]);
+      console.log("image");
+    } else {
+      // Not an image, handle error or display message
+      setNotImageFile(true)
+      // alert("Please select an image file.");
+    }
   };
   let imageUrl;
   useEffect(() => {
@@ -105,7 +121,7 @@ const EditDetail = () => {
                 <div className={Styles.InputField}>
                   <div className="form-group">
                     <Field type="text" className="form-control" id="First" placeholder="Enter User name" name="name" />
-                    <ErrorMessage component={TextError} name="name" className="mb-3"/>
+                    <ErrorMessage component={TextError} name="name" className="mb-3" />
                   </div>
                   <div className="form-group">
                     <Field type="text" className="form-control" id="Second" placeholder="Enter Address" name="address" />
@@ -145,11 +161,23 @@ const EditDetail = () => {
                 <Modal.Title> Alert</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-              <p className="text-center">
-                Something went wrong. Try Again!
-                </p>
+                <p className="text-center">Something went wrong. Try Again!</p>
                 <div className="d-flex gap-5 mt-3">
                   <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+                    OK
+                  </button>
+                </div>
+              </Modal.Body>
+            </Modal>
+             {/* Modal not picture type file Upload  */}
+             <Modal show={notImageFile} onHide={handleSetNotImageFile}>
+              <Modal.Header closeButton>
+                <Modal.Title> Alert</Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="text-center">
+              Please select an image file (.jpg, .jpeg, .png, .gif).
+                <div className="d-flex gap-5 mt-3">
+                  <button variant="primary" onClick={handleSetNotImageFile} className="PurpulBtnClock w-30 btn btn-btn">
                     OK
                   </button>
                 </div>
