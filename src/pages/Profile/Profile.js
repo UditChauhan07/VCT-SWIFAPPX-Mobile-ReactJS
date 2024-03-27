@@ -26,7 +26,7 @@ function Profile() {
   };
   const apiCallForProfile = async () => {
     const result = await getWorkerProfile(userGlobalState?.details?.token);
-    dispatch(getUserDetails(result.details));
+    dispatch(getUserDetails(result?.details));
     console.log(result?.details?.contact);
   };
   useEffect(() => {
