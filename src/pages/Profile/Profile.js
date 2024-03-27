@@ -10,8 +10,10 @@ import { companyLogout } from "../../redux/company/company.actions";
 import { getWorkerProfile } from "../../api/worker";
 import { Modal } from "react-bootstrap";
 import { convertTimeTo24h } from "../../utils/format";
+import { useInternetStatusChecks } from "../../utils/updation";
 
 function Profile() {
+  const online = useInternetStatusChecks();
   const userGlobalState = useSelector((state) => state.userModule);
   const dispatch = useDispatch();
   const navigate = useNavigate();
