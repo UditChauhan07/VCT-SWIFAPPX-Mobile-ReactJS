@@ -9,7 +9,7 @@ a {
 }
 @media(min-width: 769.00px){
     .dd-none{
-        display: none;
+        /* display: none; */
     }
     .ddnone{
         display: none;
