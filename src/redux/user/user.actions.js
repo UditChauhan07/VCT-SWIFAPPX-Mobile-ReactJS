@@ -41,6 +41,12 @@ export const getAddress = (address) => {
     payload: address,
   };
 };
+export const saveWOList = (list) => {
+  return {
+    type: actionTypes.woList,
+    payload: list,
+  };
+};
 export const logout = () => {
   return {
     type: actionTypes.logout,

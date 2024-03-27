@@ -13,8 +13,10 @@ import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { Field, Form, Formik } from "formik";
+import { useInternetStatusChecks } from "../../utils/updation";
 
 const JobDetails = () => {
+  const online = useInternetStatusChecks();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
@@ -102,27 +104,34 @@ const JobDetails = () => {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
     }
   };
-
+  console.log(originalApiWODetail);
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
-    setLoading(true);
-    const result = await workerOrderDetail(id, token);
-    console.log("result", result);
-    setLoading(false);
-    if (result === 401) {
-      setIsAuthModalOpen(true);
-    } else {
-      getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
-      const address = `${result?.detail?.block}${result?.detail?.street ? `, ${result?.detail?.street}` : ""}${result?.detail?.unit ? `, ${result?.detail?.unit}` : ""}${
-        result?.detail?.country ? `, ${result?.detail?.country}` : ""
-      }${result?.detail?.zip ? `, ${result?.detail?.zip}` : ""}`;
-      if (result?.detail?.workstatusname === "In Progress") {
-        setTaskCounting(taskCounting + 1);
+    if (online) {
+      setLoading(true);
+      const result = await workerOrderDetail(id, token);
+      console.log("result", result);
+      setLoading(false);
+      if (result === 401) {
+        setIsAuthModalOpen(true);
+      } else {
+        getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
+        const address = `${result?.detail?.block}${result?.detail?.street ? `, ${result?.detail?.street}` : ""}${result?.detail?.unit ? `, ${result?.detail?.unit}` : ""}${
+          result?.detail?.country ? `, ${result?.detail?.country}` : ""
+        }${result?.detail?.zip ? `, ${result?.detail?.zip}` : ""}`;
+        if (result?.detail?.workstatusname === "In Progress") {
+          setTaskCounting(taskCounting + 1);
+        }
+        setOriginalApiWODetail(result?.detail);
+        console.log("hi", result?.detail);
+        dispatch(getAddress(address));
       }
-      setOriginalApiWODetail(result?.detail);
-      dispatch(getAddress(address));
+    } else {
+      console.log("off", userGlobalState?.woList);
+      setOriginalApiWODetail(userGlobalState?.woList?.filter((ele) => ele?.id === userGlobalState?.workerOrderId)?.[0]);
     }
   };
+  console.log(userGlobalState, "userglobal");
   const FinishWO = async () => {
     // api for finishing WO
     const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
@@ -801,7 +810,7 @@ const JobDetails = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <strong> {capitalizeEachWord(activeService?.name)}</strong> product will be <strong>locked</strong> and its quantity cannot be changed. Do you want to continue?
+          <strong> {capitalizeEachWord(activeService?.name)}</strong> product will be <strong>locked</strong> and quantity cannot be changed. Do you want to continue?
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleConfirmedServiceItem} className="PurpulBtnClock w-30 btn btn-btn">
               Yes

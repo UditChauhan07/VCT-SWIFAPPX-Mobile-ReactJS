@@ -34,7 +34,7 @@ function App() {
         <Route path="/signature-screen" element={<SignatureScreen />} />
         <Route path="/cancel" element={<Cancel />} />
         <Route path="/reschedule" element={<Reschedule />} />
-
+        
         {/* <Route path='/history' element={<HistoryDetail />} /> */}
         <Route path="/profile" element={<Profile />} />
         {/* <Route path='/notification' element={<Notification />}/> */}

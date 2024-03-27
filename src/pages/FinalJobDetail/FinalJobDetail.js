@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { capitalizeEachWord } from "../../utils/format";
 import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import Loading from "../../components/Loading";
+import ModalForAuthentication from "../../components/ModalForAuthentication";
 
 function FinalJobDetail() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ function FinalJobDetail() {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
     } else {
-      // <ModalForAuthentication show={true} />;
+      setIsAuthModalOpen(true);
     }
   }, []);
   let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
@@ -58,6 +59,8 @@ function FinalJobDetail() {
     <>
       {loading ? (
         <Loading />
+      ) : isAuthModalOpen ? (
+        <ModalForAuthentication show={isAuthModalOpen} />
       ) : (
         <div className={Styles.JobDetalTop}>
           <div className={Styles.TopSection}>
@@ -133,7 +136,6 @@ function FinalJobDetail() {
                             </td>
                             <td className={ele?.checked ? "" : `${Styles.uncheckLine}`}>₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</td>
                           </tr>
-                          
                         );
                       })}
                       {originalApiWODetail?.ad_hoc_items?.sub_items?.map((ele) => {

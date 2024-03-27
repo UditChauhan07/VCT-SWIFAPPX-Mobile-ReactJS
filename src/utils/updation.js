@@ -1,4 +1,5 @@
 import { Buffer } from "buffer";
+import { useEffect, useState } from "react";
 
 // Function to update an object in the array based on its id
 
@@ -29,14 +30,14 @@ export const dataUrlToFile = (dataUrl, filename) => {
   const buff = Buffer.from(arr[1], "base64");
   return new File([buff], filename, { type: mime });
 };
-export const generateRandomDigits=(length) =>{
+export const generateRandomDigits = (length) => {
   // Input validation (optional but recommended)
   if (length <= 0) {
-    throw new Error('Length of random digits string must be a positive integer.');
+    throw new Error("Length of random digits string must be a positive integer.");
   }
 
-  const digits = '0123456789';
-  let result = '';
+  const digits = "0123456789";
+  let result = "";
 
   // Generate random digits using Math.random()
   for (let i = 0; i < length; i++) {
@@ -45,8 +46,25 @@ export const generateRandomDigits=(length) =>{
   }
 
   return result;
-}
+  // Example usage:
+  // const randomDigits = generateRandomDigits(6); // Get 6 random digits
+  // console.log(randomDigits); // Output: Example: 521874 (may vary on each run)
+};
+export const useInternetStatusChecks = () => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-// Example usage:
-// const randomDigits = generateRandomDigits(6); // Get 6 random digits
-// console.log(randomDigits); // Output: Example: 521874 (may vary on each run)
+  useEffect(() => {
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
+    };
+
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOnlineStatusChange);
+    };
+  }, []);
+  return isOnline;
+};
