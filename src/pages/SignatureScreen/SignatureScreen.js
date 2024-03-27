@@ -108,7 +108,7 @@ function SignatureScreen() {
 
                     <label> Signature</label>
                     <div className="bg-white">
-                      <SignatureCanvas ref={sigCanvas} penColor="black" className="titiSingh" canvasProps={{ width: 500, height: 200 }} />
+                      <SignatureCanvas ref={sigCanvas} penColor="black" className="titiSingh" canvasProps={{ width: 300, height: 200 }} />
                     </div>
                     <div className={Styles.CodButton}>
                       <button type="button" onClick={clearSignature}>

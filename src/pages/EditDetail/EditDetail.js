@@ -26,9 +26,6 @@ const EditDetail = () => {
   const [show, setShow] = useState(false);
   const [successfully, setSuccessfully] = useState(false);
   const [notImageFile, setNotImageFile] = useState(false);
-  const contactNumberWithCountryCode = "( +50)1234567890";
-  const parsedPhoneNumber = extractPhoneNumber(contactNumberWithCountryCode);
-  console.log(parsedPhoneNumber);
   const handleShow = () => {
     setShow(false);
     navigate("/profile");
