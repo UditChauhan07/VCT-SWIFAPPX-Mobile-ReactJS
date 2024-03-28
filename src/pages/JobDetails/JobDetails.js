@@ -13,7 +13,7 @@ import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { Field, Form, Formik } from "formik";
-import { useInternetStatusChecks } from "../../utils/updation";
+import { dataUrlToFile, useInternetStatusChecks } from "../../utils/updation";
 
 const JobDetails = () => {
   const online = useInternetStatusChecks();
@@ -47,6 +47,8 @@ const JobDetails = () => {
   const [woStoppedConfirmation, setWoStoppedConfirmation] = useState(false);
   const [workerShowModal, setWorkerShowModal] = useState(false);
   const [leaderModalShow, setLeaderModalShow] = useState(false);
+  const [imageFile, setImageFile] = useState();
+  const [notImageFile, setNotImageFile] = useState(false);
 
   // modals show/hide
   const handleClose = () => setShow(false);
@@ -63,6 +65,7 @@ const JobDetails = () => {
   const handleSuccessfully = () => setSuccessfully(false);
   const handleWoStoppedConfirmation = () => setWoStoppedConfirmation(false);
   const handleWorkerModalClose = () => setWorkerShowModal(false);
+  const handleSetNotImageFile = () => setNotImageFile(false);
   const handleWoStopped = () => {
     setWoStopped(false);
     navigate("/dashboard");
@@ -183,19 +186,6 @@ const JobDetails = () => {
     if (result?.error) navigate("/");
     else setOriginalApiWODetail(result?.data);
   };
-  // API Call to Upload Picture
-  const toUploadPictureAPICall = async (item_id, file, accessToken) => {
-    setLoading(true);
-    const result = await uploadPicture(item_id, file, accessToken);
-    setLoading(false);
-    if (result?.error) navigate("/");
-    else if (result?.status === 400) {
-      setSuccessfully(true);
-    } else {
-      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
-      setPictureUpload(true);
-    }
-  };
   // API Call to remove Picture
   const toRemovePictureAPICall = async (image_id, accessToken) => {
     console.log("apai");
@@ -212,7 +202,39 @@ const JobDetails = () => {
       setPictureDelete(true);
     }
   };
+  // picture handling
+  const handleFileChange = async (event) => {
+    // console.log(event.target.files[0]);
+    const file = event?.target?.files[0];
+    const fileExtension = file?.name?.split(".")?.pop()?.toLowerCase();
+    const validImageExtensions = ["jpg", "jpeg", "png", "gif"];
 
+    if (validImageExtensions.includes(fileExtension)) {
+      setImageFile(event.target.files[0]);
+      console.log("image");
+      await toUploadPictureAPICall(userGlobalState?.workerOrderId, imageFile, userGlobalState?.details?.token);
+    } else {
+      // Not an image, handle error or display message
+      setNotImageFile(true);
+      // alert("Please select an image file.");
+    }
+  };
+  // API Call to Upload Picture
+  const toUploadPictureAPICall = async (item_id, file, accessToken) => {
+    setLoading(true);
+    const result = await uploadPicture(item_id, file, accessToken);
+    console.log("result", result);
+    if (result?.error) {
+      console.log(result);
+      setSuccessfully(true);
+
+    } else {
+      console.log(result);
+      getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
+      setPictureUpload(true);
+      // setLoading(false);
+    }
+  };
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
@@ -266,11 +288,6 @@ const JobDetails = () => {
     setTaskCounting(taskCounting + 1);
     setConfirmServiceItem(false);
   };
-  // Function to handle file selection
-  const handleFileChange = (event) => {
-    console.log(event.target.files[0]);
-    toUploadPictureAPICall(userGlobalState?.workerOrderId, event.target.files[0], userGlobalState?.details?.token);
-  };
   // Function to remove file
   const removeImage = async (id) => {
     await toRemovePictureAPICall(id, userGlobalState?.details?.token);
@@ -303,7 +320,7 @@ const JobDetails = () => {
                   <WhiteBackArrow />
                 </Link>
               </div>
-              <h1  className={` ${Styles.name} m-0`}>{originalApiWODetail?.customer_name ? capitalizeEachWord(originalApiWODetail?.customer_name) : "N/A"}</h1>
+              <h1 className={` ${Styles.name} m-0`}>{originalApiWODetail?.customer_name ? capitalizeEachWord(originalApiWODetail?.customer_name) : "N/A"}</h1>
             </div>
             <section className={` ${Styles.JobHolder1} `}>
               <div className={` ${Styles.NameWithTasks} `}>
@@ -574,6 +591,7 @@ const JobDetails = () => {
                 );
               })}
             </div>
+
             {/* Add picture for work Order */}
             {originalApiWODetail?.workstatusname === "In Progress" || originalApiWODetail?.workstatusname === "Pending" ? (
               <div className={`  ${Styles.RegularCleaning} `}>
@@ -582,8 +600,10 @@ const JobDetails = () => {
                   <div className={`m-0 ${Styles.AdHocText} `}>
                     {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
                     {/* setStartCaptureState(true) */}
-                    <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
+                    {/* <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}> */}
+                    <label style={{ cursor: "pointer" }}>
                       Add picture for Work Order
+                      <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} />
                       {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                     </label>
                   </div>
@@ -599,7 +619,7 @@ const JobDetails = () => {
                         <h6>
                           {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
                         </h6>
-                        <p style={{ fontWeight: "400", wordBreak:"break-all" }}>{ele?.description}</p>
+                        <p style={{ fontWeight: "400", wordBreak: "break-all" }}>{ele?.description}</p>
                       </div>
                     );
                   })
@@ -908,7 +928,7 @@ const JobDetails = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          File uploaded Successfully.
+        Picture uploaded Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
               OK
@@ -1036,6 +1056,20 @@ const JobDetails = () => {
           </Modal.Body>
         </Modal>
       ) : null}
+      {/* Modal not picture type file Upload  */}
+      <Modal show={notImageFile} onHide={handleSetNotImageFile}>
+        <Modal.Header closeButton>
+          <Modal.Title> Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          Please select an image file (.jpg, .jpeg, .png, .gif).
+          <div className="d-flex gap-5 mt-3">
+            <button variant="primary" onClick={handleSetNotImageFile} className="PurpulBtnClock w-30 btn btn-btn">
+              OK
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

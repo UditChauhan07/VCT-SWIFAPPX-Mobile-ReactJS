@@ -133,6 +133,8 @@
   align-items: center;
   background-size: cover;
   gap: 20px;
+  /* margin-right: 20px; */
+
 }
 
 .PictureShow img {
