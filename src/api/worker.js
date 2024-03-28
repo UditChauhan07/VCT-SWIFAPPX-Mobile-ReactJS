@@ -369,9 +369,10 @@ export const workOrderCancel = async (workorder_id,requested_reason_id, accessTo
     }
   }
 };
-export const workOrderReschedule = async (workorder_id, date, reason, accessToken) => {
+export const workOrderReschedule = async (workorder_id, requested_date, requested_reason_id, accessToken) => {
+  console.log(workorder_id, requested_date, requested_reason_id);
   try {
-    const response = await axios.post(`${live}/wxWorkOrderWorkersReschedule`, { workorder_id: `${workorder_id}`, date, reason }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const response = await axios.post(`${live}/createdRequestedWO/2/t`, { workorder_id: `${workorder_id}`, requested_date, requested_reason_id }, { headers: { Authorization: `Bearer ${accessToken}` } });
     console.log(response.data);
     return response.data;
   } catch (error) {
