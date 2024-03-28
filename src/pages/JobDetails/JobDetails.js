@@ -599,7 +599,7 @@ const JobDetails = () => {
                         <h6>
                           {ele?.commenter}: <span>{formatDateString(ele?.created)}</span>
                         </h6>
-                        <p style={{ fontWeight: "400" }}>{ele?.description}</p>
+                        <p style={{ fontWeight: "400", wordBreak:"break-all" }}>{ele?.description}</p>
                       </div>
                     );
                   })
