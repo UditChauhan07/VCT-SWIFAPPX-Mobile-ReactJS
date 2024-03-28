@@ -122,7 +122,7 @@ function Remarks() {
                           {ele?.commenter}:{" "}
                           <span>{formatDateString(ele?.created)}</span>
                         </h2>
-                        <p>{ele?.description}</p>
+                        <p style={{wordBreak:"break-all"}}>{ele?.description}</p>
                       </div>
                     ) : (
                       <div className={Styles.RemarksBoxPink}>
@@ -130,7 +130,7 @@ function Remarks() {
                           {ele?.commenter}:{" "}
                           <span>{formatDateString(ele?.created)}</span>
                         </h2>
-                        <p>{ele?.description}</p>
+                        <p style={{wordBreak:"break-all"}}>{ele?.description}</p>
                       </div>
                     )}
                   </>
