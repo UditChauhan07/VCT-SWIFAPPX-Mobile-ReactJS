@@ -211,9 +211,9 @@ const JobDetails = () => {
 
     if (validImageExtensions.includes(fileExtension)) {
       setImageFile(event.target.files[0]);
-      console.log("image", imageFile,event.target.files[0]);
+      console.log("image", imageFile, event.target.files[0]);
       // console.log( URL.createObjectURL(imageFile));
-      alert(JSON.stringify(event.target))
+      alert(JSON.stringify(event.target));
       // await toUploadPictureAPICall(userGlobalState?.workerOrderId, imageFile, userGlobalState?.details?.token);
     } else {
       // Not an image, handle error or display message
@@ -229,7 +229,6 @@ const JobDetails = () => {
     if (result?.error) {
       console.log(result);
       setSuccessfully(true);
-
     } else {
       console.log(result);
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
@@ -315,7 +314,7 @@ const JobDetails = () => {
       ) : (
         <div className={` ${Styles.ddnone} ${Styles.ddblock}`}>
           <div className={` ${Styles.TopSection} fixed-top `}>
-            {/* name and tASk counting */}
+            {/* name and tASk and picture counting */}
             <div className={` ${Styles.rowed} `}>
               <div className={` ${Styles.backArrow} `}>
                 <Link to="/dashboard">
@@ -377,27 +376,29 @@ const JobDetails = () => {
                 <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
                 <p className="m-0">{originalApiWODetail?.option_name ?? "N/A"}</p>
               </div>
-              <div className={` ${Styles.IconPlusCleaning} `}>
-                <p className="m-0">₹{Number(originalApiWODetail?.option_price).toFixed(2)}</p>
-              </div>
+              <div className={` ${Styles.IconPlusCleaning} `}>{originalApiWODetail?.payment_mode_id === 4 ? null : <p className="m-0">₹{Number(originalApiWODetail?.option_price).toFixed(2)}</p>}</div>
             </div>
             {/* adjustment */}
-            {originalApiWODetail?.adjustment_value ? (
+            {originalApiWODetail?.payment_mode_id !== 4 ? (
               <>
-                <hr></hr>
+                {originalApiWODetail?.adjustment_value ? (
+                  <>
+                    <hr></hr>
 
-                <div className={` ${Styles.RegularCleaning} `}>
-                  <div className={` ${Styles.IconPlusCleaning} `}>
-                    <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
-                    <p className="m-0">Adjustment</p>
-                  </div>
-                  <div className={` ${Styles.IconPlusCleaning} `}>
-                    <p className="m-0">
-                      {originalApiWODetail?.adjustment_type === "addition" ? "+ " : "- "}
-                      {Number(originalApiWODetail?.adjustment_value).toFixed(2) ?? "0"}
-                    </p>
-                  </div>
-                </div>
+                    <div className={` ${Styles.RegularCleaning} `}>
+                      <div className={` ${Styles.IconPlusCleaning} `}>
+                        <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
+                        <p className="m-0">Adjustment</p>
+                      </div>
+                      <div className={` ${Styles.IconPlusCleaning} `}>
+                        <p className="m-0">
+                          {originalApiWODetail?.adjustment_type === "addition" ? "+ " : "- "}
+                          {Number(originalApiWODetail?.adjustment_value).toFixed(2) ?? "0"}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                ) : null}
               </>
             ) : null}
             {/* tasklist- service sub items */}
@@ -466,7 +467,11 @@ const JobDetails = () => {
                               <p className="m-0 me-4">{ele?.quantity}</p>
                             )}
                           </div>
-                          <p className="m-0">₹{Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+                          {originalApiWODetail?.payment_mode_id === 4 ? null : (
+                            <>
+                              <p className="m-0">₹{Number(Number(ele?.amount) * Number(ele?.quantity)).toFixed(2)}</p>
+                            </>
+                          )}
                         </div>
                       </div>
                       <hr></hr>
@@ -533,7 +538,11 @@ const JobDetails = () => {
                               <p className="m-0 me-4">{ele?.quantity}</p>
                             )}
                           </div>
-                          <p className="m-0">₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</p>
+                          {!originalApiWODetail?.payment_mode_id !== 4 ? (
+                            <>
+                              <p className="m-0">₹{Number(ele?.amount * ele?.quantity).toFixed(2)}</p>
+                            </>
+                          ) : null}
                         </div>
                       </div>
                       <hr></hr>
@@ -603,7 +612,7 @@ const JobDetails = () => {
                     {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
                     {/* setStartCaptureState(true) */}
                     <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
-                    {/* <label style={{ cursor: "pointer" }}> */}
+                      {/* <label style={{ cursor: "pointer" }}> */}
                       Add picture for Work Order
                       {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                       {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
@@ -647,24 +656,28 @@ const JobDetails = () => {
                 </h2>
                 <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                   <div className="accordion-body">
-                    <div className={` ${Styles.ExpendSectionTop} `}>
-                      <img className="img-fluid " src="/assets/hand-cru.png" alt="img" />
-                      <div className={` ${Styles.Totalpay} `}>
-                        <p className="mb-1">
-                          Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
-                        </p>
-                        <p className="mb-1">
-                          TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(tax.current).toFixed(2)}</strong>{" "}
-                        </p>
-                        <p className="mb-1">
-                          Discount @ {originalApiWODetail?.discount_value ?? 0}%: <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
-                        </p>
-                        <p className="mb-1">
-                          Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>
-                        </p>
-                      </div>
-                    </div>
-                    <hr></hr>
+                    {originalApiWODetail?.payment_mode_id === 4 ? null : (
+                      <>
+                        <div className={` ${Styles.ExpendSectionTop} `}>
+                          <img className="img-fluid " src="/assets/hand-cru.png" alt="img" />
+                          <div className={` ${Styles.Totalpay} `}>
+                            <p className="mb-1">
+                              Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
+                            </p>
+                            <p className="mb-1">
+                              TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(tax.current).toFixed(2)}</strong>{" "}
+                            </p>
+                            <p className="mb-1">
+                              Discount @ {originalApiWODetail?.discount_value ?? 0}%: <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
+                            </p>
+                            <p className="mb-1">
+                              Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>
+                            </p>
+                          </div>
+                        </div>
+                        <hr></hr>
+                      </>
+                    )}
                     {originalApiWODetail?.workstatusname === "In Progress" ? (
                       <div className={` ${Styles.ExpendSectionTop} `}>
                         <div className={` ${Styles.StartExAC} `}>
@@ -930,7 +943,7 @@ const JobDetails = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-        Picture uploaded Successfully.
+          Picture uploaded Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
               OK
