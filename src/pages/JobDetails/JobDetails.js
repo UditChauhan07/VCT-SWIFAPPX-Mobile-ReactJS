@@ -211,8 +211,10 @@ const JobDetails = () => {
 
     if (validImageExtensions.includes(fileExtension)) {
       setImageFile(event.target.files[0]);
-      console.log("image");
-      await toUploadPictureAPICall(userGlobalState?.workerOrderId, imageFile, userGlobalState?.details?.token);
+      console.log("image", imageFile,event.target.files[0]);
+      // console.log( URL.createObjectURL(imageFile));
+      alert(JSON.stringify(event.target))
+      // await toUploadPictureAPICall(userGlobalState?.workerOrderId, imageFile, userGlobalState?.details?.token);
     } else {
       // Not an image, handle error or display message
       setNotImageFile(true);
@@ -600,10 +602,10 @@ const JobDetails = () => {
                   <div className={`m-0 ${Styles.AdHocText} `}>
                     {/* <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => setStartCaptureState(true)}> */}
                     {/* setStartCaptureState(true) */}
-                    {/* <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}> */}
-                    <label style={{ cursor: "pointer" }}>
+                    <label style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
+                    {/* <label style={{ cursor: "pointer" }}> */}
                       Add picture for Work Order
-                      <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} />
+                      {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                       {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                     </label>
                   </div>
