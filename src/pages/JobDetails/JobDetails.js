@@ -118,7 +118,13 @@ const JobDetails = () => {
       if (result === 401) {
         setIsAuthModalOpen(true);
       } else {
-        getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
+        console.log("result?.detail?.ad_hoc_catid", result?.detail?.ad_hoc_catid);
+
+        if (result?.detail?.ad_hoc_catid.length === 0) {
+        } else {
+          getAdhocItemsListApiCall(result?.detail?.ad_hoc_catid, userGlobalState?.details?.token);
+        }
+
         const address = `${result?.detail?.block}${result?.detail?.street ? `, ${result?.detail?.street}` : ""}${result?.detail?.unit ? `, ${result?.detail?.unit}` : ""}${
           result?.detail?.country ? `, ${result?.detail?.country}` : ""
         }${result?.detail?.zip ? `, ${result?.detail?.zip}` : ""}`;
@@ -149,14 +155,14 @@ const JobDetails = () => {
     setLoading(true);
     const result = await getAdhocItemsList(id, token);
     setLoading(false);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     else setAdhocItemsList(result?.content);
   };
   // API Call for update quantity of service sub Item
   const updateQuantityOfServiceSubItemAPICall = async (id, quantity, token) => {
     // setLoading(true);
     const result = await updateQuantityOfServiceSubItem(id, quantity, token);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
     // setLoading(false);
   };
@@ -165,7 +171,7 @@ const JobDetails = () => {
     // setLoading(true);
     const result = await toCheckServiceSubItem(id, quantity, type, token);
     // setLoading(false);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to add adhoc Item
@@ -175,7 +181,7 @@ const JobDetails = () => {
     const result = await toAddAdhocItem(workorder_id, category_id, item_id, quantity, accessToken);
     console.log("qq", result);
     // setLoading(false);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to remove adhoc Item
@@ -183,7 +189,7 @@ const JobDetails = () => {
     // setLoading(true);
     const result = await removeServiceSubItem(item_id, accessToken);
     // setLoading(false);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to remove Picture
@@ -193,7 +199,7 @@ const JobDetails = () => {
     const result = await removePicture(image_id, accessToken);
     console.log("qq", result);
     // setLoa ding(false);
-    if (result?.error) navigate("/");
+    if (result?.error) setSuccessfully(true);
     // else if (result?.status === 400) {
     //   setSuccessfully(true);
     // }
