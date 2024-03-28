@@ -37,7 +37,7 @@ function Cancel() {
       setReasonError("Please select a reason");
       return; // Prevent form submission if reason is not selected
     }
-    const result = await workOrderCancel(userGlobalState?.cancelWO?.id, userGlobalState?.details?.token);
+    const result = await workOrderCancel(userGlobalState?.cancelWO?.id,selectedReason, userGlobalState?.details?.token);
     console.log(result);
     if (result.error) {
       setUnsuccessfully(true);
@@ -50,6 +50,7 @@ function Cancel() {
     setSelectedReason(options?.value);
     setReasonError(options?.value ? null : "Please select a reason"); // Set error if empty
   };
+  console.log(selectedReason);
   return (
     <div className={styles.mainHide}>
       {/* Top Section */}
@@ -68,7 +69,7 @@ function Cancel() {
         className="mx-5"
         placeholder="Search Reason"
         options={reasons?.map((ele) => ({
-          value: ele?.title,
+          value: ele?.id,
           label: ele?.title,
         }))}
         onChange={handleReason}
