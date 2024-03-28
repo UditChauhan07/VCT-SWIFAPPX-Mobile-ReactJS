@@ -90,7 +90,7 @@ function Reschedule() {
         className="mx-5 mt-3"
         placeholder="Search Reason"
         options={reasons?.map((ele) => ({
-          value: ele?.title,
+          value: ele?.id,
           label: ele?.title,
         }))}
         onChange={handleReason}
