@@ -5,6 +5,12 @@ export const getCompanyId=(id)=>{
         payload:id,
     }
 }
+export const getCompanyName=(name)=>{
+    return{
+        type: actionTypes.getCompanyName,
+        payload:name,
+    }
+}
 export const topBarPermission=(value)=>{
     return{
         type: actionTypes.getTopBarPermission,

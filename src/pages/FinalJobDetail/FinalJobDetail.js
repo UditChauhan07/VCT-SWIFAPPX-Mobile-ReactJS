@@ -57,9 +57,9 @@ function FinalJobDetail() {
   grandTotal.current = subTotal.current + tax.current - discount.current;
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : isAuthModalOpen ? (
+      {loading ? <Loading /> : null}
+
+      {isAuthModalOpen ? (
         <ModalForAuthentication show={isAuthModalOpen} />
       ) : (
         <div className={Styles.JobDetalTop}>

@@ -32,6 +32,7 @@ export const workerLogin = async (userName, password, company_id) => {
 export const workOrderList = async (day, month, year, accessToken) => {
   try {
     const response = await axios.post(`${live}/wxWorkerOrderList`, { day: `${day}`, month: `${month}`, year: `${year}` }, { headers: { Authorization: `Bearer ${accessToken}` } });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {

@@ -14,12 +14,11 @@ import Notification from "./pages/Notification/Notification";
 import Profile from "./pages/Profile/Profile";
 import Remarks from "./pages/Remarks/Remarks";
 import ImageCapture from "./pages/PictureUploading/ImageCapture";
-import SignaturePad from "./components/SignaturePad";
 import NotFound from "./pages/NotFound/NotFound";
 import EditDetail from "./pages/EditDetail/EditDetail";
 import Cancel from "./pages/Cancel/Cancel";
 import Reschedule from "./pages/Reschedule/Calander";
-// import Loading from "./components/Loading";
+import Loading from "./components/Loading";
 
 function App() {
   return (
@@ -40,7 +39,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         {/* <Route path='/notification' element={<Notification />}/> */}
         <Route path="/remark" element={<Remarks />} />
-        {/* <Route path="/load" element={<Loading />} /> */}
+        <Route path="/load" element={<Loading />} />
         <Route path="/imageCapture" element={<ImageCapture />} />
         <Route path="/edit-details" element={<EditDetail />} />
         {/* <Route path='/sign' element={<SignaturePad />}/>  */}

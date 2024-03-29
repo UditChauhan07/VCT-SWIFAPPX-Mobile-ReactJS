@@ -1,7 +1,7 @@
 import React from "react";
 const Loading = () => {
   return (
-    <div className="min-vh-100 d-flex justify-content-center align-items-center">
+    <div className="min-vh-100 d-flex justify-content-center align-items-center bg-transparent">
       <div className="position-relative">
         <img src="/assets/loaderCircle.gif" width={"190px"} alt="swif-loader" />
       </div>
