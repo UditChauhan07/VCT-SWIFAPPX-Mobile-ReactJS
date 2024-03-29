@@ -10,10 +10,10 @@ import { companyLogout } from "../../redux/company/company.actions";
 import { getWorkerProfile } from "../../api/worker";
 import { Modal } from "react-bootstrap";
 import { convertTimeTo24h } from "../../utils/format";
-import { useInternetStatusChecks } from "../../utils/updation";
+import { useInternetStatusCheck } from "../../utils/updation";
 
 function Profile() {
-  const online = useInternetStatusChecks();
+  const online = useInternetStatusCheck();
   const userGlobalState = useSelector((state) => state.userModule);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,9 +27,11 @@ function Profile() {
     navigate("/");
   };
   const apiCallForProfile = async () => {
-    const result = await getWorkerProfile(userGlobalState?.details?.token);
-    dispatch(getUserDetails(result?.details));
-    console.log(result?.details?.contact);
+    if (online) {
+      const result = await getWorkerProfile(userGlobalState?.details?.token);
+      dispatch(getUserDetails(result?.details));
+      console.log(result?.details?.contact);
+    }
   };
   useEffect(() => {
     if (!userGlobalState?.details?.token) {
@@ -98,7 +100,7 @@ function Profile() {
                 </Link>
                 <hr></hr>
 
-                <div className={`${Styles.EditProile} mb-5 `} onClick={() => setLogoutState(true)} style={{cursor:"pointer"}}>
+                <div className={`${Styles.EditProile} mb-5 `} onClick={() => setLogoutState(true)} style={{ cursor: "pointer" }}>
                   <div className={Styles.EditImg}>
                     <img src="/assets/Sign_out_squre.svg" alt="img" />
                   </div>

@@ -2,6 +2,7 @@ import * as actionTypes from "./company.actionTypes";
 
 export const companyInitialState = {
   company_id: null,
+  company_name:null,
   topBarPermission: null,
   tax: null,
   company_logo: null,
@@ -13,6 +14,11 @@ export const companyModule = (state = companyInitialState, action) => {
       return {
         ...state,
         company_id: action.payload,
+      };
+      case actionTypes.getCompanyName:
+      return {
+        ...state,
+        company_name: action.payload,
       };
     case actionTypes.getTopBarPermission:
       return {
