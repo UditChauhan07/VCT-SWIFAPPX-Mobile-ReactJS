@@ -50,7 +50,7 @@ export const generateRandomDigits = (length) => {
   // const randomDigits = generateRandomDigits(6); // Get 6 random digits
   // console.log(randomDigits); // Output: Example: 521874 (may vary on each run)
 };
-export const useInternetStatusChecks = () => {
+export const useInternetStatusCheck = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {

@@ -1,10 +1,10 @@
 import React from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
-import { useInternetStatusChecks } from "../../utils/updation";
+import { useInternetStatusCheck } from "../../utils/updation";
 
 const FooterNav = () => {
-  const online = useInternetStatusChecks();
+  const online = useInternetStatusCheck();
   return (
     <div>
       <div className="bottomNav">
