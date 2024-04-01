@@ -7,6 +7,7 @@ import { capitalizeEachWord } from "../../utils/format";
 import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import Loading from "../../components/Loading";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
+import CircleLoading from "../../components/CircleLoading";
 
 function FinalJobDetail() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function FinalJobDetail() {
       setOriginalApiWODetail(result?.detail);
     }
   };
-  console.log(originalApiWODetail);
+  console.log("originalApiWODetail",originalApiWODetail);
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
@@ -57,41 +58,39 @@ function FinalJobDetail() {
   grandTotal.current = subTotal.current + tax.current - discount.current;
   return (
     <>
-      {loading ? <Loading /> : null}
+      {/* {loading ? <Loading /> : null} */}
 
-      {isAuthModalOpen ? (
-        <ModalForAuthentication show={isAuthModalOpen} />
-      ) : (
-        <div className={Styles.JobDetalTop}>
-          <div className={`${Styles.TopSection} fixed-top`}>
-            <div className={Styles.backArrow}>
-              <Link to="/job-details">
-                <WhiteBackArrow />
-              </Link>
-            </div>
-            <div className={Styles.Greetings}>
-              <p>Thank you</p>
-              <h5>
-                {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
-              </h5>
-            </div>
+      {isAuthModalOpen ? <ModalForAuthentication show={isAuthModalOpen} /> : null}
+      <div className={Styles.JobDetalTop}>
+        <div className={`${Styles.TopSection} fixed-top`}>
+          <div className={Styles.backArrow}>
+            <Link to="/job-details">
+              <WhiteBackArrow />
+            </Link>
+          </div>
+          <div className={Styles.Greetings}>
+            <p>Thank you</p>
+            <h5>
+              {capitalizeEachWord(userGlobalState?.details?.name)}, <span>kindly sign off below</span>{" "}
+            </h5>
+          </div>
+        </div>
+
+        <div className={Styles.BorderRadiusTop}>
+          <div className={Styles.FinalMap}>
+            <img src="/assets/finalMap.png" alt="img" />
           </div>
 
-          <div className={Styles.BorderRadiusTop}>
-            <div className={Styles.FinalMap}>
-              <img src="/assets/finalMap.png" alt="img" />
+          <div className={Styles.AdressDetail}>
+            <div className={Styles.MapImage}>
+              <img src="/assets/location-iconRed.svg" alt="location-iconRed" />
             </div>
-
-            <div className={Styles.AdressDetail}>
-              <div className={Styles.MapImage}>
-                <img src="/assets/location-iconRed.svg" alt="location-iconRed" />
-              </div>
-              <p>
-                <strong>Address: </strong>
-                {userGlobalState?.address}
-              </p>
-            </div>
-
+            <p>
+              <strong>Address: </strong>
+              {userGlobalState?.address}
+            </p>
+          </div>
+          {!loading ? (
             <div className={Styles.AllJobDetails}>
               <h5>
                 Team Details: <span> {originalApiWODetail?.leader?.name ? `${originalApiWODetail?.leader?.name} (TL)` : null} </span>{" "}
@@ -176,20 +175,24 @@ function FinalJobDetail() {
                 </div>
               </div>
             </div>
-
-            <div className={Styles.CodAmount}>
-              <input type="number" placeholder="Enter Collected Amount If COD?" />
+          ) : (
+            <div className="mt-5">
+              <CircleLoading />
             </div>
+          )}
 
-            <div className={Styles.CodButton}>
-              <Link to="/signature-screen" className={Styles.Btn1}>
-                Accept
-              </Link>
-              <Link to="/job-details">Decline</Link>
-            </div>
+          <div className={Styles.CodAmount}>
+            <input type="number" placeholder="Enter Collected Amount If COD?" />
+          </div>
+
+          <div className={Styles.CodButton}>
+            <Link to="/signature-screen" className={Styles.Btn1}>
+              Accept
+            </Link>
+            <Link to="/job-details">Decline</Link>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

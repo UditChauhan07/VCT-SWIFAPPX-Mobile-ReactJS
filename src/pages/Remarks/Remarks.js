@@ -14,7 +14,7 @@ function Remarks() {
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState, companyGlobalState);
+  // console.log(userGlobalState, companyGlobalState);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [originalApiCommentDetails, setOriginalApiCommentDetails] = useState([]);
@@ -26,7 +26,7 @@ function Remarks() {
     // setLoading(true);
     setIsLoading(true);
     const result = await getCommentList(id, token);
-    console.log("result", result);
+    // console.log("result", result);
     // setLoading(false);
     setIsLoading(false);
     if (result.error) {

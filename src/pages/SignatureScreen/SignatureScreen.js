@@ -41,17 +41,17 @@ function SignatureScreen() {
     } else {
       setIsNotSignedModal(false);
       file.current = dataUrlToFile(signatureImage, "image.png");
-      console.log(file.current, signatureImage);
+      // console.log(file.current, signatureImage);
       // console.log(signatureImage);
     }
   };
-  console.log(isNotSignedModal);
+  // console.log(isNotSignedModal);
   const initialValues = {
     signOff: "",
     remarks: "",
   };
   const handleSubmit = async (values) => {
-    console.log(values);
+    // console.log(values);
     saveSignature();
     if (sigCanvas.current?.isEmpty()) {
       setIsNotSignedModal(true);
@@ -59,12 +59,12 @@ function SignatureScreen() {
       // setLoading(true);
       // api for uploading WO signature
       const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
-      console.log(result);
+      // console.log(result);
       if (result?.status === 200) {
         setIsSignatureUploaded(true);
         // api for finishing WO
         const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, convertTimeTo24h(new Date().toLocaleTimeString().substring(0, 8)), userGlobalState?.details?.token);
-        console.log(resultFinishing);
+        // console.log(resultFinishing);
         if (!resultFinishing.error) {
           setIsSignatureUploaded(false);
           setWoStopped(true);
