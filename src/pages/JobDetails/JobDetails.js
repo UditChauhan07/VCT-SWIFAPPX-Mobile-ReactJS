@@ -20,7 +20,7 @@ const JobDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
-  console.log(userGlobalState);
+  // console.log(userGlobalState);
   const initialValues = {
     workers: [],
   };
@@ -76,7 +76,7 @@ const JobDetails = () => {
   const handleLeaderModalYes = async (values) => {
     if (userGlobalState?.details?.token) {
       const result = await workOrderWorkersStartLeader(originalApiWODetail?.id, convertTimeTo24h(new Date().toLocaleTimeString()), userGlobalState?.details?.token, values.workers);
-      console.log("result:..............", result);
+      // console.log("result:..............", result);
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
 
       // setOriginalApiWOs(result?.data);
@@ -102,23 +102,23 @@ const JobDetails = () => {
     setLoading(false);
     if (result.error) setSuccessfully(true);
     else {
-      console.log(result?.data);
+      // console.log(result?.data);
       // setOriginalApiWODetail(result?.data?.filter((ele) => ele?.id === userGlobalState?.workerOrderId)?.[0]);
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
     }
   };
-  console.log(originalApiWODetail);
+  // console.log(originalApiWODetail);
   // API Call for details
   const getWorkerOrderDetailApiCall = async (id, token) => {
     if (online) {
       setLoading(true);
       const result = await workerOrderDetail(id, token);
-      console.log("result", result);
+      // console.log("result", result);
       setLoading(false);
       if (result === 401) {
         setIsAuthModalOpen(true);
       } else {
-        console.log("result?.detail?.ad_hoc_catid", result?.detail?.ad_hoc_catid);
+        // console.log("result?.detail?.ad_hoc_catid", result?.detail?.ad_hoc_catid);
 
         if (result?.detail?.ad_hoc_catid.length === 0) {
         } else {
@@ -138,15 +138,15 @@ const JobDetails = () => {
         dispatch(getAddress(address));
       }
     } else {
-      console.log("off", userGlobalState?.woList);
+      // console.log("off", userGlobalState?.woList);
       setOriginalApiWODetail(userGlobalState?.woList?.filter((ele) => ele?.id === userGlobalState?.workerOrderId)?.[0]);
     }
   };
-  console.log(userGlobalState, "userglobal");
+  // console.log(userGlobalState, "userglobal");
   const FinishWO = async () => {
     // api for finishing WO
     const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
-    console.log(resultFinishing);
+    // console.log(resultFinishing);
     if (!resultFinishing.error) {
       // setIsSignatureUploaded(false);
       setWoStopped(true);
@@ -178,10 +178,10 @@ const JobDetails = () => {
   };
   // API Call to add adhoc Item
   const toAddAdhocItemAPICall = async (workorder_id, category_id, item_id, quantity, accessToken) => {
-    console.log("apai");
+    // console.log("apai");
     setLoading(true);
     const result = await toAddAdhocItem(workorder_id, category_id, item_id, quantity, accessToken);
-    console.log("qq", result);
+    // console.log("qq", result);
     setLoading(false);
     if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
@@ -196,10 +196,10 @@ const JobDetails = () => {
   };
   // API Call to remove Picture
   const toRemovePictureAPICall = async (image_id, accessToken) => {
-    console.log("apai");
+    // console.log("apai");
     // setLoading(true);
     const result = await removePicture(image_id, accessToken);
-    console.log("qq", result);
+    // console.log("qq", result);
     // setLoa ding(false);
     if (result?.error) setSuccessfully(true);
     // else if (result?.status === 400) {
@@ -219,7 +219,7 @@ const JobDetails = () => {
 
     if (validImageExtensions.includes(fileExtension)) {
       setImageFile(event.target.files[0]);
-      console.log("image", imageFile, event.target.files[0]);
+      // console.log("image", imageFile, event.target.files[0]);
       // console.log( URL.createObjectURL(imageFile));
       alert(JSON.stringify(event.target));
       // await toUploadPictureAPICall(userGlobalState?.workerOrderId, imageFile, userGlobalState?.details?.token);
@@ -267,7 +267,7 @@ const JobDetails = () => {
 
   const handleAdhocItemChange = (option) => {
     const filteredData = originalApiWODetail?.ad_hoc_items?.sub_items?.filter((ele) => ele?.name === option.label);
-    console.log(filteredData);
+    // console.log(filteredData);
     if (filteredData?.length) {
       setAlertForSameItem(true);
       setShow(false);
@@ -282,13 +282,13 @@ const JobDetails = () => {
   };
   const handleRemoveSelectedAdhocItem = () => {
     setTaskCounting(taskCounting - 1);
-    console.log(activeAdhocItem);
+    // console.log(activeAdhocItem);
     toRemoveAdhocItemAPICall(activeAdhocItem?.id, userGlobalState?.details?.token);
     setItemRemoveModal(false);
   };
   const handleQuantitySelectorChangeForAdhocItems = (option) => {
-    console.log("option", option);
-    console.log("activeAdhocItem", activeAdhocItem);
+    // console.log("option", option);
+    // console.log("activeAdhocItem", activeAdhocItem);
     updateQuantityOfServiceSubItemAPICall(activeAdhocItem?.id, option.value, userGlobalState?.details?.token);
     setTimeout(() => {
       setQuantitySelector(false);

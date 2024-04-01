@@ -39,7 +39,7 @@ function FinalJobDetail() {
       setOriginalApiWODetail(result?.detail);
     }
   };
-  console.log(originalApiWODetail);
+  console.log("originalApiWODetail",originalApiWODetail);
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);

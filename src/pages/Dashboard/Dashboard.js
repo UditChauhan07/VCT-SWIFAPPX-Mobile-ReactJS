@@ -15,7 +15,7 @@ import CircleLoading from "../../components/CircleLoading";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
-  console.log(userGlobalState, companyGlobalState);
+  // console.log(userGlobalState, companyGlobalState);
   const [show, setShow] = useState(false);
   const [leaderModalShow, setLeaderModalShow] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -104,7 +104,7 @@ const Dashboard = () => {
     // setActiveTab(index);
   };
   const handleDateClick = (date) => {
-    console.log("date", date);
+    // console.log("date", date);
     setActiveDate(date);
     workOrderListAPICall(date.substring(8), date.substring(5, 7), date.substring(0, 4), userGlobalState?.details?.token);
   };
@@ -112,7 +112,7 @@ const Dashboard = () => {
     if (online) {
       setLoading(true);
       const result = await workOrderList(day, month, year, token);
-      console.log("rsult", result);
+      // console.log("result", result);
       setLoading(false);
       if (result.error) {
         setIsAuthModalOpen(true);
@@ -123,7 +123,7 @@ const Dashboard = () => {
       }
     } else {
       setOriginalApiWOs(userGlobalState?.woList);
-      console.log("hi", userGlobalState?.woList);
+      // console.log("hi", userGlobalState?.woList);
       setListOfWO(userGlobalState?.woList?.filter((ele) => ele.workstatus === 1 || ele.workstatus === 2));
     }
   };
@@ -165,7 +165,7 @@ const Dashboard = () => {
         );
         break;
       default:
-        console.log(activeIndex);
+        // console.log(activeIndex);
     }
   }, [activeIndex, originalApiWOs]);
   console.log("list", listOfWO);
@@ -212,7 +212,7 @@ const Dashboard = () => {
   const leaders = useMemo(() => {
     return originalApiWOs?.filter((ele) => ele?.id === startWOId[0] && ele?.is_leader === true);
   }, [originalApiWOs, startWOId]);
-  console.log(leaders, "leaders");
+  // console.log(leaders, "leaders");
   return (
     <>
       {/* {loading ? <Loading /> : null} */}
@@ -461,7 +461,7 @@ const Dashboard = () => {
                         {leaders.length ? (
                           <>
                             {leaders.map((ele) => {
-                              console.log("ll", ele?.workers?.length);
+                              // console.log("ll", ele?.workers?.length);
                               return ele?.workers?.length ? (
                                 ele.workers.map((item, index) => {
                                   return (
