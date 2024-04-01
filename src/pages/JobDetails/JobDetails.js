@@ -129,10 +129,12 @@ const JobDetails = () => {
           result?.detail?.country ? `, ${result?.detail?.country}` : ""
         }${result?.detail?.zip ? `, ${result?.detail?.zip}` : ""}`;
         if (result?.detail?.workstatusname === "In Progress") {
-          setTaskCounting(taskCounting + 1);
+          if (result?.detail?.ad_hoc_items?.sub_items?.length) setTaskCounting(taskCounting + 1 + result?.detail?.ad_hoc_items?.sub_items?.length);
+          else setTaskCounting(taskCounting + 1);
         }
+
         setOriginalApiWODetail(result?.detail);
-        console.log("hi", result?.detail);
+        // console.log("hi", result?.detail);
         dispatch(getAddress(address));
       }
     } else {
@@ -177,18 +179,18 @@ const JobDetails = () => {
   // API Call to add adhoc Item
   const toAddAdhocItemAPICall = async (workorder_id, category_id, item_id, quantity, accessToken) => {
     console.log("apai");
-    // setLoading(true);
+    setLoading(true);
     const result = await toAddAdhocItem(workorder_id, category_id, item_id, quantity, accessToken);
     console.log("qq", result);
-    // setLoading(false);
+    setLoading(false);
     if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
   };
   // API Call to remove adhoc Item
   const toRemoveAdhocItemAPICall = async (item_id, accessToken) => {
-    // setLoading(true);
+    setLoading(true);
     const result = await removeServiceSubItem(item_id, accessToken);
-    // setLoading(false);
+    setLoading(false);
     if (result?.error) setSuccessfully(true);
     else setOriginalApiWODetail(result?.data);
   };
@@ -256,6 +258,9 @@ const JobDetails = () => {
       <ModalForAuthentication show={true} />;
     }
   }, [online]);
+  // useEffect(() => {
+  //   setTaskCounting(taskCounting + originalApiWODetail?.ad_hoc_items?.sub_items?.length ?? 0);
+  // }, [originalApiWODetail]);
 
   console.log("originalApiWODetail", originalApiWODetail);
   const arrayOf20numbers = Array.from({ length: 20 }, (_, index) => index + 1);
@@ -330,7 +335,7 @@ const JobDetails = () => {
           <section className={` ${Styles.JobHolder1} `}>
             <div className={` ${Styles.NameWithTasks} `}>
               <div className={` ${Styles.TaskCompleted} `}>
-                <div className={` ${Styles.Completed} `}>{taskCounting} Tasks Completed</div>
+                <div className={` ${Styles.Completed} `}>{taskCounting ? `${taskCounting} Tasks Completed` : "0 Tasks Completed"}</div>
                 <div className={` ${Styles.PicTaken} `}>{originalApiWODetail?.gallery?.length ?? "0"} Picture Taken</div>
               </div>
             </div>
@@ -378,7 +383,7 @@ const JobDetails = () => {
           <div className={` ${Styles.RegularCleaning} `}>
             <div className={` ${Styles.IconPlusCleaning} `}>
               <img className="img-fluid" alt="img" src="/assets/check-circle.png" />
-              <p className="m-0">{originalApiWODetail?.option_name ?? "N/A"}</p>
+              <p className="m-0">{originalApiWODetail?.option_name ?? ""}</p>
             </div>
             <div className={` ${Styles.IconPlusCleaning} `}>{originalApiWODetail?.payment_mode_id === 4 ? null : <p className="m-0">₹{Number(originalApiWODetail?.option_price).toFixed(2)}</p>}</div>
           </div>
@@ -1052,14 +1057,18 @@ const JobDetails = () => {
                           );
                         })}
                       </>
-                    ) : null}
+                    ) : (
+                      <p className="m-0 text-center">
+                        No Worker is available. <br></br>Do you want to <strong>start</strong> work order?
+                      </p>
+                    )}
 
                     <div className="d-flex gap-5 mt-3">
                       <button variant="primary" disabled={isSubmitting} className="PurpulBtnClock w-30 btn btn-btn">
-                        Submit
+                        {originalApiWODetail?.workers?.length ? "Submit" : "Yes"}
                       </button>
                       <button variant="primary" type="button" onClick={handleLeaderClose} className="PurpulBtnClock w-30 btn btn-btn">
-                        Cancel
+                        {originalApiWODetail?.workers?.length ? "Cancel" : "No"}
                       </button>
                     </div>
                   </Form>

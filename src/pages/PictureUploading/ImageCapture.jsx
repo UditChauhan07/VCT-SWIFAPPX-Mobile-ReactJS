@@ -36,8 +36,8 @@ const CameraApp = ({ show }) => {
     try {
       const constraints = { video: true };
       // Add facingMode: 'environment' to specify the back camera
-      constraints.facingMode = 'environment';
-  
+      constraints.facingMode = "environment";
+
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       videoRef.current.srcObject = mediaStream;
       setStream(mediaStream);
@@ -99,8 +99,12 @@ const CameraApp = ({ show }) => {
         <Loading />
       ) : (
         <>
-          {!imageData ? <video ref={videoRef} autoPlay /> : null}
-          {imageData && <img src={imageData} alt="Captured" />}
+          {!imageData ? (
+            <div className="d-flex justify-content-center align-items-center min-vh-50">
+              <video ref={videoRef} autoPlay style={{ maxWidth: "100vw", maxHeight: "80vh" }} />
+            </div>
+          ) : null}
+          {imageData && <img src={imageData} alt="Captured" style={{ maxWidth: "100vw", maxHeight: "80vh" }} />}
           <div className="d-flex gap-5 justify-content-center mt-4">
             {/* <button onClick={startCapture}>Start Capture</button> */}
             {videoRef.current ? (
@@ -133,9 +137,7 @@ const CameraApp = ({ show }) => {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <p className="text-center">
-              Picture uploaded Successfully.
-              </p>
+              <p className="text-center">Picture uploaded Successfully.</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
@@ -149,9 +151,7 @@ const CameraApp = ({ show }) => {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <p className="text-center">
-              Something went wrong. Try Again!
-              </p>
+              <p className="text-center">Something went wrong. Try Again!</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
