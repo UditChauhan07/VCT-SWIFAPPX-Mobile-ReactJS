@@ -11,6 +11,7 @@ import { getWorkerOrderDetail, saveWOList, toCancelWO, toRescheduleWO } from "..
 import { Field, Form, Formik } from "formik";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { useInternetStatusCheck } from "../../utils/updation";
+import CircleLoading from "../../components/CircleLoading";
 const Dashboard = () => {
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
@@ -214,7 +215,7 @@ const Dashboard = () => {
   console.log(leaders, "leaders");
   return (
     <>
-      {loading ? <Loading /> : null}
+      {/* {loading ? <Loading /> : null} */}
 
       <div className="DashboardBg">
         <div className="dd-none dd-block">
@@ -233,209 +234,218 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          {/* End of top section */}
           {/* cards with counting  of  WO's and their details*/}
-          <div className="GrayBg1">
-            <div className="WorkOrderSectionTop">
-              <div className="OrderFor text-center">
-                <h1>Your Work Orders for</h1>
-              </div>
-
-              <div className="calenderWeek">
-                {/* calender dates */}
-                <div className="WeeklyCal">
-                  <div
-                    className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
-                    id={getDateAfterNoOfDays(0).substring(8)}
-                    onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
-                  >
-                    <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
-                    <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
-                  </div>
-                  {companyGlobalState.topBarPermission ? (
-                    <>
-                      <div
-                        className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
-                        id={getDateAfterNoOfDays(1).substring(8)}
-                        onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
-                      >
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
-                      </div>
-                      <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
-                        <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
-                        <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
-                      </div>
-                    </>
-                  ) : null}
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="GrayBg1">
+              <div className="WorkOrderSectionTop">
+                <div className="OrderFor text-center">
+                  <h1>Your Work Orders for</h1>
                 </div>
-                {/* counting of status of tasks */}
-                <div className="FourTaskShow">
-                  <div className="Pending">
-                    <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
-                      <div className="YellowBg">{pendingWO}</div>
-                      <p>Pending</p>
-                    </li>
-                  </div>
 
-                  <div className="Pending">
-                    <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
-                      <div className="RedBg">{cancelWO}</div>
-                      <p>Cancel</p>
-                    </li>
+                <div className="calenderWeek">
+                  {/* calender dates */}
+                  <div className="WeeklyCal">
+                    <div
+                      className={`DayDate ${activeDate === getDateAfterNoOfDays(0) ? "Active" : null}`}
+                      id={getDateAfterNoOfDays(0).substring(8)}
+                      onClick={() => handleDateClick(getDateAfterNoOfDays(0))}
+                    >
+                      <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(0))}</p>
+                      <p className="WeekDate">{getDateAfterNoOfDays(0).substring(8)}</p>
+                    </div>
+                    {companyGlobalState.topBarPermission ? (
+                      <>
+                        <div
+                          className={`DayDate ${activeDate === getDateAfterNoOfDays(1) ? "Active" : null}`}
+                          id={getDateAfterNoOfDays(1).substring(8)}
+                          onClick={() => handleDateClick(getDateAfterNoOfDays(1))}
+                        >
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(1))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(1).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(2) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(2))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(2))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(2).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(3) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(3))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(3))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(3).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(4) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(4))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(4))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(4).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(5) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(5))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(5))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(5).substring(8)}</p>
+                        </div>
+                        <div className={`DayDate ${activeDate === getDateAfterNoOfDays(6) ? "Active" : null}`} onClick={() => handleDateClick(getDateAfterNoOfDays(6))}>
+                          <p className="WeekDay">{getDayOfWeek(getDateAfterNoOfDays(6))}</p>
+                          <p className="WeekDate">{getDateAfterNoOfDays(6).substring(8)}</p>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
-                  <div className="Pending">
-                    <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
-                      <div className="GreenBg">{completeWO}</div>
-                      <p>Completed</p>
-                    </li>
-                  </div>
-                  <div className="Pending">
-                    <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
-                      <div className="BlueBg">{totalWO}</div>
-                      <p>Total</p>
-                    </li>
+                  {/* counting of status of tasks */}
+                  <div className="FourTaskShow">
+                    <div className="Pending">
+                      <li onClick={() => handleClick(0)} className={activeIndex === 0 ? "active" : ""}>
+                        <div className="YellowBg">{pendingWO}</div>
+                        <p>Pending</p>
+                      </li>
+                    </div>
+
+                    <div className="Pending">
+                      <li onClick={() => handleClick(1)} className={activeIndex === 1 ? "active" : ""}>
+                        <div className="RedBg">{cancelWO}</div>
+                        <p>Cancel</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(2)} className={activeIndex === 2 ? "active" : ""}>
+                        <div className="GreenBg">{completeWO}</div>
+                        <p>Completed</p>
+                      </li>
+                    </div>
+                    <div className="Pending">
+                      <li onClick={() => handleClick(3)} className={activeIndex === 3 ? "active" : ""}>
+                        <div className="BlueBg">{totalWO}</div>
+                        <p>Total</p>
+                      </li>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* cards of WO */}
-            {listOfWO.length ? (
-              listOfWO.map((ele, index) => {
-                return (
-                  <>
-                    <div className="OrderCreate" key={index}>
-                      <div
-                        onClick={() => {
-                          dispatch(getWorkerOrderDetail(ele.id));
-                          navigate("/job-details");
-                        }}
-                      >
-                        <h2>{ele?.customer_name ?? "N/A"}</h2>
+              {/* cards of WO */}
 
-                        <div className="OrderDetailsInfo">
-                          <div className="InnerInfo">
-                            <img className="img-fluid" src="/assets/call-mess.png" alt="img" />
-                            <span>{ele?.customer_contact_number ?? "N/A"}</span>
-                          </div>
-                          <div className="InnerInfo">
-                            <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
-                            <span>{ele?.customer_address ?? "N/A"}</span>
-                          </div>
-                          <div className="InnerInfo">
-                            <img className="img-fluid" alt="img" src="/assets/Read-icon.png" />
-                            <span>{ele?.service_name ?? "N/A"}</span>
-                          </div>
-                          <div className="ClockOrRead">
-                            <div className="InnerInfo w-50">
-                              <img className="img-fluid" alt="img" src="/assets/Clock.png" />
-                              <span>{ele?.expected_start_time ?? "N/A"}</span>
-                            </div>
-                            <div className="InnerInfo w-50">
-                              <img className="img-fluid" alt="img" src="/assets/Reading.png" />
-                              <span>{ele?.contractNumber ?? "N/A"}</span>
-                            </div>
-                          </div>
-                          {ele?.start_date === getDateAfterNoOfDays(0) && (ele?.workstatus === 1 || ele?.workstatus === 2) ? (
-                            <>
-                              <div className="Bottom-button">
-                                <div className="w-40">
-                                  <button
-                                    variant="primary"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (ele?.workstatus === 1)
-                                        if (ele?.is_leader) {
-                                          handleLeaderShow(ele?.id);
-                                        } else {
-                                          handleShow(ele?.id);
-                                        }
-                                      else if (ele?.workstatus === 2) {
-                                        if (ele?.is_leader) {
-                                          navigate("/job-details");
-                                        } else {
-                                          dispatch(getWorkerOrderDetail(ele.id));
-                                          navigate("/job-details");
-                                        }
-                                      } else {
-                                      }
-                                    }}
-                                    className="PurpulBtnClock btn btn-btn"
-                                  >
-                                    <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                                    {ele?.workstatus === 1 ? (ele?.is_leader ? "Start" : "Check In") : null}
-                                    {ele?.workstatus === 2 ? (ele?.is_leader ? "Stop" : "Check Out") : null}
-                                  </button>
+              <>
+                {" "}
+                {listOfWO.length ? (
+                  listOfWO.map((ele, index) => {
+                    return (
+                      <>
+                        <div className="OrderCreate" key={index}>
+                          <div
+                            onClick={() => {
+                              dispatch(getWorkerOrderDetail(ele.id));
+                              navigate("/job-details");
+                            }}
+                          >
+                            <h2>{ele?.customer_name ?? "N/A"}</h2>
+
+                            <div className="OrderDetailsInfo">
+                              <div className="InnerInfo">
+                                <img className="img-fluid" src="/assets/call-mess.png" alt="img" />
+                                <span>{ele?.customer_contact_number ?? "N/A"}</span>
+                              </div>
+                              <div className="InnerInfo">
+                                <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
+                                <span>{ele?.customer_address ?? "N/A"}</span>
+                              </div>
+                              <div className="InnerInfo">
+                                <img className="img-fluid" alt="img" src="/assets/Read-icon.png" />
+                                <span>{ele?.service_name ?? "N/A"}</span>
+                              </div>
+                              <div className="ClockOrRead">
+                                <div className="InnerInfo w-50">
+                                  <img className="img-fluid" alt="img" src="/assets/Clock.png" />
+                                  <span>{ele?.expected_start_time ?? "N/A"}</span>
                                 </div>
-                                {ele?.is_leader && ele?.workstatus === 1 ? (
-                                  <div
-                                    className="w-30"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      dispatch(toRescheduleWO(ele?.id, ele?.customer_name));
-                                      navigate("/reschedule");
-                                    }}
-                                  >
-                                    <button className="YellowBtn btn btn-btn">
-                                      <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
-                                    </button>
-                                  </div>
-                                ) : null}
-                                {ele?.is_leader && ele?.workstatus === 1 ? (
-                                  <div
-                                    className="w-30"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      dispatch(toCancelWO(ele?.id, ele?.customer_name));
-                                      navigate("/cancel");
-                                    }}
-                                  >
-                                    <div className="YellowBtn btn btn-btn">
+                                <div className="InnerInfo w-50">
+                                  <img className="img-fluid" alt="img" src="/assets/Reading.png" />
+                                  <span>{ele?.contractNumber ?? "N/A"}</span>
+                                </div>
+                              </div>
+                              {ele?.start_date === getDateAfterNoOfDays(0) && (ele?.workstatus === 1 || ele?.workstatus === 2) ? (
+                                <>
+                                  <div className="Bottom-button">
+                                    <div className="w-40">
                                       <button
-                                        className="bg-transparent border-0"
+                                        variant="primary"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (ele?.workstatus === 1)
+                                            if (ele?.is_leader) {
+                                              handleLeaderShow(ele?.id);
+                                            } else {
+                                              handleShow(ele?.id);
+                                            }
+                                          else if (ele?.workstatus === 2) {
+                                            if (ele?.is_leader) {
+                                              navigate("/job-details");
+                                            } else {
+                                              dispatch(getWorkerOrderDetail(ele.id));
+                                              navigate("/job-details");
+                                            }
+                                          } else {
+                                          }
+                                        }}
+                                        className="PurpulBtnClock btn btn-btn"
+                                      >
+                                        <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                                        {ele?.workstatus === 1 ? (ele?.is_leader ? "Start" : "Check In") : null}
+                                        {ele?.workstatus === 2 ? (ele?.is_leader ? "Stop" : "Check Out") : null}
+                                      </button>
+                                    </div>
+                                    {ele?.is_leader && ele?.workstatus === 1 ? (
+                                      <div
+                                        className="w-30"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          dispatch(toRescheduleWO(ele?.id, ele?.customer_name));
+                                          navigate("/reschedule");
+                                        }}
+                                      >
+                                        <button className="YellowBtn btn btn-btn">
+                                          <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                                        </button>
+                                      </div>
+                                    ) : null}
+                                    {ele?.is_leader && ele?.workstatus === 1 ? (
+                                      <div
+                                        className="w-30"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           dispatch(toCancelWO(ele?.id, ele?.customer_name));
                                           navigate("/cancel");
                                         }}
                                       >
-                                        <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
-                                      </button>
-                                    </div>
+                                        <div className="YellowBtn btn btn-btn">
+                                          <button
+                                            className="bg-transparent border-0"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              dispatch(toCancelWO(ele?.id, ele?.customer_name));
+                                              navigate("/cancel");
+                                            }}
+                                          >
+                                            <img className="img-fluid" alt="img" src="/assets/Anti-clock.png" />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : null}
                                   </div>
-                                ) : null}
-                              </div>
-                            </>
-                          ) : null}
+                                </>
+                              ) : null}
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </>
+                    );
+                  })
+                ) : (
+                  <>
+                    <div className="OrderCreate">
+                      <h2>No Work Order</h2>
                     </div>
                   </>
-                );
-              })
-            ) : (
-              <>
-                <div className="OrderCreate">
-                  <h2>No Work Order</h2>
-                </div>
+                )}
               </>
-            )}
-          </div>
+            </div>
+          )}
           <FooterNav></FooterNav>
           {/* modal for leader */}
           {leaderModalShow ? (
