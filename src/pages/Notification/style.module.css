@@ -1,0 +1,102 @@
+.UserIcon {
+    height: 60px;
+    width: 60px;
+    overflow: hidden;
+    border-radius: 200px;
+    display: inline-flex;
+}
+.CompanyIcon{
+    height: 60px;
+    width: 60px;
+    overflow: hidden;
+    border-radius: 200px;
+    display: flex;
+    align-items: center;
+}
+.userName {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.UserProfile {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.UserProfile span{
+    margin-left: 8px;
+    font-weight: 500;
+    color:#8D28DD;
+}
+
+.TopSection {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+    margin-bottom: 8%;
+    padding: 0 20px;
+}
+
+.TopControler{
+    /* padding: 0 20px; */
+}
+
+.DateControlFlex{
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin: 0 0 10px 0;
+    
+}
+
+.DateControlFlex p{
+    font-size: 12px;
+    font-weight: 400;
+    color: #fff;
+    padding: 3px 4px;
+    background-color: #6F6F6F;
+
+}
+
+
+
+.historyBox{
+    padding: 10px;
+    /* border-radius: 10px; */
+    /* border: 1px solid; */
+    padding: 15px 10px 10px 15px;
+    /* box-shadow: rgba(100, 100, 111, 0.2) 1px 1px 1px 1px; */
+    border-bottom: 1px solid #E1E1E1;
+    margin: 5px 0;
+}
+
+.DateControlFlex h3{
+    font-size: 18px;
+    color: #171C3A;
+    font-weight: 700;
+    text-transform: capitalize;
+
+}
+
+.InnerInfo span{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.InnerInfo{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.TopControler{
+    display:none;
+}
+
+@media(max-width:767px){
+    .TopControler{
+        display: block;
+    }
+}

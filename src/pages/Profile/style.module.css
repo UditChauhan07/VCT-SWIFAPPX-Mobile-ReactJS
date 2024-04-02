@@ -1,0 +1,85 @@
+.UserProfile{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.TopSection {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+    margin-bottom: 8%;
+    padding: 0 20px;
+}
+
+.ProfileEmail{
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+}
+.ProfilePoints{
+    color: #808080;
+    font-size: 15px;
+    margin: 0;
+}
+
+
+.PersonalDetail h3{
+    padding: 0 20px;
+    font-size: 22px;
+    font-weight: 700;
+  
+}
+
+.PersonalInfo{
+    padding: 0px 20px;
+    background-color: #fff;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+   
+}
+
+.PersonalInfo p{
+    font-size: 18px;
+    font-weight: 500;
+    color: #212121;
+    border-bottom: 1px solid #ddd8d8 ;
+    margin: 0;
+    padding: 15px 0 15px 0;
+
+}
+
+.EditProile{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+}
+
+.EditImg {
+    border-radius: 3px;
+    
+    /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+    width:30px;
+    background-color: #fff;
+    /* border:1px solid */
+
+}
+
+.PersonalInfo button {
+    font-size: 18px;
+    font-weight: 500;
+    color: #212121;   
+    margin: 0;
+    padding: 12px 0 12px 0;
+    background-color: transparent;
+    border: none;
+}
+.TopControler{
+    display:none;
+}
+
+@media(max-width:767px){
+    .TopControler{
+        display: block;
+    }
+}

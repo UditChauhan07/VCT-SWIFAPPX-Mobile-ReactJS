@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SWIF</string>
+    <string name="title_activity_main">SWIF</string>
+    <string name="package_name">swif.app</string>
+    <string name="custom_url_scheme">swif.app</string>
+</resources>

@@ -1,0 +1,116 @@
+.backArrow{
+    height: 35px;
+    width: 35px;
+    background-color: #8D28DD;
+    border-radius: 100px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.backArrow path {
+    fill: #fff;
+}
+.TopSection svg{
+    transform: rotate(90deg);
+}
+.CompanyLogo{
+    width: 75px;
+    height: 35px;
+    border: 1px solid #636363;
+    border-radius: 7px;
+    padding: 3px 8px;
+}
+.TopSection {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+    margin-bottom: 8%;
+    padding: 0 20px;
+}
+.GrayBg{
+    background-color: #F0F0F0;
+    border-radius: 30px 30px 0px 0px;
+    padding: 20px;
+    padding-bottom: 100px;
+}
+.CompanylogoSection{
+    height: 150px;
+    background-color: #fff;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+.CompanyName{
+    color: #171C3A;
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+.CallButton{
+    background-color: #8D28DD;
+    color: #fff;
+    margin-right: 10px;
+}
+.CallNumber {
+    font-size: 12px;
+    color: #4B4B4B;
+}
+.CompanyInfo{
+    color: #4B4B4B;
+}
+.CompanyInfo p{
+    margin-bottom: 5px;
+}
+.companyDetails h1{
+    color: #222D4A;
+    font-size: 22px;
+    font-weight: 500;
+}
+.dd-block {
+    padding: 0px 0px;
+}
+.WorkDays{
+    font-size: 13px;
+    font-weight: 500;
+
+}
+.weeks{
+    font-size: 12px;
+    font-weight: 400;
+    text-align: end;
+
+}
+.AllDetails .row{
+    margin-bottom: 10px;
+}
+.PurpulLeftBorder{
+    border-left: 5px solid #8D28DD;
+    padding-right: 10px;
+}
+.ContactUsText{
+    padding-left: 10px;
+    font-size: 13px;
+}
+.ConfirmedButton{
+    background-color: #8D28DD;
+    color: #fff;
+    width: 100%;
+    margin: 20px 0px;
+}
+.CompanylogoSection div{
+    width: 50%;
+    align-items: center;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+
+}
+.weeks.underline {
+    text-decoration: underline;
+}
+.BusinessLogoIdentity img{
+    height: 120px;
+}
