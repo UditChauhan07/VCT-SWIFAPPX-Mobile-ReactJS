@@ -108,15 +108,16 @@ export const isPreviousDate = (dateString) => {
 export const convertTimeTo24h = (timeString) => {
   // Split the time string into components
   const [hours, minutes, seconds, modifier] = timeString.split(":");
-
+console.log([hours, minutes, seconds, modifier]);
   // Convert hours to 24-hour format based on modifier
   let convertedHours = parseInt(hours, 10);
   if (modifier === "PM" && convertedHours !== 12) {
+    console.log("fyfy");
     convertedHours += 12;
   } else if (modifier === "AM" && convertedHours === 12) {
     convertedHours = 0;
   }
-
+console.log(`${convertedHours.toString().padStart(2, "0")}:${minutes}:${seconds}`);
   // Return the formatted time string
   return `${convertedHours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
 };
@@ -136,3 +137,14 @@ export const extractPhoneNumber = (numberWithCountryCode) => {
     return cleanedNumber; // Return original number if no country code found
   }
 };
+export const get24HourTime=()=> {
+  const date = new Date();
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false, // This ensures 24-hour format
+  };
+
+  return date.toLocaleTimeString([], options);
+}

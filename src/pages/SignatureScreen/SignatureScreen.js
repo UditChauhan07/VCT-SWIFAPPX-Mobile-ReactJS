@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Styles from "./styles.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
-import { capitalizeEachWord, convertTimeTo24h } from "../../utils/format";
+import { capitalizeEachWord, convertTimeTo24h, get24HourTime } from "../../utils/format";
 import { useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import { Modal } from "react-bootstrap";
@@ -33,6 +33,7 @@ function SignatureScreen() {
   const clearSignature = () => {
     sigCanvas.current.clear();
   };
+
   const saveSignature = () => {
     const signatureImage = sigCanvas.current.getCanvas().toDataURL("image/png");
     // Further processing or sending the signature data (explained later)
@@ -63,7 +64,9 @@ function SignatureScreen() {
       if (result?.status === 200) {
         setIsSignatureUploaded(true);
         // api for finishing WO
-        const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, convertTimeTo24h(new Date().toLocaleTimeString().substring(0, 8)), userGlobalState?.details?.token);
+
+        // const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, convertTimeTo24h(new Date().toLocaleTimeString().substring(0, 8)), userGlobalState?.details?.token);
+        const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, get24HourTime(), userGlobalState?.details?.token);
         // console.log(resultFinishing);
         if (!resultFinishing.error) {
           setIsSignatureUploaded(false);
