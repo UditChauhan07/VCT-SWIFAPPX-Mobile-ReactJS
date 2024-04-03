@@ -33,7 +33,9 @@ function MyCamera() {
       setSuccessfully(true);
     } else {
       setPictureUpload(true);
-      navigate("/job-details");
+      setTimeout(() => {
+        navigate("/job-details");
+      }, 2000);
     }
   };
   const takePhoto = async () => {
