@@ -1,62 +1,142 @@
-import React, { useState } from "react";
-import { Camera } from "@capacitor/camera";
+import React, { useEffect, useState } from "react";
 import { dataUrlToFile } from "../utils/updation";
 import { uploadPicture } from "../api/worker";
+import { Camera, CameraDirection, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 import { useSelector } from "react-redux";
-import { Buffer } from "buffer";
+import { Modal } from "react-bootstrap";
+import Loading from "./Loading";
+import { useNavigate } from "react-router-dom/dist";
 
 function MyCamera() {
-  const [imageUrl, setImageUrl] = useState(null);
+  const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
-  const dataUrlToFile = (image, filename) => {
-    // const dataUrl = image.toDataURL("image/png");
-    const buff = Buffer.from(image, "base64");
-    return new File([buff], filename, { type: "image/png" });
+  const [loading, setLoading] = useState(false);
+  const [successfully, setSuccessfully] = useState(false);
+  const [pictureUpload, setPictureUpload] = useState(false);
+  const [state, setState] = useState(false);
+  const handlePictureUpload = () => {
+    setPictureUpload(false);
+    navigate("/job-details");
+  };
+  const handleSuccessfully = () => {
+    setSuccessfully(false);
+    // navigate("/job-details");
   };
 
-  const takePicture = async () => {
-    try {
-      const options = {
-        source: Camera.Source.Camera, // Use the rear camera
-        quality: 100, // Image quality (0-100)
-      };
-
-      const image = await Camera.getPhoto(options);
-      console.log(image);
-      const url = image.webPath; // Web path for displaying the image in React
-      setImageUrl(url);
-      const file = dataUrlToFile(image.base64String, "image.png");
-      console.log("file".file);
-
-      await toUploadPictureAPICall(userGlobalState?.workerOrderId, file, userGlobalState?.details?.token);
-    } catch (error) {
-      console.error("Error capturing image:", error);
-    }
-  };
-  //   const uploadImage = async () => {
-  //     // console.log("image data",imageData);
-  //     const file = dataUrlToFile(imageData, "image.png");
-  //     console.log(file);
-  //     await toUploadPictureAPICall(userGlobalState?.workerOrderId, file, userGlobalState?.details?.token);
-  //   };
-  // API Call to Upload Picture
   const toUploadPictureAPICall = async (item_id, file, accessToken) => {
-    // setLoading(true);
+    setLoading(true);
     const result = await uploadPicture(item_id, file, accessToken);
     console.log(result);
-    // setLoading(false);
-    // if (result?.error) navigate("/");
-    // else
-    // if (result === 400) {
-    //   setSuccessfully(true);
-    //   setImageData(null);
-    // } else {
-    //   setPictureUpload(true);
-    //   setImageData(null);
-    //   navigate("/job-details");
+    setLoading(false);
+    if (result?.error) {
+      setSuccessfully(true);
+    } else {
+      setPictureUpload(true);
+      navigate("/job-details");
+    }
   };
+  const takePhoto = async () => {
+    console.log(Capacitor.getPlatform());
+    if (Capacitor.getPlatform() !== "web") {
+      if (Capacitor.getPlatform() === "ios") {
+        // Check for iOS platform
+        const image = await Camera.getPhoto({
+          quality: 80,
+          allowEditing: false,
+          resultType: CameraResultType.Uri,
+          saveToPhotoAlbum: true,
+        });
+        console.log(image.webPath);
+      } else {
+        // Check for Android platform
+        const { CameraSource, CameraResultType } = await import("@capacitor/camera");
 
-  return <div>{imageUrl ? <img src={imageUrl} alt="Captured Image" /> : <button onClick={takePicture}>Take Picture</button>}</div>;
+        const image = await Camera.getPhoto({
+          quality: 80,
+          allowEditing: false,
+          resultType: CameraResultType.DataUrl,
+          saveToGallery: true,
+          source: CameraSource.Camera,
+        });
+        // alert("JSON.stringify(image)");
+        console.log("image", image);
+        console.log(image.dataUrl);
+        const file = dataUrlToFile(image.dataUrl, "image.jpg");
+        console.log("file", file);
+
+        await toUploadPictureAPICall(userGlobalState?.workerOrderId, file, userGlobalState?.details?.token);
+        console.log(image.base64String);
+      }
+    } else {
+      // Check for web platform
+      const image = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        saveToGallery: true,
+      });
+      console.log(image.dataUrl);
+      const file = dataUrlToFile(image.dataUrl, "image.png");
+      console.log(file);
+      setLoading(true);
+      const result = await uploadPicture(userGlobalState?.workerOrderId, file, userGlobalState?.details?.token);
+      console.log(result);
+      setLoading(false);
+      if (result?.error) {
+        setSuccessfully(true);
+      } else {
+        console.log("ihih");
+        setPictureUpload(true);
+        setTimeout(() => {
+          navigate("/job-details");
+        }, 2000);
+      }
+    }
+  };
+  return (
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="d-flex justify-content-center align-items-center" style={{ maxHeight: "100vh", minHeight: "100vh" }}>
+            <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={takePhoto}>
+              Take Photo
+            </button>
+          </div>
+          {/* Modal picture Upload Successfully */}
+          <Modal show={pictureUpload} onHide={handlePictureUpload}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p className="text-center">Picture uploaded Successfully.</p>
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handlePictureUpload} className="PurpulBtnClock w-30 btn btn-btn">
+                  OK
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+          {/* Modal for Unsuccessfully something*/}
+          <Modal show={successfully} onHide={handleSuccessfully}>
+            <Modal.Header closeButton>
+              <Modal.Title> Alert</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p className="text-center">Something went wrong. Try Again!</p>
+              <div className="d-flex gap-5 mt-3">
+                <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+                  OK
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </>
+      )}
+    </>
+  );
 }
 
 export default MyCamera;

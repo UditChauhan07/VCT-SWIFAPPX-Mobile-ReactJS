@@ -8,15 +8,18 @@ import { getAdhocItemsList, workerOrderDetail } from "../../api/worker";
 import Loading from "../../components/Loading";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import CircleLoading from "../../components/CircleLoading";
+import { getCurrentAddress, getLatLongParameters } from "../../api/general";
+import { useInternetStatusCheck } from "../../utils/updation";
 
 function FinalJobDetail() {
   const navigate = useNavigate();
+  const online = useInternetStatusCheck();
   const userGlobalState = useSelector((state) => state.userModule);
   const [loading, setLoading] = useState(false);
   const [adhocItemsList, setAdhocItemsList] = useState([]);
   const [originalApiWODetail, setOriginalApiWODetail] = useState([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
+  const [currentLocation, setCurrentLocation] = useState();
   // API Call for getting Adhoc Items List
   const getAdhocItemsListApiCall = async (id, token) => {
     setLoading(true);
@@ -39,7 +42,7 @@ function FinalJobDetail() {
       setOriginalApiWODetail(result?.detail);
     }
   };
-  console.log("originalApiWODetail",originalApiWODetail);
+  console.log("originalApiWODetail", originalApiWODetail);
   useEffect(() => {
     if (userGlobalState?.details?.token) {
       getWorkerOrderDetailApiCall(userGlobalState?.workerOrderId, userGlobalState?.details?.token);
@@ -47,6 +50,20 @@ function FinalJobDetail() {
       setIsAuthModalOpen(true);
     }
   }, []);
+  const myLocation = async () => {
+    if (online) {
+      const co_ordinates = await getLatLongParameters();
+      const address = await getCurrentAddress(co_ordinates.latitude, co_ordinates.longitude);
+      // console.log(address, "parameter");
+      setCurrentLocation(address);
+    }
+  };
+  useEffect(() => {
+    myLocation();
+  }, []);
+  useEffect(() => {
+    myLocation();
+  }, [online]);
   let adjustmentValue = originalApiWODetail?.adjustment_type === "addition" ? +originalApiWODetail?.adjustment_value : -originalApiWODetail?.adjustment_value;
   const subTotal = useRef(0);
   const tax = useRef(0);
@@ -85,14 +102,16 @@ function FinalJobDetail() {
             <div className={Styles.MapImage}>
               <img src="/assets/location-iconRed.svg" alt="location-iconRed" />
             </div>
-            <p>
+            <p className="m-0">
               <strong>Address: </strong>
-              {userGlobalState?.address}
+              {online ? currentLocation : userGlobalState?.address}
+              {/* {currentLocation} */}
+              {/* {userGlobalState?.address} */}
             </p>
           </div>
           {!loading ? (
             <div className={Styles.AllJobDetails}>
-              <h5>
+              <h5 className="mt-3">
                 Team Details: <span> {originalApiWODetail?.leader?.name ? `${originalApiWODetail?.leader?.name} (TL)` : null} </span>{" "}
                 <span className={Styles.Span2}>{originalApiWODetail?.workers?.length ? originalApiWODetail?.workers?.map((ele) => `, ${ele?.name}`) : null}</span>
               </h5>

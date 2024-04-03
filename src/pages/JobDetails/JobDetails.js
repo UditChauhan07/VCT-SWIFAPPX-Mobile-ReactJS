@@ -196,11 +196,9 @@ const JobDetails = () => {
   };
   // API Call to remove Picture
   const toRemovePictureAPICall = async (image_id, accessToken) => {
-    // console.log("apai");
     // setLoading(true);
     const result = await removePicture(image_id, accessToken);
-    // console.log("qq", result);
-    // setLoa ding(false);
+    // setLoading(false);
     if (result?.error) setSuccessfully(true);
     // else if (result?.status === 400) {
     //   setSuccessfully(true);
@@ -462,7 +460,8 @@ const JobDetails = () => {
                                 className="form-control"
                                 value={ele?.quantity}
                                 onChange={(e) => {
-                                  updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
+                                  // updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
+                                  console.log();
                                   setTaskCounting(taskCounting + 1);
                                   setQuantityModalShow(true);
                                 }}
@@ -590,7 +589,7 @@ const JobDetails = () => {
               {originalApiWODetail?.gallery?.map((ele) => {
                 return (
                   <div className={` ${Styles.PictureStyleInner} `}>
-                    <img className="img-fluid" alt="img" src={ele?.name} />
+                    <img className="img-fluid" alt="img" src={ele?.name} style={{border:"1px solid #cec7c7"}} />
                     <div className={` ${Styles.picturText} `}>
                       {formatTimestamp(ele?.timestamp)}
                       {ele?.uploaded_type !== 1 ? (
