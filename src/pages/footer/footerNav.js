@@ -6,8 +6,8 @@ import { useInternetStatusCheck } from "../../utils/updation";
 const FooterNav = () => {
   const online = useInternetStatusCheck();
   return (
-    <div>
-      <div className="bottomNav">
+    <div className="dd-block dd-none">
+      <div className="bottomNav ">
         <nav className="fixed-bottom bg-white BottomNavFix">
           <Link className="navbar-b" to="/dashboard">
             <img className="img-fluid" alt="img" src="/assets/Home_icon.png" />
