@@ -77,6 +77,10 @@
 .TopControler{
     display:none;
 }
+.PersonalInfo .EditProile .mb-5 {
+
+    margin-bottom: 50px !important;
+}
 
 @media(max-width:767px){
     .TopControler{
