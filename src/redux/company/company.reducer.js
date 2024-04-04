@@ -2,10 +2,11 @@ import * as actionTypes from "./company.actionTypes";
 
 export const companyInitialState = {
   company_id: null,
-  company_name:null,
+  company_name: null,
   topBarPermission: null,
   tax: null,
   company_logo: null,
+  company_details: null,
 };
 
 export const companyModule = (state = companyInitialState, action) => {
@@ -15,7 +16,7 @@ export const companyModule = (state = companyInitialState, action) => {
         ...state,
         company_id: action.payload,
       };
-      case actionTypes.getCompanyName:
+    case actionTypes.getCompanyName:
       return {
         ...state,
         company_name: action.payload,
@@ -34,6 +35,11 @@ export const companyModule = (state = companyInitialState, action) => {
       return {
         ...state,
         company_logo: action.payload,
+      };
+    case actionTypes.companyDetails:
+      return {
+        ...state,
+        company_details: action.payload,
       };
     case actionTypes.companyLogout:
       return companyInitialState;

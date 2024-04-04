@@ -4,3 +4,4 @@ export const getTopBarPermission="GET_TOP_BAR_PERMISSION";
 export const getTaxValue="GET_TAX_VALUE";
 export const companyLogout="COMPANY_LOGOUT";
 export const companyLogo= "COMPANY_LOGO";
+export const companyDetails= "COMPANY_DETAILS";

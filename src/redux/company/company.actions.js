@@ -29,6 +29,12 @@ export const getLogoCompany=(value)=>{
         payload:value,
     }
 }
+export const getCompanyDetails=(details)=>{
+    return{
+        type: actionTypes.companyDetails,
+        payload:details,
+    }
+}
 export const companyLogout=()=>{
     return{
         type: actionTypes.companyLogout,
