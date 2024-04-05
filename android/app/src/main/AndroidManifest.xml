@@ -38,11 +38,16 @@
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-<!-- Camera Permissions -->
+    <!-- Camera Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.LOCATION_HARDWARE"
         tools:ignore="ProtectedPermissions" />
+            <!-- Always include this permission -->
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+          
+            <!-- Include only if your app benefits from precise location access. -->
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

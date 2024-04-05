@@ -36,7 +36,6 @@ function SignatureScreen() {
 
   const saveSignature = () => {
     const signatureImage = sigCanvas.current.getCanvas().toDataURL("image/png");
-    // Further processing or sending the signature data (explained later)
     if (sigCanvas.current?.isEmpty()) {
       setIsNotSignedModal(true);
     } else {
@@ -117,11 +116,6 @@ function SignatureScreen() {
                       <button type="button" onClick={clearSignature}>
                         Clear Sign.
                       </button>
-                      {/* <button type="button" onClick={saveSignature}>
-                    Confirm Signature
-                  </button> */}
-                      {/* </div>
-                <div className={Styles.CodButton}> */}
                       <button type="submit">Submit</button>
                     </div>
                   </div>
