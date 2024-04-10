@@ -9,8 +9,18 @@ import { useSelector } from "react-redux";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { convertDateIntoYYYYMMDD, isPreviousDate } from "../../utils/format";
+import { App } from '@capacitor/app';
 
-function Reschedule() {
+  function Reschedule() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const userGlobalState = useSelector((state) => state.userModule);
   console.log(userGlobalState);
   let navigate = useNavigate();

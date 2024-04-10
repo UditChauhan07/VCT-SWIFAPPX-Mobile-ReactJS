@@ -12,8 +12,18 @@ import TextError from "../../utils/TextError";
 import { dataUrlToFile } from "../../utils/updation";
 import { uploadSignature, workOrderWorkersFinish } from "../../api/worker";
 import Loading from "../../components/Loading";
+import { App } from '@capacitor/app';
 
-function SignatureScreen() {
+  function SignatureScreen() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
 
   const userGlobalState = useSelector((state) => state.userModule);

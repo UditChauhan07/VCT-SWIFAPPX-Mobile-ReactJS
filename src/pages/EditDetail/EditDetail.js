@@ -11,8 +11,18 @@ import { Modal } from "react-bootstrap";
 import { getUserDetails } from "../../redux/user/user.actions";
 import { EditIcon, WhiteBackArrow } from "../../utils/svg";
 import { extractPhoneNumber } from "../../utils/format";
+import { App } from '@capacitor/app';
 
-const EditDetail = () => {
+  const EditDetail = () => {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userGlobalState = useSelector((state) => state.userModule);

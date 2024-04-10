@@ -9,14 +9,24 @@ import "./style.css";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import TextError from "../../utils/TextError";
 import { LoginFormSchema } from "../../ValidationSchema/Login";
-const Password = () => {
+import { App } from '@capacitor/app';
+
+  const Password = () => {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const online = useInternetStatusCheck();
   const globalCompanyState = useSelector((state) => state.companyModule);
   const userGlobalState = useSelector((state) => state.userModule);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [unSuccessfully, setUnsuccessfully] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
   const handleUnsuccessfully = () => setUnsuccessfully(false);
   const initialValues = {
     userName:"",

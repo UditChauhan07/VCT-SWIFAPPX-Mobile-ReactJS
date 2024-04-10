@@ -9,8 +9,18 @@ import Loading from "./Loading";
 import { Link, useNavigate } from "react-router-dom/dist";
 import { WhiteBackArrow } from "../utils/svg";
 import Styles from "../pages/JobDetails/style.module.css";
+import { App } from '@capacitor/app';
 
-function MyCamera() {
+  function MyCamera() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const [loading, setLoading] = useState(false);

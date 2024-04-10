@@ -6,8 +6,18 @@ import { WhiteBackArrow } from "../../utils/svg";
 import { reasonsForCancelAndReschedule, workOrderCancel } from "../../api/worker";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
+import { App } from "@capacitor/app";
 
 function Cancel() {
+  // Go back functionality for android mobile
+  App.addListener("backButton", ({ canGoBack }) => {
+    console.log(canGoBack);
+    if (canGoBack) {
+      window.history.back();
+    } else {
+      App.exitApp();
+    }
+  });
   const userGlobalState = useSelector((state) => state.userModule);
   console.log(userGlobalState);
   const [reasons, setReasons] = useState([]);

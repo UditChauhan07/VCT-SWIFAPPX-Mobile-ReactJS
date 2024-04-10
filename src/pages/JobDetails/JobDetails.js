@@ -14,8 +14,18 @@ import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuan
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { Field, Form, Formik } from "formik";
 import { dataUrlToFile, useInternetStatusCheck } from "../../utils/updation";
+import { App } from '@capacitor/app';
 
-const JobDetails = () => {
+  const JobDetails = () => {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const online = useInternetStatusCheck();
   const dispatch = useDispatch();
   const navigate = useNavigate();

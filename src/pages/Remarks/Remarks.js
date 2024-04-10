@@ -9,8 +9,18 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { CommentSchema } from "../../ValidationSchema/Comments";
 import TextError from "../../utils/TextError";
 import CircleLoading from "../../components/CircleLoading";
+import { App } from '@capacitor/app';
 
-function Remarks() {
+  function Remarks() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
