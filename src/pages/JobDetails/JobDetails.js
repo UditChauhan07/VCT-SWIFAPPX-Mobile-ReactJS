@@ -8,7 +8,7 @@ import { getAdhocItemsList, removePicture, uploadPicture, workOrderWorkersFinish
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAddress, getWorkerOrderDetail, toCancelWO, toRescheduleWO } from "../../redux/user/user.actions";
-import { capitalizeEachWord, convertTimeInAMPM, convertTimeTo24h, formatDateString, formatTimestamp } from "../../utils/format";
+import { capitalizeEachWord, convertTimeInAMPM, convertTimeTo24h, formatDateString, formatTimestamp, get24HourTime } from "../../utils/format";
 import { WhiteBackArrow } from "../../utils/svg";
 import { removeServiceSubItem, toAddAdhocItem, toCheckServiceSubItem, updateQuantityOfServiceSubItem } from "../../api/leader";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
@@ -145,7 +145,7 @@ const JobDetails = () => {
   // console.log(userGlobalState, "userglobal");
   const FinishWO = async () => {
     // api for finishing WO
-    const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, new Date().toLocaleTimeString().substring(0, 8), userGlobalState?.details?.token);
+    const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, get24HourTime(), userGlobalState?.details?.token);
     // console.log(resultFinishing);
     if (!resultFinishing.error) {
       // setIsSignatureUploaded(false);
@@ -162,6 +162,7 @@ const JobDetails = () => {
   };
   // API Call for update quantity of service sub Item
   const updateQuantityOfServiceSubItemAPICall = async (id, quantity, token) => {
+    console.log(id, quantity, token);
     // setLoading(true);
     const result = await updateQuantityOfServiceSubItem(id, quantity, token);
     if (result?.error) setSuccessfully(true);
@@ -460,8 +461,7 @@ const JobDetails = () => {
                                 className="form-control"
                                 value={ele?.quantity}
                                 onChange={(e) => {
-                                  // updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
-                                  console.log();
+                                  updateQuantityOfServiceSubItemAPICall(ele?.id, e.target.value, userGlobalState?.details?.token);
                                   setTaskCounting(taskCounting + 1);
                                   setQuantityModalShow(true);
                                 }}
@@ -589,7 +589,7 @@ const JobDetails = () => {
               {originalApiWODetail?.gallery?.map((ele) => {
                 return (
                   <div className={` ${Styles.PictureStyleInner} `}>
-                    <img className="img-fluid" alt="img" src={ele?.name} style={{border:"1px solid #cec7c7"}} />
+                    <img className="img-fluid" alt="img" src={ele?.name} style={{ border: "1px solid #cec7c7" }} />
                     <div className={` ${Styles.picturText} `}>
                       {formatTimestamp(ele?.timestamp)}
                       {ele?.uploaded_type !== 1 ? (
@@ -651,157 +651,159 @@ const JobDetails = () => {
             </div>
           </section>
           {/* for total, subtotal, tax */}
-          <section className={` ${Styles.bottomFixedSection} `}>
-            <div className="accordion accordion-flush" id="accordionFlushExample">
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="flush-headingOne">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseOne"
-                    aria-expanded="false"
-                    aria-controls="flush-collapseOne"
-                  ></button>
-                </h2>
-                <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                  <div className="accordion-body">
-                    {originalApiWODetail?.payment_mode_id === 4 ? null : (
-                      <>
-                        <div className={` ${Styles.ExpendSectionTop} `}>
-                          <img className="img-fluid " src="/assets/hand-cru.png" alt="img" />
-                          <div className={` ${Styles.Totalpay} `}>
-                            <p className="mb-1">
-                              Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
-                            </p>
-                            <p className="mb-1">
-                              TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(tax.current).toFixed(2)}</strong>{" "}
-                            </p>
-                            <p className="mb-1">
-                              Discount @ {originalApiWODetail?.discount_value ?? 0}%: <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
-                            </p>
-                            <p className="mb-1">
-                              Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>
-                            </p>
-                          </div>
-                        </div>
-                        <hr></hr>
-                      </>
-                    )}
-                    {originalApiWODetail?.workstatusname === "In Progress" ? (
-                      <div className={` ${Styles.ExpendSectionTop} `}>
-                        <div className={` ${Styles.StartExAC} `}>
-                          <p className={`mb-0  ${Styles.Ex} `}>
-                            Date: <strong> {originalApiWODetail?.start_date ?? ""}</strong>
-                          </p>{" "}
-                          <p className={`mb-0  ${Styles.Ex} `}>
-                            Expected Start: <strong> {convertTimeInAMPM(originalApiWODetail?.actual_start_time) ?? ""}</strong>
-                          </p>
-                          {originalApiWODetail?.workstatusname === "In Progress" ? (
-                            <p className={`mb-0  ${Styles.Ac} `}>
-                              Actual Start: <strong>{originalApiWODetail?.ground_start_time ? convertTimeInAMPM(originalApiWODetail?.ground_start_time) : null}</strong>
-                            </p>
-                          ) : null}
-                        </div>
-                        <div className={` ${Styles.ButtonTimeClock} `}>
-                          <button
-                            className="btn btn-btn"
-                            onClick={() => {
-                              if (originalApiWODetail?.is_leader) {
-                                navigate("/final-job-detail");
-                              } else {
-                                setWoStoppedConfirmation(true);
-                              }
-                            }}
-                          >
-                            <div className={` ${Styles.ButtonInnerIconText} `}>
-                              <img className="img-fluid " alt="img" src="/assets/Stop-icon.png" />
-                              {originalApiWODetail?.workstatusname === "In Progress" ? (originalApiWODetail?.is_leader ? "Stop" : "Check Out") : null}
-                              {originalApiWODetail?.workstatusname === "Pending" ? (originalApiWODetail?.is_leader ? "Start" : "Check In") : null}
+          {originalApiWODetail.workstatusname === "Completed" ? null : (
+            <section className={` ${Styles.bottomFixedSection} `}>
+              <div className="accordion accordion-flush" id="accordionFlushExample">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="flush-headingOne">
+                    <button
+                      className="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#flush-collapseOne"
+                      aria-expanded="false"
+                      aria-controls="flush-collapseOne"
+                    ></button>
+                  </h2>
+                  <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                    <div className="accordion-body">
+                      {originalApiWODetail?.payment_mode_id === 4 ? null : (
+                        <>
+                          <div className={` ${Styles.ExpendSectionTop} `}>
+                            <img className="img-fluid " src="/assets/hand-cru.png" alt="img" />
+                            <div className={` ${Styles.Totalpay} `}>
+                              <p className="mb-1">
+                                Sub-Total: <strong>SGD ₹{Number(subTotal.current).toFixed(2)}</strong>
+                              </p>
+                              <p className="mb-1">
+                                TAX @ {originalApiWODetail?.companytax}%: <strong>SGD ₹{Number(tax.current).toFixed(2)}</strong>{" "}
+                              </p>
+                              <p className="mb-1">
+                                Discount @ {originalApiWODetail?.discount_value ?? 0}%: <strong>SGD ₹{Number(discount.current).toFixed(2)}</strong>{" "}
+                              </p>
+                              <p className="mb-1">
+                                Amount to Collect: <strong>SGD ₹{Number(grandTotal.current).toFixed(2)}</strong>
+                              </p>
                             </div>
-                          </button>
-                        </div>
-                      </div>
-                    ) : null}
-                    {originalApiWODetail?.workstatusname === "In Progress" ? (
-                      <div className={` ${Styles.TakePicturebutton} `}>
-                        <div className="btn btn-btn">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => navigate("/imageCapture")}>
-                            Take Pictures for Work Order
-                            {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
-                          </label>
-                        </div>
-                      </div>
-                    ) : null}
-
-                    {/* Second Options */}
-                    {originalApiWODetail?.workstatusname === "Pending" ? (
-                      <>
+                          </div>
+                          <hr></hr>
+                        </>
+                      )}
+                      {originalApiWODetail?.workstatusname === "In Progress" ? (
                         <div className={` ${Styles.ExpendSectionTop} `}>
                           <div className={` ${Styles.StartExAC} `}>
-                            <p className={`mb-0  ${Styles.Pur} `}>Date & Time</p>
                             <p className={`mb-0  ${Styles.Ex} `}>
-                              {originalApiWODetail?.start_date ?? ""}/{convertTimeInAMPM(originalApiWODetail?.actual_start_time)}
+                              Date: <strong> {originalApiWODetail?.start_date ?? ""}</strong>
+                            </p>{" "}
+                            <p className={`mb-0  ${Styles.Ex} `}>
+                              Expected Start: <strong> {convertTimeInAMPM(originalApiWODetail?.actual_start_time) ?? ""}</strong>
                             </p>
+                            {originalApiWODetail?.workstatusname === "In Progress" ? (
+                              <p className={`mb-0  ${Styles.Ac} `}>
+                                Actual Start: <strong>{originalApiWODetail?.ground_start_time ? convertTimeInAMPM(originalApiWODetail?.ground_start_time) : null}</strong>
+                              </p>
+                            ) : null}
                           </div>
-                          <div className={` ${Styles.ContactNoSection} `}>
-                            <p className={`mb-0  ${Styles.Pur} `}>Contract Number</p>
-                            <p className={`mb-0  ${Styles.Ex} `}>{originalApiWODetail?.contractNumber ?? "------------------------------"}</p>
-                          </div>
-                        </div>
-                        <hr></hr>
-                        {originalApiWODetail?.is_leader ? (
-                          <div className="Bottom-button">
-                            <div className="w-40">
-                              <button
-                                variant="primary"
-                                className="PurpulBtnClock btn btn-btn"
-                                onClick={() => {
-                                  setLeaderModalShow(true);
-                                }}
-                              >
-                                <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                                Start
-                              </button>
-                            </div>
-                            <div className="w-30">
-                              <button
-                                className="YellowBtn btn btn-btn"
-                                onClick={() => {
-                                  dispatch(toRescheduleWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
-                                  navigate("/reschedule");
-                                }}
-                              >
-                                <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
-                              </button>
-                            </div>
-                            <div className="w-30">
-                              <div
-                                className="YellowBtn btn btn-btn"
-                                onClick={() => {
-                                  dispatch(toCancelWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
-                                  navigate("/cancel");
-                                }}
-                              >
-                                <img className="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
+                          <div className={` ${Styles.ButtonTimeClock} `}>
+                            <button
+                              className="btn btn-btn"
+                              onClick={() => {
+                                if (originalApiWODetail?.is_leader) {
+                                  navigate("/final-job-detail");
+                                } else {
+                                  setWoStoppedConfirmation(true);
+                                }
+                              }}
+                            >
+                              <div className={` ${Styles.ButtonInnerIconText} `}>
+                                <img className="img-fluid " alt="img" src="/assets/Stop-icon.png" />
+                                {originalApiWODetail?.workstatusname === "In Progress" ? (originalApiWODetail?.is_leader ? "Stop" : "Check Out") : null}
+                                {originalApiWODetail?.workstatusname === "Pending" ? (originalApiWODetail?.is_leader ? "Start" : "Check In") : null}
                               </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="w-100">
-                            <button variant="primary" className="PurpulBtnClock btn btn-btn" onClick={() => setWorkerShowModal(true)}>
-                              <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
-                              Check In
                             </button>
                           </div>
-                        )}
-                      </>
-                    ) : null}
+                        </div>
+                      ) : null}
+                      {originalApiWODetail?.workstatusname === "In Progress" ? (
+                        <div className={` ${Styles.TakePicturebutton} `}>
+                          <div className="btn btn-btn">
+                            <label htmlFor="fileInput" style={{ cursor: "pointer" }} onClick={() => navigate("/camera")}>
+                              Take Pictures for Work Order
+                              {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
+                            </label>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {/* Second Options */}
+                      {originalApiWODetail?.workstatusname === "Pending" ? (
+                        <>
+                          <div className={` ${Styles.ExpendSectionTop} `}>
+                            <div className={` ${Styles.StartExAC} `}>
+                              <p className={`mb-0  ${Styles.Pur} `}>Date & Time</p>
+                              <p className={`mb-0  ${Styles.Ex} `}>
+                                {originalApiWODetail?.start_date ?? ""}/{convertTimeInAMPM(originalApiWODetail?.actual_start_time)}
+                              </p>
+                            </div>
+                            <div className={` ${Styles.ContactNoSection} `}>
+                              <p className={`mb-0  ${Styles.Pur} `}>Contract Number</p>
+                              <p className={`mb-0  ${Styles.Ex} `}>{originalApiWODetail?.contractNumber ?? "------------------------------"}</p>
+                            </div>
+                          </div>
+                          <hr></hr>
+                          {originalApiWODetail?.is_leader ? (
+                            <div className="Bottom-button">
+                              <div className="w-40">
+                                <button
+                                  variant="primary"
+                                  className="PurpulBtnClock btn btn-btn"
+                                  onClick={() => {
+                                    setLeaderModalShow(true);
+                                  }}
+                                >
+                                  <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                                  Start
+                                </button>
+                              </div>
+                              <div className="w-30">
+                                <button
+                                  className="YellowBtn btn btn-btn"
+                                  onClick={() => {
+                                    dispatch(toRescheduleWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
+                                    navigate("/reschedule");
+                                  }}
+                                >
+                                  <img className="img-fluid" alt="img" src="/assets/Clock-Time.png" />
+                                </button>
+                              </div>
+                              <div className="w-30">
+                                <div
+                                  className="YellowBtn btn btn-btn"
+                                  onClick={() => {
+                                    dispatch(toCancelWO(originalApiWODetail?.id, originalApiWODetail?.customer_name));
+                                    navigate("/cancel");
+                                  }}
+                                >
+                                  <img className="img-fluid" alt="img" src="/assets/Anti-clock-cross.png" />
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-100">
+                              <button variant="primary" className="PurpulBtnClock btn btn-btn" onClick={() => setWorkerShowModal(true)}>
+                                <img className="img-fluid" alt="img" src="/assets/Clock-white.png" />
+                                Check In
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
           <FooterNav></FooterNav>
           {/*  Modal for worker */}
           {workerShowModal ? (
@@ -851,7 +853,7 @@ const JobDetails = () => {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          Items Added Successfully.
+          Item Added Successfully.
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleAdhocModalClose} className="PurpulBtnClock w-30 btn btn-btn">
               OK

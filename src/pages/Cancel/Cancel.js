@@ -37,7 +37,7 @@ function Cancel() {
       setReasonError("Please select a reason");
       return; // Prevent form submission if reason is not selected
     }
-    const result = await workOrderCancel(userGlobalState?.cancelWO?.id,selectedReason, userGlobalState?.details?.token);
+    const result = await workOrderCancel(userGlobalState?.cancelWO?.id, selectedReason, userGlobalState?.details?.token);
     console.log(result);
     if (result.error) {
       setUnsuccessfully(true);
@@ -72,6 +72,7 @@ function Cancel() {
           value: ele?.id,
           label: ele?.title,
         }))}
+        filterOption={(option, filterValue) => option.label.toLowerCase().includes(filterValue.toLowerCase())}
         onChange={handleReason}
         // menuIsOpen={true}
       />
@@ -89,8 +90,7 @@ function Cancel() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
-        <p className="text-center">        Cancel Work Order request has been sent to admin successfully.</p>
+          <p className="text-center"> Cancel Work Order request has been sent to admin successfully.</p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleCancelSuccessfullyModal} className="PurpulBtnClock w-30 btn btn-btn">
               OK
@@ -104,9 +104,7 @@ function Cancel() {
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <p className="text-center">
-          Something went wrong. Try Again!
-          </p>
+          <p className="text-center">Something went wrong. Try Again!</p>
           <div className="d-flex gap-5 mt-3">
             <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
               OK

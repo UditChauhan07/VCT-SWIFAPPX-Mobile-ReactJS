@@ -93,6 +93,7 @@ function Reschedule() {
           value: ele?.id,
           label: ele?.title,
         }))}
+        filterOption={(option, filterValue) => option.label.toLowerCase().includes(filterValue.toLowerCase())}
         onChange={handleReason}
         // menuIsOpen={true}
       />

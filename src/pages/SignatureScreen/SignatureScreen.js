@@ -61,7 +61,7 @@ function SignatureScreen() {
       const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
       // console.log(result);
       if (result?.status === 200) {
-        setIsSignatureUploaded(true);
+        // setIsSignatureUploaded(true);
         // api for finishing WO
 
         // const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, convertTimeTo24h(new Date().toLocaleTimeString().substring(0, 8)), userGlobalState?.details?.token);
@@ -129,7 +129,7 @@ function SignatureScreen() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p className="text-center">Please do your signature!</p>
+              <p className="text-center">Please add signature!</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleIsNotSignedModal} className="PurpulBtnClock w-30 btn btn-btn">
                   OK

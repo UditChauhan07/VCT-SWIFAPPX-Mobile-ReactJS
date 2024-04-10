@@ -126,7 +126,6 @@ const EditDetail = () => {
                   </div>
                   <div className="form-group">
                     <Field type="text" className="form-control" id="Third" placeholder="Enter Phone Number" name="contact" />
-
                     <ErrorMessage component={TextError} name="contact" />
                   </div>
                 </div>
