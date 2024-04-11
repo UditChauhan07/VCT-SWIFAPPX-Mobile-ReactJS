@@ -4,23 +4,26 @@ import "react-calendar/dist/Calendar.css";
 import styles from "./style.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
-import { reasonsForCancelAndReschedule, workOrderReschedule } from "../../api/worker";
+import {
+  reasonsForCancelAndReschedule,
+  workOrderReschedule,
+} from "../../api/worker";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { convertDateIntoYYYYMMDD, isPreviousDate } from "../../utils/format";
-import { App } from '@capacitor/app';
+import { App } from "@capacitor/app";
 
-  function Reschedule() {
+function Reschedule() {
   // Go back functionality for android mobile
-  App.addListener('backButton', ({ canGoBack }) => {
+  App.addListener("backButton", ({ canGoBack }) => {
     console.log(canGoBack);
-     if(canGoBack){
+    if (canGoBack) {
       window.history.back();
-      } else {
-       App.exitApp();
-      }
-    });
+    } else {
+      App.exitApp();
+    }
+  });
   const userGlobalState = useSelector((state) => state.userModule);
   console.log(userGlobalState);
   let navigate = useNavigate();
@@ -32,7 +35,9 @@ import { App } from '@capacitor/app';
   const [unSuccessfully, setUnsuccessfully] = useState(false);
   const [previousDate, setPreviousDate] = useState(false);
   const [date, setDate] = useState(new Date()); // State to hold the selected date
-  const [showRescheduleSuccessfullyModal, setShowRescheduleSuccessfullyModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showRescheduleSuccessfullyModal, setShowRescheduleSuccessfullyModal] =
+    useState(false);
   const handleRescheduleSuccessfullyModal = () => {
     setShowRescheduleSuccessfullyModal(false);
     navigate("/dashboard");
@@ -48,7 +53,14 @@ import { App } from '@capacitor/app';
       setReasonError("Please select a reason");
       return; // Prevent form submission if reason is not selected
     }
-    const result = await workOrderReschedule(userGlobalState?.rescheduleWO?.id, convertDateIntoYYYYMMDD(selectedDate), selectedReason, userGlobalState?.details?.token);
+    setIsLoading(true);
+    const result = await workOrderReschedule(
+      userGlobalState?.rescheduleWO?.id,
+      convertDateIntoYYYYMMDD(selectedDate),
+      selectedReason,
+      userGlobalState?.details?.token
+    );
+    setIsLoading(false);
     console.log(result);
     if (result.error) {
       setUnsuccessfully(true);
@@ -93,8 +105,19 @@ import { App } from '@capacitor/app';
         <h3>Reschedule for {userGlobalState?.rescheduleWO?.customerName}</h3>
       </div>
       {/* Calendar Component */}
-      <Calendar prev2Label next2Label className={styles.calanderControl} onChange={changeValue} value={date} />
-      {reasonErrorDate && <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">{reasonErrorDate}</p>} {/* Display error if present */}
+      <Calendar
+        prev2Label
+        next2Label
+        className={styles.calanderControl}
+        onChange={changeValue}
+        value={date}
+      />
+      {reasonErrorDate && (
+        <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">
+          {reasonErrorDate}
+        </p>
+      )}{" "}
+      {/* Display error if present */}
       {/* Display rescheduled reasons */}
       <Select
         className="mx-5 mt-3"
@@ -103,27 +126,48 @@ import { App } from '@capacitor/app';
           value: ele?.id,
           label: ele?.title,
         }))}
-        filterOption={(option, filterValue) => option.label.toLowerCase().includes(filterValue.toLowerCase())}
+        filterOption={(option, filterValue) =>
+          option.label.toLowerCase().includes(filterValue.toLowerCase())
+        }
         onChange={handleReason}
         // menuIsOpen={true}
       />
-      {reasonError && <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">{reasonError}</p>} {/* Display error if present */}
-      <div className={styles.calanderReschedule}>
-        <button className={styles.calanderReschedule} onClick={handleSubmit}>
+      {reasonError && (
+        <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">
+          {reasonError}
+        </p>
+      )}{" "}
+      {/* Display error if present */}
+      <div
+        className={styles.calanderReschedule}
+        style={{ opacity: isLoading ? 0.5 : 1 }}
+      >
+        <button
+          className={styles.calanderReschedule}
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
           Reschedule
         </button>
       </div>
       {/* Modal WO rescheduled Successfully */}
-      <Modal show={showRescheduleSuccessfullyModal} onHide={handleRescheduleSuccessfullyModal}>
+      <Modal
+        show={showRescheduleSuccessfullyModal}
+        onHide={handleRescheduleSuccessfullyModal}
+      >
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <p className="text-center">
-          Reschedule Work Order request has been sent to admin successfully.
+          <p className="text-center">
+            Reschedule Work Order request has been sent to admin successfully.
           </p>
           <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handleRescheduleSuccessfullyModal} className="PurpulBtnClock w-30 btn btn-btn">
+            <button
+              variant="primary"
+              onClick={handleRescheduleSuccessfullyModal}
+              className="PurpulBtnClock w-30 btn btn-btn"
+            >
               OK
             </button>
           </div>
@@ -135,11 +179,13 @@ import { App } from '@capacitor/app';
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <p className="text-center">
-          Something went wrong. Try Again!
-          </p>
+          <p className="text-center">Something went wrong. Try Again!</p>
           <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+            <button
+              variant="primary"
+              onClick={handleUnsuccessfully}
+              className="PurpulBtnClock w-30 btn btn-btn"
+            >
               OK
             </button>
           </div>
@@ -154,7 +200,11 @@ import { App } from '@capacitor/app';
           <p className="text-center"> Past Date can't be selected!</p>
 
           <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handlePreviousDate} className="PurpulBtnClock w-30 btn btn-btn">
+            <button
+              variant="primary"
+              onClick={handlePreviousDate}
+              className="PurpulBtnClock w-30 btn btn-btn"
+            >
               OK
             </button>
           </div>

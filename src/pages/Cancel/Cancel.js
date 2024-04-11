@@ -3,7 +3,10 @@ import Select from "react-select";
 import styles from "./style.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { WhiteBackArrow } from "../../utils/svg";
-import { reasonsForCancelAndReschedule, workOrderCancel } from "../../api/worker";
+import {
+  reasonsForCancelAndReschedule,
+  workOrderCancel,
+} from "../../api/worker";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
 import { App } from "@capacitor/app";
@@ -21,11 +24,12 @@ function Cancel() {
   const userGlobalState = useSelector((state) => state.userModule);
   console.log(userGlobalState);
   const [reasons, setReasons] = useState([]);
-  const [showCancelSuccessfullyModal, setShowCancelSuccessfullyModal] = useState(false);
+  const [showCancelSuccessfullyModal, setShowCancelSuccessfullyModal] =
+    useState(false);
   const [selectedReason, setSelectedReason] = useState(null); // Track selected value
   const [reasonError, setReasonError] = useState(null); // State for error message
   const [unSuccessfully, setUnsuccessfully] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   const handleCancelSuccessfullyModal = () => {
     setShowCancelSuccessfullyModal(false);
@@ -47,8 +51,14 @@ function Cancel() {
       setReasonError("Please select a reason");
       return; // Prevent form submission if reason is not selected
     }
-    const result = await workOrderCancel(userGlobalState?.cancelWO?.id, selectedReason, userGlobalState?.details?.token);
+    setIsLoading(true);
+    const result = await workOrderCancel(
+      userGlobalState?.cancelWO?.id,
+      selectedReason,
+      userGlobalState?.details?.token
+    );
     console.log(result);
+    setIsLoading(false);
     if (result.error) {
       setUnsuccessfully(true);
     } else {
@@ -82,27 +92,52 @@ function Cancel() {
           value: ele?.id,
           label: ele?.title,
         }))}
-        filterOption={(option, filterValue) => option.label.toLowerCase().includes(filterValue.toLowerCase())}
+        filterOption={(option, filterValue) =>
+          option.label.toLowerCase().includes(filterValue.toLowerCase())
+        }
         onChange={handleReason}
         // menuIsOpen={true}
       />
-      {reasonError && <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">{reasonError}</p>} {/* Display error if present */}
-      <div className={styles.calanderReschedule}>
+      {reasonError && (
+        <p className="text-danger w-100 ps-1 form-error mx-5 fs-6">
+          {reasonError}
+        </p>
+      )}{" "}
+      {/* Display error if present */}
+      <div
+        className={styles.calanderReschedule}
+        style={{ opacity: isLoading ? 0.5 : 1 }}
+      >
         {/* <Link to="/dashboard"> */}
-        <button className={styles.calanderReschedule} onClick={handleSubmit}>
+        <button
+          className={styles.calanderReschedule}
+          onClick={handleSubmit}
+          disabled={isLoading}
+          // style={isLoading ? { cursor: "not-allowed" } : null}
+        >
           Submit
         </button>
         {/* </Link> */}
       </div>
       {/* Modal WO stopped Successfully */}
-      <Modal show={showCancelSuccessfullyModal} onHide={handleCancelSuccessfullyModal}>
+      <Modal
+        show={showCancelSuccessfullyModal}
+        onHide={handleCancelSuccessfullyModal}
+      >
         <Modal.Header closeButton>
           <Modal.Title> Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="text-center"> Cancel Work Order request has been sent to admin successfully.</p>
+          <p className="text-center">
+            {" "}
+            Cancel Work Order request has been sent to admin successfully.
+          </p>
           <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handleCancelSuccessfullyModal} className="PurpulBtnClock w-30 btn btn-btn">
+            <button
+              variant="primary"
+              onClick={handleCancelSuccessfullyModal}
+              className="PurpulBtnClock w-30 btn btn-btn"
+            >
               OK
             </button>
           </div>
@@ -116,7 +151,11 @@ function Cancel() {
         <Modal.Body>
           <p className="text-center">Something went wrong. Try Again!</p>
           <div className="d-flex gap-5 mt-3">
-            <button variant="primary" onClick={handleUnsuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+            <button
+              variant="primary"
+              onClick={handleUnsuccessfully}
+              className="PurpulBtnClock w-30 btn btn-btn"
+            >
               OK
             </button>
           </div>
