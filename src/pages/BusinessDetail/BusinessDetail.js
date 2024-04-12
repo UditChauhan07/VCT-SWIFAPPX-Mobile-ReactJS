@@ -5,8 +5,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCompanyId } from "../../redux/company/company.actions";
 import { getCompaniesList } from "../../api/company";
 import { useInternetStatusCheck } from "../../utils/updation";
+import { App } from '@capacitor/app';
 
 const BusinessDetail = () => {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const online = useInternetStatusCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -65,7 +75,15 @@ const BusinessDetail = () => {
               {companyDetails?.zip ? `, ${companyDetails?.zip}` : ""}
             </div>
             <div className="CallNumber">
-              <button className="CallButton btn btn-btn">Call</button>
+              <button className="CallButton btn btn-btn">
+              <a href={`tel:${companyDetails?.contactNumber}`}>
+                Call
+                </a>
+                </button>
+              {/* <button className="CallButton btn btn-btn">
+              <a href="tel:1-562-867-5309">Click to Call!</a>
+              </button> */}
+             
               {companyDetails?.contactNumber ?? "N/A"}
             </div>
           </div>

@@ -21,6 +21,7 @@ import Reschedule from "./pages/Reschedule/Calander";
 import Loading from "./components/Loading";
 import MyLocation from "./components/MyLocation";
 import MyCamera from "./components/MyCamera";
+import ProfileImage from "./pages/ProfileImage/ProfileImage";
 
 function App() {
   return (
@@ -38,7 +39,8 @@ function App() {
         <Route path="/reschedule" element={<Reschedule />} />
         <Route path="/location" element={<MyLocation />} />
         <Route path="/camera" element={<MyCamera />} />
-        
+        <Route path="/edit-profile-image" element={<ProfileImage />} />
+
         {/* <Route path='/history' element={<HistoryDetail />} /> */}
         <Route path="/profile" element={<Profile />} />
         {/* <Route path='/notification' element={<Notification />}/> */}

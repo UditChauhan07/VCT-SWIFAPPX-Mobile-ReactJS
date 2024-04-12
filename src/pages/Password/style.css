@@ -1,6 +1,5 @@
 .vCenter {
   text-align: center;
-  text-align: center;
   display: flex;
   margin: auto;
   align-items: center;
@@ -9,7 +8,7 @@
 
 .logo {
   text-align: center;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 }
 .SearchCompanyText {
   color: #828282;
@@ -49,8 +48,8 @@
   text-align: center;
   align-items: center;
 }
-.mt-20 {
-  margin-top: 25px;
+.mt-25 {
+  margin-top: 29px;
 }
 .blur {
   /* Blur effect and disable pointer */
