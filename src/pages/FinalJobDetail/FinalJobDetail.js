@@ -10,8 +10,18 @@ import ModalForAuthentication from "../../components/ModalForAuthentication";
 import CircleLoading from "../../components/CircleLoading";
 import { getCurrentAddress, getLatLongParameters } from "../../api/general";
 import { useInternetStatusCheck } from "../../utils/updation";
+import { App } from '@capacitor/app';
 
-function FinalJobDetail() {
+  function FinalJobDetail() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
   const online = useInternetStatusCheck();
   const userGlobalState = useSelector((state) => state.userModule);

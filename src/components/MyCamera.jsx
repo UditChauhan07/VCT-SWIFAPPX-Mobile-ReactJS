@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { dataUrlToFile } from "../utils/updation";
 import { uploadPicture } from "../api/worker";
-import { Camera, CameraDirection, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Camera,  CameraResultType } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
 import Loading from "./Loading";
-import { useNavigate } from "react-router-dom/dist";
+import { Link, useNavigate } from "react-router-dom/dist";
+import { WhiteBackArrow } from "../utils/svg";
+import Styles from "../pages/JobDetails/style.module.css";
+import { App } from '@capacitor/app';
 
-function MyCamera() {
+  function MyCamera() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
   const userGlobalState = useSelector((state) => state.userModule);
   const [loading, setLoading] = useState(false);
   const [successfully, setSuccessfully] = useState(false);
   const [pictureUpload, setPictureUpload] = useState(false);
-  const [state, setState] = useState(false);
   const handlePictureUpload = () => {
     setPictureUpload(false);
     navigate("/job-details");
@@ -102,6 +113,16 @@ function MyCamera() {
         <Loading />
       ) : (
         <>
+           <div className={` ${Styles.TopSection} fixed-top `}>
+            {/* name and tASk and picture counting */}
+            <div className={` ${Styles.rowed} `}>
+              <div className={` ${Styles.backArrow} `}>
+                <Link to="/job-details">
+                  <WhiteBackArrow />
+                </Link>
+              </div>
+          </div>
+          </div>
           <div className="d-flex justify-content-center align-items-center" style={{ maxHeight: "100vh", minHeight: "100vh" }}>
             <button variant="primary" className="PurpulBtnClock w-30 btn btn-btn" onClick={takePhoto}>
               Take Photo

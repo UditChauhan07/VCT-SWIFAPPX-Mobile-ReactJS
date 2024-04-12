@@ -12,8 +12,18 @@ import TextError from "../../utils/TextError";
 import { dataUrlToFile } from "../../utils/updation";
 import { uploadSignature, workOrderWorkersFinish } from "../../api/worker";
 import Loading from "../../components/Loading";
+import { App } from '@capacitor/app';
 
-function SignatureScreen() {
+  function SignatureScreen() {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const navigate = useNavigate();
 
   const userGlobalState = useSelector((state) => state.userModule);
@@ -36,7 +46,6 @@ function SignatureScreen() {
 
   const saveSignature = () => {
     const signatureImage = sigCanvas.current.getCanvas().toDataURL("image/png");
-    // Further processing or sending the signature data (explained later)
     if (sigCanvas.current?.isEmpty()) {
       setIsNotSignedModal(true);
     } else {
@@ -62,7 +71,7 @@ function SignatureScreen() {
       const result = await uploadSignature(userGlobalState?.workerOrderId, file.current, values.signOff, values.remarks, userGlobalState?.details?.token);
       // console.log(result);
       if (result?.status === 200) {
-        setIsSignatureUploaded(true);
+        // setIsSignatureUploaded(true);
         // api for finishing WO
 
         // const resultFinishing = await workOrderWorkersFinish(userGlobalState?.workerOrderId, convertTimeTo24h(new Date().toLocaleTimeString().substring(0, 8)), userGlobalState?.details?.token);
@@ -117,11 +126,6 @@ function SignatureScreen() {
                       <button type="button" onClick={clearSignature}>
                         Clear Sign.
                       </button>
-                      {/* <button type="button" onClick={saveSignature}>
-                    Confirm Signature
-                  </button> */}
-                      {/* </div>
-                <div className={Styles.CodButton}> */}
                       <button type="submit">Submit</button>
                     </div>
                   </div>
@@ -135,7 +139,7 @@ function SignatureScreen() {
               <Modal.Title> Alert</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p className="text-center">Please do your signature!</p>
+              <p className="text-center">Please add signature!</p>
               <div className="d-flex gap-5 mt-3">
                 <button variant="primary" onClick={handleIsNotSignedModal} className="PurpulBtnClock w-30 btn btn-btn">
                   OK
