@@ -11,18 +11,18 @@ import { Modal } from "react-bootstrap";
 import { getUserDetails } from "../../redux/user/user.actions";
 import { EditIcon, WhiteBackArrow } from "../../utils/svg";
 import { extractPhoneNumber } from "../../utils/format";
-import { App } from '@capacitor/app';
+import { App } from "@capacitor/app";
 
-  const EditDetail = () => {
+const EditDetail = () => {
   // Go back functionality for android mobile
-  App.addListener('backButton', ({ canGoBack }) => {
+  App.addListener("backButton", ({ canGoBack }) => {
     console.log(canGoBack);
-     if(canGoBack){
+    if (canGoBack) {
       window.history.back();
-      } else {
-       App.exitApp();
-      }
-    });
+    } else {
+      App.exitApp();
+    }
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userGlobalState = useSelector((state) => state.userModule);
@@ -47,7 +47,13 @@ import { App } from '@capacitor/app';
   const handleSubmitDetails = async (values) => {
     console.log(values);
     setLoading(true);
-    const result = await editWorkerProfile(values.name, values.contact, values.address, imageFile, userGlobalState?.details?.token);
+    const result = await editWorkerProfile(
+      values.name,
+      values.contact,
+      values.address,
+      imageFile,
+      userGlobalState?.details?.token
+    );
     setLoading(false);
     if (result?.error) {
       console.log(result);
@@ -70,7 +76,7 @@ import { App } from '@capacitor/app';
       console.log("image");
     } else {
       // Not an image, handle error or display message
-      setNotImageFile(true)
+      setNotImageFile(true);
       // alert("Please select an image file.");
     }
   };
@@ -89,7 +95,11 @@ import { App } from '@capacitor/app';
       {loading ? (
         <Loading />
       ) : (
-        <Formik initialValues={initialValues} onSubmit={handleSubmitDetails} validationSchema={UserProfile}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmitDetails}
+          validationSchema={UserProfile}
+        >
           <Form>
             <div className="dd-none dd-block">
               <div className="TopSection">
@@ -104,7 +114,12 @@ import { App } from '@capacitor/app';
               <div className={Styles.Padding20}>
                 <div className={Styles.Profile}>
                   <img
-                    src={imageUrl ? imageUrl : userGlobalState?.details?.profile_image ?? "/assets/UserIcon.png"}
+                    src={
+                      imageUrl
+                        ? imageUrl
+                        : userGlobalState?.details?.profile_image ??
+                          "/assets/UserIcon.png"
+                    }
                     alt="profile"
                     style={{
                       borderRadius: "50%",
@@ -119,23 +134,46 @@ import { App } from '@capacitor/app';
                     htmlFor="fileInput"
                     style={{ cursor: "pointer" }}
                     // onClick={() => handleFileChange()}
+                    onClick={() => navigate("/edit-profile-image")}
                   >
-                    <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} />
+                    {/* <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} /> */}
                     <EditIcon />
                   </label>
                 </div>
 
                 <div className={Styles.InputField}>
                   <div className="form-group">
-                    <Field type="text" className="form-control" id="First" placeholder="Enter User name" name="name" />
-                    <ErrorMessage component={TextError} name="name" className="mb-3" />
+                    <Field
+                      type="text"
+                      className="form-control"
+                      id="First"
+                      placeholder="Enter User name"
+                      name="name"
+                    />
+                    <ErrorMessage
+                      component={TextError}
+                      name="name"
+                      className="mb-3"
+                    />
                   </div>
                   <div className="form-group">
-                    <Field type="text" className="form-control" id="Second" placeholder="Enter Address" name="address" />
+                    <Field
+                      type="text"
+                      className="form-control"
+                      id="Second"
+                      placeholder="Enter Address"
+                      name="address"
+                    />
                     <ErrorMessage component={TextError} name="address" />
                   </div>
                   <div className="form-group">
-                    <Field type="text" className="form-control" id="Third" placeholder="Enter Phone Number" name="contact" />
+                    <Field
+                      type="text"
+                      className="form-control"
+                      id="Third"
+                      placeholder="Enter Phone Number"
+                      name="contact"
+                    />
                     <ErrorMessage component={TextError} name="contact" />
                   </div>
                 </div>
@@ -155,7 +193,11 @@ import { App } from '@capacitor/app';
               <Modal.Body className="text-center">
                 Profile updated Successfully.
                 <div className="d-flex gap-5 mt-3">
-                  <button variant="primary" onClick={handleShow} className="PurpulBtnClock w-30 btn btn-btn">
+                  <button
+                    variant="primary"
+                    onClick={handleShow}
+                    className="PurpulBtnClock w-30 btn btn-btn"
+                  >
                     OK
                   </button>
                 </div>
@@ -169,21 +211,29 @@ import { App } from '@capacitor/app';
               <Modal.Body>
                 <p className="text-center">Something went wrong. Try Again!</p>
                 <div className="d-flex gap-5 mt-3">
-                  <button variant="primary" onClick={handleSuccessfully} className="PurpulBtnClock w-30 btn btn-btn">
+                  <button
+                    variant="primary"
+                    onClick={handleSuccessfully}
+                    className="PurpulBtnClock w-30 btn btn-btn"
+                  >
                     OK
                   </button>
                 </div>
               </Modal.Body>
             </Modal>
-             {/* Modal not picture type file Upload  */}
-             <Modal show={notImageFile} onHide={handleSetNotImageFile}>
+            {/* Modal not picture type file Upload  */}
+            <Modal show={notImageFile} onHide={handleSetNotImageFile}>
               <Modal.Header closeButton>
                 <Modal.Title> Alert</Modal.Title>
               </Modal.Header>
               <Modal.Body className="text-center">
-              Please select an image file (.jpg, .jpeg, .png, .gif).
+                Please select an image file (.jpg, .jpeg, .png, .gif).
                 <div className="d-flex gap-5 mt-3">
-                  <button variant="primary" onClick={handleSetNotImageFile} className="PurpulBtnClock w-30 btn btn-btn">
+                  <button
+                    variant="primary"
+                    onClick={handleSetNotImageFile}
+                    className="PurpulBtnClock w-30 btn btn-btn"
+                  >
                     OK
                   </button>
                 </div>
