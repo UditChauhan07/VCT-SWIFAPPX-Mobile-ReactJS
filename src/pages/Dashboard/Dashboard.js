@@ -12,7 +12,18 @@ import { Field, Form, Formik } from "formik";
 import ModalForAuthentication from "../../components/ModalForAuthentication";
 import { useInternetStatusCheck } from "../../utils/updation";
 import CircleLoading from "../../components/CircleLoading";
-const Dashboard = () => {
+import { App } from '@capacitor/app';
+
+  const Dashboard = () => {
+  // Go back functionality for android mobile
+  App.addListener('backButton', ({ canGoBack }) => {
+    console.log(canGoBack);
+     if(canGoBack){
+      window.history.back();
+      } else {
+       App.exitApp();
+      }
+    });
   const userGlobalState = useSelector((state) => state.userModule);
   const companyGlobalState = useSelector((state) => state.companyModule);
   // console.log(userGlobalState, companyGlobalState);
